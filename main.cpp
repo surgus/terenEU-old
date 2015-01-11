@@ -2130,33 +2130,28 @@ int main()
         switch(c) {
             case 'q': { break; }
             case '1': {
-// Uruchamiamy funkcje odczytujaca linijka po linijce z pliku mst
                 odczytWspolrzednychPrzesunieciaSCN(wspolrzednaX, wspolrzednaY);
                 odczytWierzcholkowZTriangles(tabelaNazwPlikowHGT, wspolrzednaX, wspolrzednaY);
                 break;
             }
             case '2': {
-// Uruchamiamy funkcje odczytujaca linijka po linijce z pliku mst
                 zrobListePlikow(tabelaNazwPlikowHGT, rozszerzenie2);
                 odczytWspolrzednychPrzesunieciaSCN(wspolrzednaX, wspolrzednaY);
                 obrobkaDanychHGTPrzedTriangulacja(tabelaNazwPlikowHGT, wspolrzednaX, wspolrzednaY, "100");
                 break;
             }
             case '3': {
-// Uruchamiamy funkcje odczytujaca linijka po linijce z pliku mst
                 zrobListePlikow(tabelaNazwPlikowHGT, rozszerzenie2);
                 odczytWspolrzednychPrzesunieciaSCN(wspolrzednaX, wspolrzednaY);
                 obrobkaDanychHGTPrzedTriangulacjaZUwazglednieniemProfilu(tabelaNazwPlikowHGT, wspolrzednaX, wspolrzednaY, "1000");
                 break;
             }
             case '4': {
-// Uruchamiamy funkcje odczytujaca linijka po linijce z pliku mst
                 odczytWspolrzednychPrzesunieciaSCN(wspolrzednaX, wspolrzednaY);
                 obrobkaDanychNodePoTriangulacji(wspolrzednaX, wspolrzednaY, "1000");
                 break;
             }
             case '5': {
-// Uruchamiamy funkcje odczytujaca linijka po linijce z pliku mst
                 zrobListePlikow(tabelaNazwPlikowTXT, rozszerzenie1);
                 odczytWspolrzednychPrzesunieciaSCN(wspolrzednaX, wspolrzednaY);
                 obrobkaDanychTXTPrzedTriangulacja(tabelaNazwPlikowTXT, wspolrzednaX, wspolrzednaY);
