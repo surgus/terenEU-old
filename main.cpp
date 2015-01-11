@@ -1998,7 +1998,7 @@ void obrobkaDanychTXTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPl
 
         zapisPunktowDoTriangulacji(wierzcholki, otoczka, exportX, exportY, "2000");
     }
-    std::cout << "Wow! Juz zrobione wszystkie znalezione pliki TXT!!!                        \n" << "\n";
+    std::cout << "Program zakonczyl dzialanie. Prosze nacisnac enter!                        \n" << "\n";
 
 }
 
@@ -2018,7 +2018,7 @@ void obrobkaDanychNodePoTriangulacji(double &refWspolrzednaX, double &refWspolrz
     odczytPunktowNode(wierzcholki, odlegloscNMT, szerokosc, licznikWierzcholkow);
     odczytPlikuPoTriangulacji(triangles, wierzcholki, szerokosc, oganiczenieDlugosciRamionTrojkata, licznikTrojkatow);
     zapisSymkowychTrojkatow(triangles, exportX, exportY);
-    std::cout << "Wow! Juz zrobione wszystkie znalezione pliki TXT!!!                           \n" << "\n";
+    std::cout << "Program zakonczyl dzialanie. Prosze nacisnac enter!                           \n" << "\n";
 }
 
 void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string rozsz) {
