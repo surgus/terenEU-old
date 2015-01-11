@@ -7,7 +7,7 @@ W katalogu z programem musimy mieć:
 1. Plik ze scenerią (aktualnie na stałe zaszyta nazwa "EXPORT.SCM", bo taki plik domyślnie tworzy edytor Rainsted).
 2. Katalog o nazwie SRTM, a w nim pliki .hgt lub .dem z obszarem pokrywającym teren scenerii.
 3. W tym samym (najlepiej) lub innym katalogu możliwość skompilowania i uruchomienia darmowego programu "Triangle",
-który jest dostępny pod adresem: http://www.cs.cmu.edu/~quake/triangle.html.
+który z podanych punktów tworzy trójkąty.
 
 Kompilacja programu TerenEU07:
 g++ -std=c++11 -O3 -o terenEU07 main.cpp
