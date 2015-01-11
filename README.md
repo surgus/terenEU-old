@@ -29,6 +29,6 @@ a więc należy go przekonwertować na format unixowy. Np. w programie vi komend
 zrobListePlikow().
 
 Symulator MaSzyna EU07 można pobrać ze strony: http://eu07.pl/.
-Edytor Rainsted znajduje się w paczce z symulatorem.
+Edytor Rainsted znajduje się w paczce z symulatorem. Strona projektu http://rainsted.com/pl/.
 Program Triangle dostepny pod adresem: http://www.cs.cmu.edu/~quake/triangle.html.
 
