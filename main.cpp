@@ -1483,6 +1483,263 @@ Literatura:
 //    std::cout << "Wszystkie punkty HGT wczytane. Zamykam ten plik" << "\n\n";
 }
 
+void odczytPunktowTXT(std::vector<wierzcholek> &refWierzcholki, std::vector<std::vector<unsigned int> > &refTablica, std::string nazwaPliku, std::vector<double> &refOdlegloscTXT, unsigned int &id, unsigned int &refNrPliku, unsigned int &refLiczbaPlikow, unsigned int szerokosc, std::vector<punktyTorow> &refToryZGwiazdka, unsigned int refKorektaX, unsigned int refKorektaY, unsigned int refWierszeTablicy, unsigned int refKolumnyTablicy) {
+	unsigned int licznik = 0, nrPunktu = 0, liczbaTorowZGwiazdka = refToryZGwiazdka.size();
+	const unsigned int a = 0;
+	std::cout << "nazwaPliku=" << nazwaPliku << "\n";
+    std::cout << "Otwieram plik " << nazwaPliku << " " << refNrPliku + 1 << " z " << refLiczbaPlikow <<" \n";
+    std::ifstream plik1;
+    plik1.open(nazwaPliku.c_str());
+    if(!plik1) {
+        std::cout << "Brak pliku " << nazwaPliku << "\n";
+        std::cin.get();
+    }
+    while(!plik1.eof()) {
+        std::string linia ("");
+        std::getline(plik1, linia);
+        std::istringstream ln(linia);
+        unsigned int wyraz = 0;
+        double x = 0, y =0, z = 0;
+// Petla rozbijajaca odczytana linie na pojedyncze stringi (rozdzielanie po " ")
+        while (!ln.eof()) {
+            std::string temp ("");
+            std::getline(ln, temp, ' ');
+// Jesli ostatnia linijka jest pusta, przerywamy wszystkie petle oprocz pierwszej for
+// Y
+            if (wyraz == 0) x = atof (temp.c_str()); // y.push_back(atof(temp.c_str()));
+// X
+            if (wyraz == 1) y = atof (temp.c_str()); // x.push_back(atof(temp.c_str()));
+// Z
+            if (wyraz == 2) {
+                z = atof (temp.c_str());
+                bool doOdrzutu = false, nieSprawdzaj = false;
+                if (((x - refKorektaX) / szerokosc < 1) || ((x - refKorektaX) / szerokosc > refWierszeTablicy)) nieSprawdzaj = true;
+                if (((y - refKorektaY) / szerokosc < 1) || ((y - refKorektaY) / szerokosc > refKolumnyTablicy)) nieSprawdzaj = true;
+                if (!nieSprawdzaj) {
+                    if (refTablica[(x - refKorektaX) / szerokosc][(y - refKorektaY) / szerokosc] == 1) {
+                        for (unsigned int jj = 0; jj < liczbaTorowZGwiazdka; ++jj) {
+                            bool waznyX = false, waznyY = false, rosnieY = false, malejeY = false, rosnieX = false, malejeX = false;
+                            double wektorP2P1x = refToryZGwiazdka[jj].xp1 - refToryZGwiazdka[jj].xp2;
+                            double wektorP2P1y = refToryZGwiazdka[jj].yp1 - refToryZGwiazdka[jj].yp2;
+                            int resztax1toru = (int)refToryZGwiazdka[jj].xp1 % 1000;
+                            int resztay1toru = (int)refToryZGwiazdka[jj].yp1 % 1000;
+                            if (resztax1toru == 0) waznyX = true;
+                            if (resztay1toru == 0) waznyY = true;
+                            if (waznyX) {
+                                double testX = (refToryZGwiazdka[jj].xp1 + wektorP2P1x) / refToryZGwiazdka[jj].xp1;
+                                if (testX >= 1) {
+                                    rosnieX = true;
+                                } else malejeX = true;
+                            }
+                            if (waznyY) {
+                                double testY = (refToryZGwiazdka[jj].yp1 + wektorP2P1y) / refToryZGwiazdka[jj].yp1;
+                                if (testY >= 1) {
+                                    rosnieY = true;
+                                } else malejeY = true;
+                            }
+                            if (rosnieY) {
+                                int zaokraglonyyp1 = refToryZGwiazdka[jj].yp1 / 1000;
+                                int zaokraglonyY = y / 1000;
+                                int zaokraglonyxp1 = refToryZGwiazdka[jj].xp1 / 1000;
+                                int zaokraglonyX = x / 1000;
+                                int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                if ((roznicaY < 1) && (roznicaY > -8) && (roznicaX < 4) && (roznicaX > -4)) {
+                                    doOdrzutu = true;
+                                    break;
+                                }
+                            }
+                            if (malejeY) {
+                                int zaokraglonyyp1 = refToryZGwiazdka[jj].yp1 / 1000;
+                                int zaokraglonyY = y / 1000;
+                                int zaokraglonyxp1 = refToryZGwiazdka[jj].xp1 / 1000;
+                                int zaokraglonyX = x / 1000;
+                                int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                if ((roznicaY > 0) && (roznicaY < 8) && (roznicaX < 4) && (roznicaX > -4)) {
+                                    doOdrzutu = true;
+                                    break;
+                                }
+                            }
+                            if (rosnieX) {
+                                int zaokraglonyxp1 = refToryZGwiazdka[jj].xp1 / 1000;
+                                int zaokraglonyX = x / 1000;
+                                int zaokraglonyyp1 = refToryZGwiazdka[jj].yp1 / 1000;
+                                int zaokraglonyY = y / 1000;
+                                int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                if ((roznicaX < 1) && (roznicaX > -8) && (roznicaY < 4) && (roznicaY > -4)) {
+                                    doOdrzutu = true;
+                                    break;
+                                }
+                            }
+                            if (malejeX) {
+                                int zaokraglonyxp1 = refToryZGwiazdka[jj].xp1 / 1000;
+                                int zaokraglonyX = x / 1000;
+                                int zaokraglonyyp1 = refToryZGwiazdka[jj].yp1 / 1000;
+                                int zaokraglonyY = y / 1000;
+                                int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                if ((roznicaX > 0) && (roznicaX < 8) && (roznicaY < 4) && (roznicaY > -4)) {
+                                    doOdrzutu = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!doOdrzutu) {
+                            refOdlegloscTXT.push_back(a);
+                            refWierzcholki.push_back(wierzcholek{x, y, z, id});
+                            ++id;
+                            ++licznik;
+                        }
+                    }
+                }
+            }
+            ++wyraz;
+        }
+    	++nrPunktu;
+//        std::cout << "Petla nr " << nrPunktu << " z 1201           \r";
+        printf ("Petla nr %u         \r", nrPunktu);
+    }
+//    std::cout << "\nLiczba znalezionych punktow HGT w pliku: " << licznik << "\nW sumie znalezionych punktow: " << id << "\n\n";
+    printf ("\nLiczba znalezionych punktow NMT100 w pliku: %u", licznik);
+    printf ("\nW sumie znalezionych punktow: %u \n\n", id);
+}
+
+void odczytPunktowTXTzUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzcholki, std::vector<wierzcholek> &refWierzcholkiProfilu, std::vector<std::vector<unsigned int> > &refTablica1, std::vector<std::vector<unsigned int> > &refTablica2, std::string nazwaPliku, std::vector<double> &refOdlegloscTXT, unsigned int &refNrId, unsigned int NrPliku, unsigned int LiczbaPlikow, unsigned int szerokosc1, unsigned int szerokosc2, std::vector<punktyTorow> &refToryZGwiazdka, unsigned int refKorektaX1, unsigned int refKorektaY1, unsigned int refKorektaX2, unsigned int refKorektaY2, unsigned int refWierszeTablicy1, unsigned int refKolumnyTablicy1, unsigned int refWierszeTablicy2, unsigned int refKolumnyTablicy2) {
+	unsigned int nrLinii = 0, liczbaTorowZGwiazdka = refToryZGwiazdka.size();
+	const unsigned int a = 0;
+	std::cout << "nazwaPliku=" << nazwaPliku << "\n";
+    std::cout << "Otwieram plik " << nazwaPliku << " " << NrPliku + 1 << " z " << LiczbaPlikow <<" \n";
+    std::ifstream plik1;
+    plik1.open(nazwaPliku.c_str());
+    if(!plik1) {
+        std::cout << "Brak pliku " << nazwaPliku << "\n";
+        std::cin.get();
+    }
+    while(!plik1.eof()) {
+        std::string linia ("");
+        std::getline(plik1, linia);
+        std::istringstream ln(linia);
+        unsigned int wyraz = 0;
+        double x = 0, y =0, z = 0;
+// Petla rozbijajaca odczytana linie na pojedyncze stringi (rozdzielanie po " ")
+        while (!ln.eof()) {
+            std::string temp ("");
+            std::getline(ln, temp, ' ');
+// Jesli ostatnia linijka jest pusta, przerywamy wszystkie petle oprocz pierwszej for
+// Y
+            if (wyraz == 0) x = atof (temp.c_str()); // y.push_back(atof(temp.c_str()));
+// X
+            if (wyraz == 1) y = atof (temp.c_str()); // x.push_back(atof(temp.c_str()));
+// Z
+            if (wyraz == 2) {
+                bool zaBlisko = false, nieSprawdzaj = false, doOdrzutu = false;
+                z = atof (temp.c_str()); // z.push_back(atof(temp.c_str()));
+                if (((x - refKorektaX1) / szerokosc1 < 1) || ((x - refKorektaX1) / szerokosc1 > refWierszeTablicy1)) nieSprawdzaj = true;
+                if (((y - refKorektaY1) / szerokosc1 < 1) || ((y - refKorektaY1) / szerokosc1 > refKolumnyTablicy1)) nieSprawdzaj = true;
+                if (!nieSprawdzaj) {
+                    if (refTablica1[(x - refKorektaX1) / szerokosc1][(y - refKorektaY1) / szerokosc1] == 1) {
+                        if (((x - refKorektaX2) / szerokosc2 < 1) || ((x - refKorektaX2) / szerokosc2 > refWierszeTablicy2)) nieSprawdzaj = true;
+                        if (((y - refKorektaY2) / szerokosc2 < 1) || ((y - refKorektaY2) / szerokosc2 > refKolumnyTablicy2)) nieSprawdzaj = true;
+                        if (!nieSprawdzaj) {
+                            if (refTablica2[(x - refKorektaX2) / szerokosc2][(y - refKorektaY2) / szerokosc2] == 1) zaBlisko = true;
+                        }
+                        if (!zaBlisko) {
+                            for (unsigned int jj = 0; jj < liczbaTorowZGwiazdka; ++jj) {
+                                bool waznyX = false, waznyY = false, rosnieY = false, malejeY = false, rosnieX = false, malejeX = false;
+
+                                double wektorP2P1x = refToryZGwiazdka[jj].xp1 - refToryZGwiazdka[jj].xp2;
+                                double wektorP2P1y = refToryZGwiazdka[jj].yp1 - refToryZGwiazdka[jj].yp2;
+
+                                int resztax1toru = (int)refToryZGwiazdka[jj].xp1 % 1000;
+                                int resztay1toru = (int)refToryZGwiazdka[jj].yp1 % 1000;
+
+                                if (resztax1toru == 0) waznyX = true;
+                                if (resztay1toru == 0) waznyY = true;
+
+                                if (waznyX) {
+//debug                                double nieprzesunietyxp1 = refToryZGwiazdka[jj].xp1;
+//debug                                double przesunietyXp1 = refToryZGwiazdka[jj].xp1 + wektorP2P1x;
+                                    double testX = (refToryZGwiazdka[jj].xp1 + wektorP2P1x) / refToryZGwiazdka[jj].xp1;
+                                    if (testX >= 1) {
+                                        rosnieX = true;
+                                    } else malejeX = true;
+                                }
+                                if (waznyY) {
+//debug                                double nieprzesunietyyp1 = refToryZGwiazdka[jj].yp1;
+//debug                                double przesunietyYp1 = refToryZGwiazdka[jj].yp1 + wektorP2P1y;
+                                    double testY = (refToryZGwiazdka[jj].yp1 + wektorP2P1y) / refToryZGwiazdka[jj].yp1;
+                                    if (testY >= 1) {
+                                        rosnieY = true;
+                                    } else malejeY = true;
+                                }
+                                if (rosnieY) {
+                                    int zaokraglonyyp1 = refToryZGwiazdka[jj].yp1 / 1000;
+                                    int zaokraglonyY = y / 1000;
+                                    int zaokraglonyxp1 = refToryZGwiazdka[jj].xp1 / 1000;
+                                    int zaokraglonyX = x / 1000;
+                                    int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                    int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                    if ((roznicaY < 1) && (roznicaY > -8) && (roznicaX < 4) && (roznicaX > -4)) {
+                                        doOdrzutu = true;
+                                        break;
+                                    }
+                                }
+                                if (malejeY) {
+                                    int zaokraglonyyp1 = refToryZGwiazdka[jj].yp1 / 1000;
+                                    int zaokraglonyY = y / 1000;
+                                    int zaokraglonyxp1 = refToryZGwiazdka[jj].xp1 / 1000;
+                                    int zaokraglonyX = x / 1000;
+                                    int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                    int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                    if ((roznicaY > 0) && (roznicaY < 8) && (roznicaX < 4) && (roznicaX > -4)) {
+                                        doOdrzutu = true;
+                                        break;
+                                    }
+                                }
+                                if (rosnieX) {
+                                    int zaokraglonyxp1 = refToryZGwiazdka[jj].xp1 / 1000;
+                                    int zaokraglonyX = x / 1000;
+                                    int zaokraglonyyp1 = refToryZGwiazdka[jj].yp1 / 1000;
+                                    int zaokraglonyY = y / 1000;
+                                    int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                    int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                    if ((roznicaX < 1) && (roznicaX > -8) && (roznicaY < 4) && (roznicaY > -4)) {
+                                        doOdrzutu = true;
+                                        break;
+                                    }
+                                }
+                                if (malejeX) {
+                                    int zaokraglonyxp1 = refToryZGwiazdka[jj].xp1 / 1000;
+                                    int zaokraglonyX = x / 1000;
+                                    int zaokraglonyyp1 = refToryZGwiazdka[jj].yp1 / 1000;
+                                    int zaokraglonyY = y / 1000;
+                                    int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                    int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                    if ((roznicaX > 0) && (roznicaX < 8) && (roznicaY < 4) && (roznicaY > -4)) {
+                                        doOdrzutu = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!doOdrzutu) {
+                                refOdlegloscTXT.push_back(a);
+                                refWierzcholki.push_back(wierzcholek{x, y, z, refNrId});
+                                ++refNrId;
+                            }
+                        }
+                    }
+                }
+            }
+            ++wyraz;
+        }
+        ++nrLinii;
+        std::cout << "Linia nr " << nrLinii << "          \r";
+    }
+    std::cout << "\nLiczba znalezionych punktow NMT100 w pliku: " << nrLinii << "\nW sumie znalezionych punktow: " << refNrId << "\n\n";
+}
+
 void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<wierzcholek> &refWierzcholki, std::string zarostek, const double ograniczenieTrojkata, unsigned int &refLicznikTrojkatow) {
     std::string linia ("");
     std::string ln ("");
@@ -1900,9 +2157,84 @@ void obrobkaDanychHGTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPl
     for (unsigned int i = 0; i < liczbaPlikow; ++i) {
         odczytPunktowHGT(wierzcholki, tablica, refTabelaNazwPlikowHGT[i], odlegloscHGT1, nrId, i, liczbaPlikow, atoi(szerokoscTablicy.c_str()), toryZGwiazdka, korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
     }
-    if (szerokoscTablicy == "2000") {
-        obrobkaDanychNodeDoZageszczeniaPoTriangulacji(refWspolrzednaX, refWspolrzednaY, "100", wierzcholki);
+    obrobkaDanychNodeDoZageszczeniaPoTriangulacji(refWspolrzednaX, refWspolrzednaY, "150", wierzcholki);
+    sort(wierzcholki.begin(), wierzcholki.end(), by_yx());
+//    zrobOtoczke(wierzcholki, otoczka, bezOtoczki);
+//    sort(wierzcholki.begin(), wierzcholki.end(), by_xy());
+    zapisPunktowDoTriangulacji(wierzcholki, otoczka, exportX, exportY, szerokoscTablicy);
+}
+
+void obrobkaDanychTXTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPlikowTXT, double &refWspolrzednaX, double &refWspolrzednaY, std::string szerokoscTablicy) {
+// Niezbedne (a moze i zbedne, ale tak wyszlo) zmienne
+    unsigned int nrId = 0, wierszeTablicy = 0, kolumnyTablicy = 0, korektaX = 0, korektaY = 0;
+    std::vector<double> odlegloscTXT1;
+    std::vector<wierzcholek> wierzcholki;
+    std::vector<punktyTorow> toryZGwiazdka;
+    std::vector<wypukla> otoczka;
+//    std::vector<punkty> bezOtoczki;
+    std::vector<std::vector<unsigned int> > tablica;
+    double exportX = refWspolrzednaX * 1000.0;
+    double exportY = refWspolrzednaY * 1000.0;
+    unsigned int liczbaPlikow = refTabelaNazwPlikowTXT.size();
+    std::cout << "Liczba plikow przekazanych do obrobki: "<< liczbaPlikow << "\n";
+    odlegloscTXT1.clear();
+    wierzcholki.clear();
+    toryZGwiazdka.clear();
+    otoczka.clear();
+//    bezOtoczki.clear();
+    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow (
+    odczytPunktowTorow(tablica, exportX, exportY, atoi(szerokoscTablicy.c_str()), korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
+    odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
+    // Odczyt danych HGT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
+    for (unsigned int i = 0; i < liczbaPlikow; ++i) {
+        odczytPunktowTXT(wierzcholki, tablica, refTabelaNazwPlikowTXT[i], odlegloscTXT1, nrId, i, liczbaPlikow, atoi(szerokoscTablicy.c_str()), toryZGwiazdka, korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
     }
+//    if (szerokoscTablicy == "1000") {
+//        obrobkaDanychNodeDoZageszczeniaPoTriangulacji(refWspolrzednaX, refWspolrzednaY, "150", wierzcholki);
+//    }
+
+    sort(wierzcholki.begin(), wierzcholki.end(), by_yx());
+//    zrobOtoczke(wierzcholki, otoczka, bezOtoczki);
+//    sort(wierzcholki.begin(), wierzcholki.end(), by_xy());
+    zapisPunktowDoTriangulacji(wierzcholki, otoczka, exportX, exportY, szerokoscTablicy);
+}
+
+void obrobkaDanychTXTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::string> &refTabelaNazwPlikowTXT, double &refWspolrzednaX, double &refWspolrzednaY, std::string szerokoscTablicy) {
+// Niezbedne (a moze i zbedne, ale tak wyszlo) zmienne
+    unsigned int nrId = 0, wierszeTablicy1 = 0, kolumnyTablicy1 = 0, wierszeTablicy2 = 0, kolumnyTablicy2 = 0, licznikWierzcholkow = 0, szerokosc2 = 36, korektaX1 = 0, korektaY1 = 0, korektaX2 = 0, korektaY2 = 0;
+//    unsigned int wierszeTablicyDoUsuniecia = 22000, kolumnyTablicyDoUsuniecia = 22000;
+    std::vector<double> odlegloscTXT1;
+    std::vector<double> odlegloscTXT2;
+    std::vector<wierzcholek> wierzcholki;
+    std::vector<wierzcholek> wierzcholkiProfilu;
+    std::vector<wypukla> otoczka;
+//    std::vector<punkty> bezOtoczki;
+    std::vector<punktyTorow> toryZGwiazdka;
+    std::vector<std::vector<unsigned int> > tablica1;
+    std::vector<std::vector<unsigned int> > tablica2;
+    double exportX = refWspolrzednaX * 1000.0;
+    double exportY = refWspolrzednaY * 1000.0;
+    unsigned int liczbaPlikow = refTabelaNazwPlikowTXT.size();
+    std::cout << "Liczba plikow przekazanych do obrobki: "<< liczbaPlikow << "\n";
+    odlegloscTXT1.clear();
+    odlegloscTXT2.clear();
+    wierzcholki.clear();
+    wierzcholkiProfilu.clear();
+    otoczka.clear();
+//    bezOtoczki.clear();
+    toryZGwiazdka.clear();
+    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow (
+    odczytPunktowTorow(tablica1, exportX, exportY, atoi(szerokoscTablicy.c_str()), korektaX1, korektaY1, wierszeTablicy1, kolumnyTablicy1);
+    odczytPunktowNode(wierzcholkiProfilu, odlegloscTXT2, "profil", licznikWierzcholkow);
+    odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
+    tablicaWierzcholkowTriangles(tablica2, exportX, exportY, szerokosc2, toryZGwiazdka, korektaX2, korektaY2, wierszeTablicy2, kolumnyTablicy2);
+    // Odczyt danych HGT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
+    for (unsigned int i = 0; i < liczbaPlikow; ++i) {
+        odczytPunktowTXTzUwzglednieniemProfilu(wierzcholki, wierzcholkiProfilu, tablica1, tablica2, refTabelaNazwPlikowTXT[i], odlegloscTXT1, nrId, i, liczbaPlikow, atoi(szerokoscTablicy.c_str()), szerokosc2, toryZGwiazdka, korektaX1, korektaY1, korektaX2, korektaY2, wierszeTablicy1, kolumnyTablicy1, wierszeTablicy2, kolumnyTablicy2);
+    }
+//    if (szerokoscTablicy == "1000") {
+        obrobkaDanychNodeDoZageszczeniaPoTriangulacjiZUwzglednieniemProfilu("150", wierzcholki, wierzcholkiProfilu, nrId, tablica2, szerokosc2, korektaX2, korektaY2, wierszeTablicy2, kolumnyTablicy2);
+//    }
 
     sort(wierzcholki.begin(), wierzcholki.end(), by_yx());
 //    zrobOtoczke(wierzcholki, otoczka, bezOtoczki);
@@ -1943,10 +2275,7 @@ void obrobkaDanychHGTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::s
     for (unsigned int i = 0; i < liczbaPlikow; ++i) {
         odczytPunktowHGTzUwzglednieniemProfilu(wierzcholki, wierzcholkiProfilu, tablica1, tablica2, refTabelaNazwPlikowHGT[i], odlegloscHGT1, nrId, i, liczbaPlikow, atoi(szerokoscTablicy.c_str()), szerokosc2, toryZGwiazdka, korektaX1, korektaY1, korektaX2, korektaY2, wierszeTablicy1, kolumnyTablicy1, wierszeTablicy2, kolumnyTablicy2);
     }
-    if (szerokoscTablicy == "1000") {
-        obrobkaDanychNodeDoZageszczeniaPoTriangulacjiZUwzglednieniemProfilu("100", wierzcholki, wierzcholkiProfilu, nrId, tablica2, szerokosc2, korektaX2, korektaY2, wierszeTablicy2, kolumnyTablicy2);
-    }
-
+    obrobkaDanychNodeDoZageszczeniaPoTriangulacjiZUwzglednieniemProfilu("150", wierzcholki, wierzcholkiProfilu, nrId, tablica2, szerokosc2, korektaX2, korektaY2, wierszeTablicy2, kolumnyTablicy2);
     sort(wierzcholki.begin(), wierzcholki.end(), by_yx());
 //    zrobOtoczke(wierzcholki, otoczka, bezOtoczki);
 //    sort(wierzcholki.begin(), wierzcholki.end(), by_xy());
@@ -1969,39 +2298,6 @@ void odczytWierzcholkowZTriangles(std::vector<std::string> &refTabelaNazwPlikowH
     zapisPunktowDoTriangulacji(wierzcholkiTriangles, otoczka, exportX, exportY, "profil");
 }
 
-void obrobkaDanychTXTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPlikowNMT, double &refWspolrzednaX, double &refWspolrzednaY) {
-// Niezbedne (a moze i zbedne, ale tak wyszlo) zmienne
-    unsigned int korektaX = 0, korektaY = 0, wierszeTablicy = 0, kolumnyTablicy = 0;
-    std::vector<double> odlegloscNMT;
-    std::vector<wierzcholek> wierzcholki;
-    std::vector<wypukla> otoczka;
-    std::vector<punkty> bezOtoczki;
-    std::vector<std::vector<unsigned int> > tablica;
-    double exportX = refWspolrzednaX * 1000.0;
-    double exportY = refWspolrzednaY * 1000.0;
-
-    std::cout << "Liczba plikow przekazanych do obrobki: "<< refTabelaNazwPlikowNMT.size() << "\n";
-    for (unsigned int a = 0; a < refTabelaNazwPlikowNMT.size(); ++a) {
-        if (a > 0) {
-            odlegloscNMT.clear();
-            wierzcholki.clear();
-            otoczka.clear();
-            bezOtoczki.clear();
-        }
-        odczytPunktowTorow(tablica, exportX, exportY, 2000, korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
-        odczytPunktowNMT(wierzcholki, tablica, refTabelaNazwPlikowNMT[a], odlegloscNMT);
-        sort(wierzcholki.begin(), wierzcholki.end(), by_yx());
-
-//        zrobOtoczke(wierzcholki, otoczka, bezOtoczki);
-
-//        sort(wierzcholki.begin(), wierzcholki.end(), by_xy());
-
-        zapisPunktowDoTriangulacji(wierzcholki, otoczka, exportX, exportY, "2000");
-    }
-    std::cout << "Program zakonczyl dzialanie. Prosze nacisnac enter!                        \n" << "\n";
-
-}
-
 void obrobkaDanychNodePoTriangulacji(double &refWspolrzednaX, double &refWspolrzednaY, std::string szerokosc) {
 // Niezbedne (a moze i zbedne, ale tak wyszlo) zmienne
     std::vector<double> odlegloscNMT;
@@ -2018,7 +2314,7 @@ void obrobkaDanychNodePoTriangulacji(double &refWspolrzednaX, double &refWspolrz
     odczytPunktowNode(wierzcholki, odlegloscNMT, szerokosc, licznikWierzcholkow);
     odczytPlikuPoTriangulacji(triangles, wierzcholki, szerokosc, oganiczenieDlugosciRamionTrojkata, licznikTrojkatow);
     zapisSymkowychTrojkatow(triangles, exportX, exportY);
-    std::cout << "Program zakonczyl dzialanie. Prosze nacisnac enter!                           \n" << "\n";
+    std::cout << "Wow! Juz zrobione wszystkie znalezione pliki TXT!!!                           \n" << "\n";
 }
 
 void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string rozsz) {
@@ -2028,7 +2324,7 @@ void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string 
     DIR*     dir;
     dirent*  pdir;
     if (rozsz == "hgt") {
-// Przed kompilacja na systemie linux nalezy zmienic "\\" w sciezkach na "/" i na odwrot jesli to system Microsoftu
+// Przed kompilacja na systemie linux nalezy zmienic "\\" w sciezkach na "/"
         if (!(dir = opendir("./SRTM"))) {
         	perror("failed to open directory ./SRTM");
         	return;
@@ -2036,11 +2332,11 @@ void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string 
         dir = opendir("./SRTM");
     }
     else {
-        if (!(dir = opendir("."))) {
-        	perror("failed to open directory .");
+        if (!(dir = opendir("./NMT100"))) {
+        	perror("failed to open directory ./NMT100");
         	return;
     	}
-        dir = opendir(".");
+        dir = opendir("./NMT100");
     }
     while ((pdir = readdir(dir)) != NULL) {
         if (!strcmp(pdir->d_name, "..") || !strcmp(pdir->d_name, ".")) {
@@ -2052,7 +2348,12 @@ void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string 
         unsigned znaleziono = nazwaPliku.find(rozsz);
 //npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
-            nazwaPliku = nazwaPliku.insert(0,"./SRTM/");
+            if (rozsz == "hgt") {
+                nazwaPliku = nazwaPliku.insert(0,"./SRTM/");
+            }
+            else {
+                nazwaPliku = nazwaPliku.insert(0,"./NMT100/");
+            }
             refTabelaNazwPlikow.push_back(nazwaPliku);
             std::cout << nazwaPliku << "\n";
         }
@@ -2106,23 +2407,23 @@ void odczytWspolrzednychPrzesunieciaSCN(double &refWspolrzednaX, double &refWspo
 int main()
 {
 // Tworzymy niezbedne zmienne lokalne
-    std::vector<std::string> tabelaNazwPlikowTXT;
-    std::vector<std::string> tabelaNazwPlikowHGT;
+    std::vector<std::string> tabelaNazwPlikow;
     double wspolrzednaX = 0, wspolrzednaY = 0;
     std::string rozszerzenie1 ("txt");
     std::string rozszerzenie2 ("hgt");
 //    std::string rozszerzenie2 ("dt2");
     char c = 'c';
-    tabelaNazwPlikowTXT.clear();
+    tabelaNazwPlikow.clear();
 
     std::cout << "Witaj w programie TerenEU07.exe - wersja " << AutoVersion::MAJOR << "." << AutoVersion::MINOR << "." << AutoVersion::BUILD << "." << AutoVersion::REVISION << AutoVersion::STATUS_SHORT << "\n\n";
     std::cout << "Wybierz opcje:\n\n";
-    std::cout << "1. Tworzenie pliku .node z wierzcholkami profilu\n";
-    std::cout << "2. Tworzenie pliku .node z wierzcholkami SRTM w promieniu 0.25 km od konca kazdego odcinka toru\n";
-    std::cout << "3. Tworzenie pliku .node z  wierzcholkami SRTM w promieniu 4.5 km od konca kazdego odcinka toru.\n";
+    std::cout << "1. Tworzenie pliku .node z wierzcholkami profilu.\n";
+    std::cout << "2. Tworzenie pliku .node z wierzcholkami SRTM w promieniu 0.375 km od konca kazdego odcinka toru.\n";
+    std::cout << "3. Tworzenie pliku .node z wierzcholkami SRTM w promieniu 4.5 km od konca kazdego odcinka toru.\n";
     std::cout << "4. Tworzenie pliku .scm z terenem w formacie symulatora MaSzyna EU07.\n";
-//    std::cout << "5. Wczytaj wspolrzedne torow oraz NMT\n";
-    std::cout << "q - wyjscie z programu\n\n";
+    std::cout << "5. Tworzenie pliku .node z wierzcholkami NMT100 w promieniu 0.375 km od konca kazdego odcinka toru.\n";
+    std::cout << "6. Tworzenie pliku .node z wierzcholkami NMT100 w promieniu 4.5 km od konca kazdego odcinka toru.\n";
+    std::cout << "q - Wyjscie z programu.\n\n";
     std::cout << "Wybieram: ";
 
 // Petla menu
@@ -2131,19 +2432,19 @@ int main()
             case 'q': { break; }
             case '1': {
                 odczytWspolrzednychPrzesunieciaSCN(wspolrzednaX, wspolrzednaY);
-                odczytWierzcholkowZTriangles(tabelaNazwPlikowHGT, wspolrzednaX, wspolrzednaY);
+                odczytWierzcholkowZTriangles(tabelaNazwPlikow, wspolrzednaX, wspolrzednaY);
                 break;
             }
             case '2': {
-                zrobListePlikow(tabelaNazwPlikowHGT, rozszerzenie2);
+                zrobListePlikow(tabelaNazwPlikow, rozszerzenie2);
                 odczytWspolrzednychPrzesunieciaSCN(wspolrzednaX, wspolrzednaY);
-                obrobkaDanychHGTPrzedTriangulacja(tabelaNazwPlikowHGT, wspolrzednaX, wspolrzednaY, "100");
+                obrobkaDanychHGTPrzedTriangulacja(tabelaNazwPlikow, wspolrzednaX, wspolrzednaY, "150");
                 break;
             }
             case '3': {
-                zrobListePlikow(tabelaNazwPlikowHGT, rozszerzenie2);
+                zrobListePlikow(tabelaNazwPlikow, rozszerzenie2);
                 odczytWspolrzednychPrzesunieciaSCN(wspolrzednaX, wspolrzednaY);
-                obrobkaDanychHGTPrzedTriangulacjaZUwazglednieniemProfilu(tabelaNazwPlikowHGT, wspolrzednaX, wspolrzednaY, "1000");
+                obrobkaDanychHGTPrzedTriangulacjaZUwazglednieniemProfilu(tabelaNazwPlikow, wspolrzednaX, wspolrzednaY, "1000");
                 break;
             }
             case '4': {
@@ -2152,9 +2453,15 @@ int main()
                 break;
             }
             case '5': {
-                zrobListePlikow(tabelaNazwPlikowTXT, rozszerzenie1);
+                zrobListePlikow(tabelaNazwPlikow, rozszerzenie1);
                 odczytWspolrzednychPrzesunieciaSCN(wspolrzednaX, wspolrzednaY);
-                obrobkaDanychTXTPrzedTriangulacja(tabelaNazwPlikowTXT, wspolrzednaX, wspolrzednaY);
+                obrobkaDanychTXTPrzedTriangulacja(tabelaNazwPlikow, wspolrzednaX, wspolrzednaY, "150");
+                break;
+            }
+            case '6': {
+                zrobListePlikow(tabelaNazwPlikow, rozszerzenie1);
+                odczytWspolrzednychPrzesunieciaSCN(wspolrzednaX, wspolrzednaY);
+                obrobkaDanychTXTPrzedTriangulacjaZUwazglednieniemProfilu(tabelaNazwPlikow, wspolrzednaX, wspolrzednaY, "1000");
                 break;
             }
         }
