@@ -1091,7 +1091,7 @@ Literatura:
             double Ywsg = YwsgPoczatek + (j * sekunda);
             double z = (buffer[0] << 8) | buffer[1];
 //            if (z != 32768.0) {
-            if ((z > 80) && ( z < 1610)) {
+            if ((z > 5) && ( z < 3000)) {
                 double dL_stopnie = Ywsg - L0_stopnie;
                 double d_lambda = dL_stopnie * M_PI / 180.0;
 // Etap I - elipsoida na kule
@@ -2157,7 +2157,7 @@ void obrobkaDanychHGTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPl
     for (unsigned int i = 0; i < liczbaPlikow; ++i) {
         odczytPunktowHGT(wierzcholki, tablica, refTabelaNazwPlikowHGT[i], odlegloscHGT1, nrId, i, liczbaPlikow, atoi(szerokoscTablicy.c_str()), toryZGwiazdka, korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
     }
-    obrobkaDanychNodeDoZageszczeniaPoTriangulacji(refWspolrzednaX, refWspolrzednaY, "150", wierzcholki);
+//    obrobkaDanychNodeDoZageszczeniaPoTriangulacji(refWspolrzednaX, refWspolrzednaY, "150", wierzcholki);
     sort(wierzcholki.begin(), wierzcholki.end(), by_yx());
 //    zrobOtoczke(wierzcholki, otoczka, bezOtoczki);
 //    sort(wierzcholki.begin(), wierzcholki.end(), by_xy());
