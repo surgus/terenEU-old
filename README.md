@@ -5,7 +5,7 @@ o ile sceneria z edytora Rainsted posiada profil pionowy pod torami.
 
 Krótka instrukcja obsługi programu:
 W katalogu z programem musimy mieć:
-1. Plik ze scenerią (aktualnie na stałe zaszyta nazwa "EXPORT.SCM",
+1. Plik ze scenerią (aktualnie na stałe zaszyta nazwa "EXPORT.SCN",
 bo taki plik domyślnie tworzy edytor Rainsted).
 2. Katalog o nazwie SRTM, a w nim pliki .hgt, lub katalog
 o nazwie NMT100, a w nim pliki .txt z obszarem pokrywającym teren scenerii.
