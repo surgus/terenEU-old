@@ -37,10 +37,7 @@ Dwie uwagi:
 EXPORT.SCN z końcami linii w formacie Microsoft, a więc należy
 go przekonwertować na format unixowy. Np. w programie vi
 komendą ":set ff=unix".
-2. Jeśli ktoś chce skompilować program pod sytemem Microsoftu
-i tam go używać, to powinien poprawić ścieżkę w funkcji:
-zrobListePlikow().
-3. W edytorze Rainsted na obecną chwilę nie da się w prosty sposób
+2. W edytorze Rainsted na obecną chwilę nie da się w prosty sposób
 wykonać rowow profilu pod torami przy użyciu danych modelu NMT100,
 dlatego też generowanie całego terenu z danych NMT100 mija się z celem.
 

@@ -2157,7 +2157,6 @@ void obrobkaDanychHGTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPl
     for (unsigned int i = 0; i < liczbaPlikow; ++i) {
         odczytPunktowHGT(wierzcholki, tablica, refTabelaNazwPlikowHGT[i], odlegloscHGT1, nrId, i, liczbaPlikow, atoi(szerokoscTablicy.c_str()), toryZGwiazdka, korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
     }
-//    obrobkaDanychNodeDoZageszczeniaPoTriangulacji(refWspolrzednaX, refWspolrzednaY, "150", wierzcholki);
     sort(wierzcholki.begin(), wierzcholki.end(), by_yx());
 //    zrobOtoczke(wierzcholki, otoczka, bezOtoczki);
 //    sort(wierzcholki.begin(), wierzcholki.end(), by_xy());
@@ -2189,10 +2188,6 @@ void obrobkaDanychTXTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPl
     for (unsigned int i = 0; i < liczbaPlikow; ++i) {
         odczytPunktowTXT(wierzcholki, tablica, refTabelaNazwPlikowTXT[i], odlegloscTXT1, nrId, i, liczbaPlikow, atoi(szerokoscTablicy.c_str()), toryZGwiazdka, korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
     }
-//    if (szerokoscTablicy == "1000") {
-//        obrobkaDanychNodeDoZageszczeniaPoTriangulacji(refWspolrzednaX, refWspolrzednaY, "150", wierzcholki);
-//    }
-
     sort(wierzcholki.begin(), wierzcholki.end(), by_yx());
 //    zrobOtoczke(wierzcholki, otoczka, bezOtoczki);
 //    sort(wierzcholki.begin(), wierzcholki.end(), by_xy());
@@ -2320,23 +2315,38 @@ void obrobkaDanychNodePoTriangulacji(double &refWspolrzednaX, double &refWspolrz
 void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string rozsz) {
     std::string linia ("");
     std::string ln ("");
+    #ifdef _WIN32
+    std::string pathToSRTM ("." "\x5C" "SRTM");
+    std::string pathToSRTMclosed ("." "\x5C" "SRTM" "\x5C");
+    std::string errorSRTMString ("failed to open directory ." "\x5C" "SRTM");
+    std::string pathToNMT100 ("." "\x5C" "NMT100");
+    std::string pathToNMT100closed ("." "\x5C" "NMT100" "\x5C");
+    std::string errorNMT100String ("failed to open directory ." "\x5C" "NMT100");
+    #endif // _WIN32
+    #ifdef __unix__
+    std::string pathToSRTM ("./SRTM");
+    std::string pathToSRTMclosed ("./SRTM/");
+    std::string errorSRTMString ("failed to open directory ./SRTM");
+    std::string pathToNMT100 ("./NMT100");
+    std::string pathToNMT100closed ("./NMT100/");
+    std::string errorNMT100String ("failed to open directory ./NMT100");
+    #endif // __unix__
 // Znalezny kod do listowania plikow z aktualnego katalogu
     DIR*     dir;
     dirent*  pdir;
     if (rozsz == "hgt") {
-// Przed kompilacja na systemie linux nalezy zmienic "\\" w sciezkach na "/"
-        if (!(dir = opendir("./SRTM"))) {
-        	perror("failed to open directory ./SRTM");
+        if (!(dir = opendir(pathToSRTM.c_str()))) {
+        	perror(errorSRTMString.c_str());
         	return;
     	}
-        dir = opendir("./SRTM");
+        dir = opendir(pathToSRTM.c_str());
     }
     else {
-        if (!(dir = opendir("./NMT100"))) {
-        	perror("failed to open directory ./NMT100");
+        if (!(dir = opendir(pathToNMT100.c_str()))) {
+        	perror(errorNMT100String.c_str());
         	return;
     	}
-        dir = opendir("./NMT100");
+        dir = opendir(pathToNMT100.c_str());
     }
     while ((pdir = readdir(dir)) != NULL) {
         if (!strcmp(pdir->d_name, "..") || !strcmp(pdir->d_name, ".")) {
@@ -2349,10 +2359,10 @@ void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string 
 //npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
             if (rozsz == "hgt") {
-                nazwaPliku = nazwaPliku.insert(0,"./SRTM/");
+                nazwaPliku = nazwaPliku.insert(0, pathToSRTMclosed);
             }
             else {
-                nazwaPliku = nazwaPliku.insert(0,"./NMT100/");
+                nazwaPliku = nazwaPliku.insert(0, pathToNMT100closed);
             }
             refTabelaNazwPlikow.push_back(nazwaPliku);
             std::cout << nazwaPliku << "\n";
