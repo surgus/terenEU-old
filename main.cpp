@@ -1206,9 +1206,10 @@ Literatura:
             }
         }
     	++nrPunktu;
+// Fajne, ale zabiera duzo czasu
 //        std::cout << "Petla nr " << nrPunktu << " z 1201           \r";
-        printf ("Petla nr %u", nrPunktu);
-        printf ("%s           \r", " z 1201        ");
+//        printf ("Petla nr %u", nrPunktu);
+//        printf ("%s           \r", " z 1201        ");
     }
 //    std::cout << "\nLiczba znalezionych punktow HGT w pliku: " << licznik << "\nW sumie znalezionych punktow: " << id << "\n\n";
     printf ("\nLiczba znalezionych punktow HGT w pliku: %u", licznik);
@@ -1477,7 +1478,8 @@ Literatura:
             }
         }
         ++nrPunktu;
-        std::cout << "Petla nr " << nrPunktu << " z 1201           \r";
+// Fajne, ale zabiera za duzo czasu
+//        std::cout << "Petla nr " << nrPunktu << " z 1201           \r";
     }
     std::cout << "\nLiczba znalezionych punktow HGT w pliku: " << licznik << "\nW sumie znalezionych punktow: " << refNrId << "\n\n";
 //    std::cout << "Wszystkie punkty HGT wczytane. Zamykam ten plik" << "\n\n";
@@ -2309,7 +2311,7 @@ void obrobkaDanychNodePoTriangulacji(double &refWspolrzednaX, double &refWspolrz
     odczytPunktowNode(wierzcholki, odlegloscNMT, szerokosc, licznikWierzcholkow);
     odczytPlikuPoTriangulacji(triangles, wierzcholki, szerokosc, oganiczenieDlugosciRamionTrojkata, licznikTrojkatow);
     zapisSymkowychTrojkatow(triangles, exportX, exportY);
-    std::cout << "Wow! Juz zrobione wszystkie znalezione pliki TXT!!!                           \n" << "\n";
+    std::cout << "Program zakonczyl dzialanie. Nacisnij jakis klawisz.                         \n" << "\n";
 }
 
 void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string rozsz) {
