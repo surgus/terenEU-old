@@ -448,7 +448,7 @@ void odczytWierzcholkowTriangles(std::vector<wierzcholek> &refWierzcholki, doubl
 // Jesli znalazlo triangles, to bierze 100 nastepnych linijek z pliku tekstowego by uzyskac x, y i z - czyli wierzcholki trojkata
 //          #pragma omp parallel for default(shared) private(wyraz1)
             for (unsigned int wyraz = 0; wyraz < 100; ++wyraz) {
-                bool powtorka = false, doOdrzutu = false;
+                bool doOdrzutu = false;
                 double x = 0, y = 0, z = 0;
                 std::getline(plik1, linia);
                 ++nrLinii;
@@ -465,89 +465,84 @@ void odczytWierzcholkowTriangles(std::vector<wierzcholek> &refWierzcholki, doubl
                     }
                     if (wyraz1 == 2) {
                         y = atof(temp.c_str()) + ExportY;
-                        for (unsigned int test = 0; test < liczbaLiniiWierzcholkow; ++test) {
-                            if ((refWierzcholki[test].x == x) && (refWierzcholki[test].y == y)) powtorka = true;
+                        for (unsigned int j = 0; j < refToryZGwiazdka.size(); ++j) {
+                            bool waznyX = false, waznyY = false, rosnieY = false, malejeY = false, rosnieX = false, malejeX = false;
+                            double wektorP2P1x = refToryZGwiazdka[j].xp1 - refToryZGwiazdka[j].xp2;
+                            double wektorP2P1y = refToryZGwiazdka[j].yp1 - refToryZGwiazdka[j].yp2;
+
+                            int resztax1toru = (int)refToryZGwiazdka[j].xp1 % 1000;
+                            int resztay1toru = (int)refToryZGwiazdka[j].yp1 % 1000;
+
+                            if (resztax1toru == 0) waznyX = true;
+                            if (resztay1toru == 0) waznyY = true;
+                            if (waznyX) {
+//debug                       double nieprzesunietyxp1 = refToryZGwiazdka[j].xp1;
+//debug                       double przesunietyXp1 = refToryZGwiazdka[j].xp1 + wektorP2P1x;
+                                double testX = (refToryZGwiazdka[j].xp1 + wektorP2P1x) / refToryZGwiazdka[j].xp1;
+                                if (testX >= 1) {
+                                    rosnieX = true;
+                                } else malejeX = true;
+                            }
+                            if (waznyY) {
+//debug                        double nieprzesunietyyp1 = refToryZGwiazdka[j].yp1;
+//debug                        double przesunietyYp1 = refToryZGwiazdka[j].yp1 + wektorP2P1y;
+                                double testY = (refToryZGwiazdka[j].yp1 + wektorP2P1y) / refToryZGwiazdka[j].yp1;
+                                if (testY >= 1) {
+                                    rosnieY = true;
+                                } else malejeY = true;
+                            }
+                            if (rosnieY) {
+                                int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
+                                int zaokraglonyY = y / 1000;
+                                int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
+                                int zaokraglonyX = x / 1000;
+                                int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                if ((roznicaY < 1) && (roznicaY > -8) && (roznicaX < 4) && (roznicaX > -4)) {
+                                    doOdrzutu = true;
+                                    break;
+                                }
+                            }
+                            if (malejeY) {
+                                int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
+                                int zaokraglonyY = y / 1000;
+                                int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
+                                int zaokraglonyX = x / 1000;
+                                int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                if ((roznicaY > 0) && (roznicaY < 8) && (roznicaX < 4) && (roznicaX > -4)) {
+                                    doOdrzutu = true;
+                                    break;
+                                }
+                            }
+                            if (rosnieX) {
+                                int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
+                                int zaokraglonyX = x / 1000;
+                                int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
+                                int zaokraglonyY = y / 1000;
+                                int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                if ((roznicaX < 1) && (roznicaX > -8) && (roznicaY < 4) && (roznicaY > -4)) {
+                                    doOdrzutu = true;
+                                    break;
+                                }
+                            }
+                            if (malejeX) {
+                                int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
+                                int zaokraglonyX = x / 1000;
+                                int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
+                                int zaokraglonyY = y / 1000;
+                                int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                if ((roznicaX > 0) && (roznicaX < 8) && (roznicaY < 4) && (roznicaY > -4)) {
+                                    doOdrzutu = true;
+                                    break;
+                                }
+                            }
                         }
-                        if (!powtorka) {
-                            for (unsigned int j = 0; j < refToryZGwiazdka.size(); ++j) {
-                                bool waznyX = false, waznyY = false, rosnieY = false, malejeY = false, rosnieX = false, malejeX = false;
-                                double wektorP2P1x = refToryZGwiazdka[j].xp1 - refToryZGwiazdka[j].xp2;
-                                double wektorP2P1y = refToryZGwiazdka[j].yp1 - refToryZGwiazdka[j].yp2;
-
-                                int resztax1toru = (int)refToryZGwiazdka[j].xp1 % 1000;
-                                int resztay1toru = (int)refToryZGwiazdka[j].yp1 % 1000;
-
-                                if (resztax1toru == 0) waznyX = true;
-                                if (resztay1toru == 0) waznyY = true;
-                                if (waznyX) {
-//debug                                    double nieprzesunietyxp1 = refToryZGwiazdka[j].xp1;
-//debug                                    double przesunietyXp1 = refToryZGwiazdka[j].xp1 + wektorP2P1x;
-                                    double testX = (refToryZGwiazdka[j].xp1 + wektorP2P1x) / refToryZGwiazdka[j].xp1;
-                                    if (testX >= 1) {
-                                        rosnieX = true;
-                                    } else malejeX = true;
-                                }
-                                if (waznyY) {
-//debug                                    double nieprzesunietyyp1 = refToryZGwiazdka[j].yp1;
-//debug                                    double przesunietyYp1 = refToryZGwiazdka[j].yp1 + wektorP2P1y;
-                                    double testY = (refToryZGwiazdka[j].yp1 + wektorP2P1y) / refToryZGwiazdka[j].yp1;
-                                    if (testY >= 1) {
-                                        rosnieY = true;
-                                    } else malejeY = true;
-                                }
-                                if (rosnieY) {
-                                    int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
-                                    int zaokraglonyY = y / 1000;
-                                    int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
-                                    int zaokraglonyX = x / 1000;
-                                    int roznicaY = zaokraglonyyp1 - zaokraglonyY;
-                                    int roznicaX = zaokraglonyxp1 - zaokraglonyX;
-                                    if ((roznicaY < 1) && (roznicaY > -8) && (roznicaX < 4) && (roznicaX > -4)) {
-                                        doOdrzutu = true;
-                                        break;
-                                    }
-                                }
-                                if (malejeY) {
-                                    int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
-                                    int zaokraglonyY = y / 1000;
-                                    int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
-                                    int zaokraglonyX = x / 1000;
-                                    int roznicaY = zaokraglonyyp1 - zaokraglonyY;
-                                    int roznicaX = zaokraglonyxp1 - zaokraglonyX;
-                                    if ((roznicaY > 0) && (roznicaY < 8) && (roznicaX < 4) && (roznicaX > -4)) {
-                                        doOdrzutu = true;
-                                        break;
-                                    }
-                                }
-                                if (rosnieX) {
-                                    int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
-                                    int zaokraglonyX = x / 1000;
-                                    int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
-                                    int zaokraglonyY = y / 1000;
-                                    int roznicaX = zaokraglonyxp1 - zaokraglonyX;
-                                    int roznicaY = zaokraglonyyp1 - zaokraglonyY;
-                                    if ((roznicaX < 1) && (roznicaX > -8) && (roznicaY < 4) && (roznicaY > -4)) {
-                                        doOdrzutu = true;
-                                        break;
-                                    }
-                                }
-                                if (malejeX) {
-                                    int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
-                                    int zaokraglonyX = x / 1000;
-                                    int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
-                                    int zaokraglonyY = y / 1000;
-                                    int roznicaX = zaokraglonyxp1 - zaokraglonyX;
-                                    int roznicaY = zaokraglonyyp1 - zaokraglonyY;
-                                    if ((roznicaX > 0) && (roznicaX < 8) && (roznicaY < 4) && (roznicaY > -4)) {
-                                        doOdrzutu = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (!doOdrzutu) {
-                                refWierzcholki.push_back(wierzcholek{x, y, z, liczbaLiniiWierzcholkow});
-                                ++liczbaLiniiWierzcholkow;
-                            }
+                        if (!doOdrzutu) {
+                            refWierzcholki.push_back(wierzcholek{x, y, z, liczbaLiniiWierzcholkow});
+                            ++liczbaLiniiWierzcholkow;
                         }
                     }
                     ++wyraz1;
@@ -646,7 +641,7 @@ void tablicaWierzcholkowTriangles(std::vector<std::vector<unsigned int> > &refTa
 // Jesli znalazlo triangles, to bierze 100 nastepnych linijek z pliku tekstowego by uzyskac x, y i z - czyli wierzcholki trojkata
 //          #pragma omp parallel for default(shared) private(wyraz1)
             for (unsigned int wyraz = 0; wyraz < 100; ++wyraz) {
-                bool powtorka = false, doOdrzutu = false;
+                bool doOdrzutu = false;
                 double x = 0, y = 0;
                 std::getline(plik1, linia);
                 ++nrLinii;
@@ -660,106 +655,104 @@ void tablicaWierzcholkowTriangles(std::vector<std::vector<unsigned int> > &refTa
                     }
                     if (wyraz1 == 2) {
                         y = atof(temp.c_str()) + ExportY;
-                        if (!powtorka) {
-                            for (unsigned int j = 0; j < refToryZGwiazdka.size(); ++j) {
-                                bool waznyX = false, waznyY = false, rosnieY = false, malejeY = false, rosnieX = false, malejeX = false;
-                                double wektorP2P1x = refToryZGwiazdka[j].xp1 - refToryZGwiazdka[j].xp2;
-                                double wektorP2P1y = refToryZGwiazdka[j].yp1 - refToryZGwiazdka[j].yp2;
+                        for (unsigned int j = 0; j < refToryZGwiazdka.size(); ++j) {
+                            bool waznyX = false, waznyY = false, rosnieY = false, malejeY = false, rosnieX = false, malejeX = false;
+                            double wektorP2P1x = refToryZGwiazdka[j].xp1 - refToryZGwiazdka[j].xp2;
+                            double wektorP2P1y = refToryZGwiazdka[j].yp1 - refToryZGwiazdka[j].yp2;
 
-                                int resztax1toru = (int)refToryZGwiazdka[j].xp1 % 1000;
-                                int resztay1toru = (int)refToryZGwiazdka[j].yp1 % 1000;
+                            int resztax1toru = (int)refToryZGwiazdka[j].xp1 % 1000;
+                            int resztay1toru = (int)refToryZGwiazdka[j].yp1 % 1000;
 
-                                if (resztax1toru == 0) waznyX = true;
-                                if (resztay1toru == 0) waznyY = true;
-                                if (waznyX) {
-                                    double testX = (refToryZGwiazdka[j].xp1 + wektorP2P1x) / refToryZGwiazdka[j].xp1;
-                                    if (testX >= 1) {
-                                        rosnieX = true;
-                                    } else malejeX = true;
-                                }
-                                if (waznyY) {
-                                    double testY = (refToryZGwiazdka[j].yp1 + wektorP2P1y) / refToryZGwiazdka[j].yp1;
-                                    if (testY >= 1) {
-                                        rosnieY = true;
-                                    } else malejeY = true;
-                                }
-                                if (rosnieY) {
-                                    int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
-                                    int zaokraglonyY = y / 1000;
-                                    int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
-                                    int zaokraglonyX = x / 1000;
-                                    int roznicaY = zaokraglonyyp1 - zaokraglonyY;
-                                    int roznicaX = zaokraglonyxp1 - zaokraglonyX;
-                                    if ((roznicaY < 1) && (roznicaY > -8) && (roznicaX < 4) && (roznicaX > -4)) {
-                                        doOdrzutu = true;
-                                        break;
-                                    }
-                                }
-                                if (malejeY) {
-                                    int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
-                                    int zaokraglonyY = y / 1000;
-                                    int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
-                                    int zaokraglonyX = x / 1000;
-                                    int roznicaY = zaokraglonyyp1 - zaokraglonyY;
-                                    int roznicaX = zaokraglonyxp1 - zaokraglonyX;
-                                    if ((roznicaY > 0) && (roznicaY < 8) && (roznicaX < 4) && (roznicaX > -4)) {
-                                        doOdrzutu = true;
-                                        break;
-                                    }
-                                }
-                                if (rosnieX) {
-                                    int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
-                                    int zaokraglonyX = x / 1000;
-                                    int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
-                                    int zaokraglonyY = y / 1000;
-                                    int roznicaX = zaokraglonyxp1 - zaokraglonyX;
-                                    int roznicaY = zaokraglonyyp1 - zaokraglonyY;
-                                    if ((roznicaX < 1) && (roznicaX > -8) && (roznicaY < 4) && (roznicaY > -4)) {
-                                        doOdrzutu = true;
-                                        break;
-                                    }
-                                }
-                                if (malejeX) {
-                                    int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
-                                    int zaokraglonyX = x / 1000;
-                                    int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
-                                    int zaokraglonyY = y / 1000;
-                                    int roznicaX = zaokraglonyxp1 - zaokraglonyX;
-                                    int roznicaY = zaokraglonyyp1 - zaokraglonyY;
-                                    if ((roznicaX > 0) && (roznicaX < 8) && (roznicaY < 4) && (roznicaY > -4)) {
-                                        doOdrzutu = true;
-                                        break;
-                                    }
+                            if (resztax1toru == 0) waznyX = true;
+                            if (resztay1toru == 0) waznyY = true;
+                            if (waznyX) {
+                                double testX = (refToryZGwiazdka[j].xp1 + wektorP2P1x) / refToryZGwiazdka[j].xp1;
+                                if (testX >= 1) {
+                                    rosnieX = true;
+                                } else malejeX = true;
+                            }
+                            if (waznyY) {
+                                double testY = (refToryZGwiazdka[j].yp1 + wektorP2P1y) / refToryZGwiazdka[j].yp1;
+                                if (testY >= 1) {
+                                    rosnieY = true;
+                                } else malejeY = true;
+                            }
+                            if (rosnieY) {
+                                int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
+                                int zaokraglonyY = y / 1000;
+                                int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
+                                int zaokraglonyX = x / 1000;
+                                int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                if ((roznicaY < 1) && (roznicaY > -8) && (roznicaX < 4) && (roznicaX > -4)) {
+                                    doOdrzutu = true;
+                                    break;
                                 }
                             }
-                            if (!doOdrzutu) {
-                                refTablica[((x - refKorektaX) / szerokosc) - 2][((y - refKorektaY) / szerokosc) + 2] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) - 1][((y - refKorektaY) / szerokosc) + 2] = 1;
-                                refTablica[(x - refKorektaX) / szerokosc][((y - refKorektaY) / szerokosc) + 2] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) + 1][((y - refKorektaY) / szerokosc) + 2] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) + 2][((y - refKorektaY) / szerokosc) + 2] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) - 2][((y - refKorektaY) / szerokosc) + 1] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) - 1][((y - refKorektaY) / szerokosc) + 1] = 1;
-                                refTablica[(x - refKorektaX) / szerokosc][((y - refKorektaY) / szerokosc) + 1] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) + 1][((y - refKorektaY) / szerokosc) + 1] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) + 2][((y - refKorektaY) / szerokosc) + 1] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) - 2][(y - refKorektaY) / szerokosc] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) - 1][(y - refKorektaY) / szerokosc] = 1;
-                                refTablica[(x - refKorektaX) / szerokosc][(y - refKorektaY) / szerokosc] = 1; // srodek
-                                refTablica[((x - refKorektaX) / szerokosc) + 1][(y - refKorektaY) / szerokosc] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) + 2][(y - refKorektaY) / szerokosc] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) - 2][((y - refKorektaY) / szerokosc) - 1] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) - 1][((y - refKorektaY) / szerokosc) - 1] = 1;
-                                refTablica[(x - refKorektaX) / szerokosc][((y - refKorektaY) / szerokosc) - 1] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) + 1][((y - refKorektaY) / szerokosc) - 1] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) + 2][((y - refKorektaY) / szerokosc) - 1] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) - 2][((y - refKorektaY) / szerokosc) - 2] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) - 1][((y - refKorektaY) / szerokosc) - 2] = 1;
-                                refTablica[(x - refKorektaX) / szerokosc][((y - refKorektaY) / szerokosc) - 2] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) + 1][((y - refKorektaY) / szerokosc) - 2] = 1;
-                                refTablica[((x - refKorektaX) / szerokosc) + 2][((y - refKorektaY) / szerokosc) - 2] = 1;
-                                ++liczbaLiniiWierzcholkow;
+                            if (malejeY) {
+                                int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
+                                int zaokraglonyY = y / 1000;
+                                int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
+                                int zaokraglonyX = x / 1000;
+                                int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                if ((roznicaY > 0) && (roznicaY < 8) && (roznicaX < 4) && (roznicaX > -4)) {
+                                    doOdrzutu = true;
+                                    break;
+                                }
                             }
+                            if (rosnieX) {
+                                int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
+                                int zaokraglonyX = x / 1000;
+                                int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
+                                int zaokraglonyY = y / 1000;
+                                int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                if ((roznicaX < 1) && (roznicaX > -8) && (roznicaY < 4) && (roznicaY > -4)) {
+                                    doOdrzutu = true;
+                                    break;
+                                }
+                            }
+                            if (malejeX) {
+                                int zaokraglonyxp1 = refToryZGwiazdka[j].xp1 / 1000;
+                                int zaokraglonyX = x / 1000;
+                                int zaokraglonyyp1 = refToryZGwiazdka[j].yp1 / 1000;
+                                int zaokraglonyY = y / 1000;
+                                int roznicaX = zaokraglonyxp1 - zaokraglonyX;
+                                int roznicaY = zaokraglonyyp1 - zaokraglonyY;
+                                if ((roznicaX > 0) && (roznicaX < 8) && (roznicaY < 4) && (roznicaY > -4)) {
+                                    doOdrzutu = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!doOdrzutu) {
+                            refTablica[((x - refKorektaX) / szerokosc) - 2][((y - refKorektaY) / szerokosc) + 2] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) - 1][((y - refKorektaY) / szerokosc) + 2] = 1;
+                            refTablica[(x - refKorektaX) / szerokosc][((y - refKorektaY) / szerokosc) + 2] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) + 1][((y - refKorektaY) / szerokosc) + 2] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) + 2][((y - refKorektaY) / szerokosc) + 2] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) - 2][((y - refKorektaY) / szerokosc) + 1] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) - 1][((y - refKorektaY) / szerokosc) + 1] = 1;
+                            refTablica[(x - refKorektaX) / szerokosc][((y - refKorektaY) / szerokosc) + 1] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) + 1][((y - refKorektaY) / szerokosc) + 1] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) + 2][((y - refKorektaY) / szerokosc) + 1] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) - 2][(y - refKorektaY) / szerokosc] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) - 1][(y - refKorektaY) / szerokosc] = 1;
+                            refTablica[(x - refKorektaX) / szerokosc][(y - refKorektaY) / szerokosc] = 1; // srodek
+                            refTablica[((x - refKorektaX) / szerokosc) + 1][(y - refKorektaY) / szerokosc] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) + 2][(y - refKorektaY) / szerokosc] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) - 2][((y - refKorektaY) / szerokosc) - 1] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) - 1][((y - refKorektaY) / szerokosc) - 1] = 1;
+                            refTablica[(x - refKorektaX) / szerokosc][((y - refKorektaY) / szerokosc) - 1] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) + 1][((y - refKorektaY) / szerokosc) - 1] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) + 2][((y - refKorektaY) / szerokosc) - 1] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) - 2][((y - refKorektaY) / szerokosc) - 2] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) - 1][((y - refKorektaY) / szerokosc) - 2] = 1;
+                            refTablica[(x - refKorektaX) / szerokosc][((y - refKorektaY) / szerokosc) - 2] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) + 1][((y - refKorektaY) / szerokosc) - 2] = 1;
+                            refTablica[((x - refKorektaX) / szerokosc) + 2][((y - refKorektaY) / szerokosc) - 2] = 1;
+                            ++liczbaLiniiWierzcholkow;
                         }
                     }
                     ++wyraz1;
