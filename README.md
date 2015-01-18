@@ -3,12 +3,18 @@ Program tworzy, z danych SRTM, lub NMT100, oraz scenerii z edytora Rainsted,
 teren dla realistycznych scenerii symulatora MaSzyna EU07,
 o ile sceneria z edytora Rainsted posiada profil pionowy pod torami.
 
+Dodana została także opcja generowania terenu niedopasowanego do torów.
+
 Krótka instrukcja obsługi programu:
-W katalogu z programem musimy mieć:
+
+W katalogu z programem powinny być:
+
 1. Plik ze scenerią (aktualnie na stałe zaszyta nazwa "EXPORT.SCN",
 bo taki plik domyślnie tworzy edytor Rainsted).
+
 2. Katalog o nazwie SRTM, a w nim pliki .hgt, lub katalog
 o nazwie NMT100, a w nim pliki .txt z obszarem pokrywającym teren scenerii.
+
 3. W tym samym (najlepiej) lub innym katalogu możliwość skompilowania
 i uruchomienia darmowego programu "Triangle", który z podanych punktów tworzy trójkąty.
 
@@ -32,7 +38,7 @@ uruchamiamy program TerenEU07 i wybieramy opcję nr 4.
 W ten sposób otrzymamy plik(i) terenX.scm (gdzie X to nr od 1),
 który można już użyć w symulatorze jako teren.
 
-Dwie uwagi:
+Kilka uwag:
 1. Edytor Rainsted, pomimo moich sugestii, tworzy plik tekstowy
 EXPORT.SCN z końcami linii w formacie Microsoft, a więc należy
 go przekonwertować na format unixowy. Np. w programie vi
@@ -40,6 +46,11 @@ komendą ":set ff=unix".
 2. W edytorze Rainsted na obecną chwilę nie da się w prosty sposób
 wykonać rowow profilu pod torami przy użyciu danych modelu NMT100,
 dlatego też generowanie całego terenu z danych NMT100 mija się z celem.
+3. Problemem może być odpowiednie zszycie terenu między profilami
+biegnacymi obok siebie. Ze względu na problemy z triangulacją
+w tych miejscach, trzeba to solidnie wykonać w programi Rainsted.
+4. W aktualnej wersji zauważalne są braki pojedyńczych trójkątów
+terenu.
 
 Symulator MaSzyna EU07 można pobrać ze strony: http://eu07.pl/.
 Edytor Rainsted znajduje się w paczce z symulatorem. Strona projektu http://rainsted.com/pl/.

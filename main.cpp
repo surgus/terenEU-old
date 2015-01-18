@@ -1735,7 +1735,7 @@ void odczytPunktowTXTzUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
     std::cout << "\nLiczba znalezionych punktow NMT100 w pliku: " << nrLinii << "\nW sumie znalezionych punktow: " << refNrId << "\n\n";
 }
 
-void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<wierzcholek> &refWierzcholki, std::string zarostek, const double ograniczenieTrojkata, unsigned int &refLicznikTrojkatow) {
+void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<wierzcholek> &refWierzcholki, std::string zarostek, const double ograniczenieTrojkata, unsigned int &refLicznikTrojkatow, std::vector<wierzcholek> &refWierzcholkiTriangles) {
     std::string linia ("");
     std::string ln ("");
     unsigned int nrLinii = 0;
@@ -1750,22 +1750,25 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
         std::cin.get();
     }
 // Orczytuje przerobione innym programem wierzcholki na trianglesy
-//    std::cout << "Otwieram plik debug...\n";
-//    std::ofstream plik2;
-//    plik2.open("debug.ele");
-//    if(!plik2) {
-//        std::cout << "Brak pliku debug.ele\n";
-//        std::cin.get();
-//    }
+#ifdef _DEBUG
+    std::ofstream plik2;
+    plik2.setf( std::ios::fixed, std:: ios::floatfield );
+    plik2.open("debug.ele");
+    if(!plik2) {
+        std::cout << "Brak pliku debug.ele\n";
+        std::cin.get();
+    }
+    for (unsigned i = 0; i < refWierzcholkiTriangles.size(); ++i) {
+        plik2 << "x = " << refWierzcholkiTriangles[i].x << "     y = " << refWierzcholkiTriangles[i].y << "     z = " << refWierzcholkiTriangles[i].z << "\n";
+    }
+    plik2 << "\n\n";
+#endif // _DEBUG
     while(!plik1.eof()) {
         std::getline(plik1, linia);
         std::istringstream ln(linia);
-        unsigned int wyraz = 0;
+        unsigned int wyraz = 0, temp2 = 0, temp3 = 0, temp4 = 0;
         bool flagPunkty = false;
-        std::string temp2 ("");
-        std::string temp3 ("");
-        std::string temp4 ("");
-        double temp22 = 0, temp33 = 0, temp44 = 0, AB = 0, BC = 0, CA = 0;
+        double AB = 0, BC = 0, CA = 0;
 // Petla rozbijajaca odczytana linie na pojedyncze stringi (rozdzielanie po " ")
         if (nrLinii > 0) {
             while (!ln.eof()) {
@@ -1780,33 +1783,39 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
                 }
                 if (temp == "#") break;
                 if (!flagPunkty) {
-// Y
-// -X
-                    if (wyraz == 1) temp2 = temp; // x.push_back(atof(temp.c_str()));
-// Z
-                    if (wyraz == 2) temp3 = temp;
-
+                    if (wyraz == 1) temp2 = atoi(temp.c_str()); // x.push_back(atof(temp.c_str()));
+                    if (wyraz == 2) temp3 = atoi(temp.c_str());
                     if (wyraz == 3) {
-                        temp4 = temp; // z.push_back(atof(temp.c_str()));
+                        temp4 = atoi(temp.c_str()); // z.push_back(atof(temp.c_str()));
                         if (!znalazlem) {
-                            temp22 = atoi(temp2.c_str());
-                            temp33 = atoi(temp3.c_str());
-                            temp44 = atoi(temp4.c_str());
-                            AB = hypot(refWierzcholki[temp33].x - refWierzcholki[temp22].x, refWierzcholki[temp33].y - refWierzcholki[temp22].y);
-                            BC = hypot(refWierzcholki[temp44].x - refWierzcholki[temp33].x, refWierzcholki[temp44].y - refWierzcholki[temp33].y);
-                            CA = hypot(refWierzcholki[temp22].x - refWierzcholki[temp44].x, refWierzcholki[temp22].y - refWierzcholki[temp44].y);
+                            AB = hypot(refWierzcholki[temp3].x - refWierzcholki[temp2].x, refWierzcholki[temp3].y - refWierzcholki[temp2].y);
+                            BC = hypot(refWierzcholki[temp4].x - refWierzcholki[temp3].x, refWierzcholki[temp4].y - refWierzcholki[temp3].y);
+                            CA = hypot(refWierzcholki[temp2].x - refWierzcholki[temp4].x, refWierzcholki[temp2].y - refWierzcholki[temp4].y);
                             if ((AB < ograniczenieTrojkata) && (BC < ograniczenieTrojkata) && (CA < ograniczenieTrojkata)) {
-                                refTriangles.push_back(triangle());
-                                refTriangles[refLicznikTrojkatow].x1 = refWierzcholki[temp22].x;
-                                refTriangles[refLicznikTrojkatow].y1 = refWierzcholki[temp22].y;
-                                refTriangles[refLicznikTrojkatow].z1 = refWierzcholki[temp22].z;
-                                refTriangles[refLicznikTrojkatow].x2 = refWierzcholki[temp33].x;
-                                refTriangles[refLicznikTrojkatow].y2 = refWierzcholki[temp33].y;
-                                refTriangles[refLicznikTrojkatow].z2 = refWierzcholki[temp33].z;
-                                refTriangles[refLicznikTrojkatow].x3 = refWierzcholki[temp44].x;
-                                refTriangles[refLicznikTrojkatow].y3 = refWierzcholki[temp44].y;
-                                refTriangles[refLicznikTrojkatow].z3 = refWierzcholki[temp44].z;
-                                ++refLicznikTrojkatow;
+                                bool doOdrzutu1 = false, doOdrzutu2 = false, doOdrzutu3 = false;
+                                for (unsigned i = 0; i < refWierzcholkiTriangles.size(); ++i) {
+                                    if (((refWierzcholki[temp2].x - refWierzcholkiTriangles[i].x > -0.01) && (refWierzcholki[temp2].x - refWierzcholkiTriangles[i].x < 0.01)) || ((refWierzcholki[temp2].y - refWierzcholkiTriangles[i].y > -0.01) && (refWierzcholki[temp2].y - refWierzcholkiTriangles[i].y < 0.01))) doOdrzutu1 = true;
+                                    if (((refWierzcholki[temp3].x - refWierzcholkiTriangles[i].x > -0.01) && (refWierzcholki[temp3].x - refWierzcholkiTriangles[i].x < 0.01)) || ((refWierzcholki[temp3].y - refWierzcholkiTriangles[i].y > -0.01) && (refWierzcholki[temp3].y - refWierzcholkiTriangles[i].y < 0.01))) doOdrzutu2 = true;
+                                    if (((refWierzcholki[temp4].x - refWierzcholkiTriangles[i].x > -0.01) && (refWierzcholki[temp4].x - refWierzcholkiTriangles[i].x < 0.01)) || ((refWierzcholki[temp4].y - refWierzcholkiTriangles[i].y > -0.01) && (refWierzcholki[temp4].y - refWierzcholkiTriangles[i].y < 0.01))) doOdrzutu3 = true;
+                                }
+                                if ((!doOdrzutu1) || (!doOdrzutu2) || (!doOdrzutu3)) {
+                                    #ifdef _DEBUG
+                                    plik2 << "x = " << refWierzcholki[temp2].x << "     y = " << refWierzcholki[temp2].y << "\n";
+                                    plik2 << "x = " << refWierzcholki[temp3].x << "     y = " << refWierzcholki[temp3].y << "\n";
+                                    plik2 << "x = " << refWierzcholki[temp4].x << "     y = " << refWierzcholki[temp4].y << "\n";
+                                    #endif // _DEBUG
+                                    refTriangles.push_back(triangle());
+                                    refTriangles[refLicznikTrojkatow].x1 = refWierzcholki[temp2].x;
+                                    refTriangles[refLicznikTrojkatow].y1 = refWierzcholki[temp2].y;
+                                    refTriangles[refLicznikTrojkatow].z1 = refWierzcholki[temp2].z;
+                                    refTriangles[refLicznikTrojkatow].x2 = refWierzcholki[temp3].x;
+                                    refTriangles[refLicznikTrojkatow].y2 = refWierzcholki[temp3].y;
+                                    refTriangles[refLicznikTrojkatow].z2 = refWierzcholki[temp3].z;
+                                    refTriangles[refLicznikTrojkatow].x3 = refWierzcholki[temp4].x;
+                                    refTriangles[refLicznikTrojkatow].y3 = refWierzcholki[temp4].y;
+                                    refTriangles[refLicznikTrojkatow].z3 = refWierzcholki[temp4].z;
+                                    ++refLicznikTrojkatow;
+                                }
                             }
                             znalazlem = true;
 //                        plik2 << "nrLinii=" << nrLinii << " refWierzcholki[" << temp22 << "].x=" << refWierzcholki[temp22].x << " refWierzcholki[" << temp22 << "].y=" << refWierzcholki[temp22].y << " refWierzcholki[" << temp22 << "].z=" << refWierzcholki[temp22].z << " refWierzcholki[" << temp33 << "].x=" << refWierzcholki[temp33].x << " refWierzcholki[" << temp33 << "].y=" << refWierzcholki[temp33].y << " refWierzcholki[" << temp33 << "].z=" << refWierzcholki[temp33].z << " refWierzcholki[" << temp44 << "].x=" << refWierzcholki[temp44].x << " refWierzcholki[" << temp44 << "].y=" << refWierzcholki[temp44].y << " refWierzcholki[" << temp44 << "].z=" << refWierzcholki[temp44].z << "\n";
@@ -1822,7 +1831,9 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
     std::cout << "\nLiczba znalezionych trojkatow: " << refTriangles.size() << ". Odrzucono " << nrLinii - refLicznikTrojkatow << " trojkaty\n";
 // Zamyka plik
     plik1.close();
-//    plik2.close();
+    #ifdef _DEBUG
+    plik2.close();
+    #endif // _DEBUG
 }
 
 void utworzDodatkowePunktySiatki(std::vector<triangle> &refTriangles, std::vector<wierzcholek> &refRefWierzcholki) {
@@ -2093,36 +2104,19 @@ void zapisPunktowDoTriangulacji(std::vector<wierzcholek> &refWierzcholki, std::v
 //    plik2.close();
 }
 
-void obrobkaDanychNodeDoZageszczeniaPoTriangulacji(double &refWspolrzednaX, double &refWspolrzednaY, std::string szerokosc, std::vector<wierzcholek> &refWierzcholki) {
-// Niezbedne (a moze i zbedne, ale tak wyszlo) zmienne
-    std::vector<double> odlegloscNMT;
-    std::vector<wierzcholek> wierzcholkiPoTriangulacji;
-    std::vector<triangle> triangles;
-    unsigned int licznikWierzcholkow = 0, licznikTrojkatow = 0;
-    double oganiczenieDlugosciRamionTrojkata = 200.0;
-    odlegloscNMT.clear();
-    wierzcholkiPoTriangulacji.clear();
-
-    odczytPunktowNode(wierzcholkiPoTriangulacji, odlegloscNMT, szerokosc, licznikWierzcholkow);
-    odczytPlikuPoTriangulacji(triangles, wierzcholkiPoTriangulacji, szerokosc, oganiczenieDlugosciRamionTrojkata, licznikTrojkatow);
-    utworzDodatkowePunktySiatki(triangles, refWierzcholki);
-//    zapisPunktowDoTriangulacji(wierzcholkiDodatkowe, otoczka, exportX, exportY, "zageszczone");
-//    zapisSymkowychTrojkatow(triangles, exportX, exportY);
-    std::cout << "Program zakonczyl dzialanie. Nacisnij jakis klawisz.                         \n" << "\n";
-}
-
 void obrobkaDanychNodeDoZageszczeniaPoTriangulacjiZUwzglednieniemProfilu(std::string szerokosc, std::vector<wierzcholek> &refWierzcholki, std::vector<wierzcholek> &refWierzcholkiProfilu, unsigned int &refNrId, std::vector<std::vector<unsigned int> > &refTablica2, unsigned int szerokosc2, unsigned int refKorektaX2, unsigned int refKorektaY2, unsigned int refWierszeTablicy2, unsigned int refKolumnyTablicy2) {
 // Niezbedne (a moze i zbedne, ale tak wyszlo) zmienne
     std::vector<double> odlegloscNMT;
+    std::vector<wierzcholek> wierzcholkiTriangles;
     std::vector<wierzcholek> wierzcholkiPoTriangulacji;
     std::vector<triangle> triangles;
     unsigned int licznikWierzcholkow = 0, licznikTrojkatow = 0;
     double oganiczenieDlugosciRamionTrojkata = 200.0;
     odlegloscNMT.clear();
     wierzcholkiPoTriangulacji.clear();
-
+    wierzcholkiTriangles.clear();
     odczytPunktowNode(wierzcholkiPoTriangulacji, odlegloscNMT, szerokosc, licznikWierzcholkow);
-    odczytPlikuPoTriangulacji(triangles, wierzcholkiPoTriangulacji, szerokosc, oganiczenieDlugosciRamionTrojkata, licznikTrojkatow);
+    odczytPlikuPoTriangulacji(triangles, wierzcholkiPoTriangulacji, szerokosc, oganiczenieDlugosciRamionTrojkata, licznikTrojkatow, wierzcholkiTriangles);
     utworzDodatkowePunktySiatkiZUwzglednieniemProfilu(triangles, refWierzcholki, refWierzcholkiProfilu, refNrId, refTablica2, szerokosc2, refKorektaX2, refKorektaY2, refWierszeTablicy2, refKolumnyTablicy2);
     std::cout << "Program zakonczyl dzialanie. Nacisnij jakis klawisz.                           \n" << "\n";
 }
@@ -2179,6 +2173,37 @@ void obrobkaDanychTXTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPl
     // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow (
     odczytPunktowTorow(tablica, exportX, exportY, atoi(szerokoscTablicy.c_str()), korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
     odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
+    // Odczyt danych HGT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
+    for (unsigned int i = 0; i < liczbaPlikow; ++i) {
+        odczytPunktowTXT(wierzcholki, tablica, refTabelaNazwPlikowTXT[i], odlegloscTXT1, nrId, i, liczbaPlikow, atoi(szerokoscTablicy.c_str()), toryZGwiazdka, korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
+    }
+    sort(wierzcholki.begin(), wierzcholki.end(), by_yx());
+//    zrobOtoczke(wierzcholki, otoczka, bezOtoczki);
+//    sort(wierzcholki.begin(), wierzcholki.end(), by_xy());
+    zapisPunktowDoTriangulacji(wierzcholki, otoczka, exportX, exportY, szerokoscTablicy);
+}
+
+void obrobkaDanychTXT(std::vector<std::string> &refTabelaNazwPlikowTXT, double &refWspolrzednaX, double &refWspolrzednaY, std::string szerokoscTablicy) {
+// Niezbedne (a moze i zbedne, ale tak wyszlo) zmienne
+    unsigned int nrId = 0, wierszeTablicy = 0, kolumnyTablicy = 0, korektaX = 0, korektaY = 0;
+    std::vector<double> odlegloscTXT1;
+    std::vector<wierzcholek> wierzcholki;
+    std::vector<punktyTorow> toryZGwiazdka;
+    std::vector<wypukla> otoczka;
+//    std::vector<punkty> bezOtoczki;
+    std::vector<std::vector<unsigned int> > tablica;
+    double exportX = refWspolrzednaX * 1000.0;
+    double exportY = refWspolrzednaY * 1000.0;
+    unsigned int liczbaPlikow = refTabelaNazwPlikowTXT.size();
+    std::cout << "Liczba plikow przekazanych do obrobki: "<< liczbaPlikow << "\n";
+    odlegloscTXT1.clear();
+    wierzcholki.clear();
+    toryZGwiazdka.clear();
+    otoczka.clear();
+//    bezOtoczki.clear();
+    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow (
+    odczytPunktowTorow(tablica, exportX, exportY, atoi(szerokoscTablicy.c_str()), korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
+//    odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
     // Odczyt danych HGT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
     for (unsigned int i = 0; i < liczbaPlikow; ++i) {
         odczytPunktowTXT(wierzcholki, tablica, refTabelaNazwPlikowTXT[i], odlegloscTXT1, nrId, i, liczbaPlikow, atoi(szerokoscTablicy.c_str()), toryZGwiazdka, korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
@@ -2293,6 +2318,8 @@ void obrobkaDanychNodePoTriangulacji(double &refWspolrzednaX, double &refWspolrz
     std::vector<double> odlegloscNMT;
     std::vector<wierzcholek> wierzcholki;
     std::vector<triangle> triangles;
+    std::vector<wierzcholek> wierzcholkiTriangles;
+    std::vector<punktyTorow> toryZGwiazdka;
     unsigned int licznikWierzcholkow = 0, licznikTrojkatow = 0;
     double exportX = refWspolrzednaX * 1000.0;
     double exportY = refWspolrzednaY * 1000.0;
@@ -2301,8 +2328,13 @@ void obrobkaDanychNodePoTriangulacji(double &refWspolrzednaX, double &refWspolrz
     odlegloscNMT.clear();
     wierzcholki.clear();
     triangles.clear();
+    wierzcholkiTriangles.clear();
+    toryZGwiazdka.clear();
+    odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
+    odczytWierzcholkowTriangles(wierzcholkiTriangles, exportX, exportY, toryZGwiazdka);
+    sort(wierzcholkiTriangles.begin(), wierzcholkiTriangles.end(), by_yx());
     odczytPunktowNode(wierzcholki, odlegloscNMT, szerokosc, licznikWierzcholkow);
-    odczytPlikuPoTriangulacji(triangles, wierzcholki, szerokosc, oganiczenieDlugosciRamionTrojkata, licznikTrojkatow);
+    odczytPlikuPoTriangulacji(triangles, wierzcholki, szerokosc, oganiczenieDlugosciRamionTrojkata, licznikTrojkatow, wierzcholkiTriangles);
     zapisSymkowychTrojkatow(triangles, exportX, exportY);
     std::cout << "Program zakonczyl dzialanie. Nacisnij jakis klawisz.                         \n" << "\n";
 }
@@ -2428,6 +2460,7 @@ int main()
     std::cout << "4. Tworzenie pliku .scm z terenem w formacie symulatora MaSzyna EU07.\n";
     std::cout << "5. Tworzenie pliku .node z wierzcholkami NMT100 w promieniu 0.375 km od konca kazdego odcinka toru.\n";
     std::cout << "6. Tworzenie pliku .node z wierzcholkami NMT100 w promieniu 4.5 km od konca kazdego odcinka toru.\n";
+//  std::cout << "7. Tworzenie pliku .node z wierzcholkami NMT100 w promieniu 4.5 km od konca kazdego odcinka toru bez dopasowanych profili pod torami.\n";
     std::cout << "q - Wyjscie z programu.\n\n";
     std::cout << "Wybieram: ";
 
@@ -2467,6 +2500,12 @@ int main()
                 zrobListePlikow(tabelaNazwPlikow, rozszerzenie1);
                 odczytWspolrzednychPrzesunieciaSCN(wspolrzednaX, wspolrzednaY);
                 obrobkaDanychTXTPrzedTriangulacjaZUwazglednieniemProfilu(tabelaNazwPlikow, wspolrzednaX, wspolrzednaY, "1000");
+                break;
+            }
+            case '7': {
+                zrobListePlikow(tabelaNazwPlikow, rozszerzenie1);
+                odczytWspolrzednychPrzesunieciaSCN(wspolrzednaX, wspolrzednaY);
+                obrobkaDanychTXT(tabelaNazwPlikow, wspolrzednaX, wspolrzednaY, "1000");
                 break;
             }
         }
