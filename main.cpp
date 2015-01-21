@@ -2111,7 +2111,7 @@ void obrobkaDanychNodeDoZageszczeniaPoTriangulacjiZUwzglednieniemProfilu(std::st
     std::vector<wierzcholek> wierzcholkiPoTriangulacji;
     std::vector<triangle> triangles;
     unsigned int licznikWierzcholkow = 0, licznikTrojkatow = 0;
-    double oganiczenieDlugosciRamionTrojkata = 200.0;
+    double oganiczenieDlugosciRamionTrojkata = 250.0;
     odlegloscNMT.clear();
     wierzcholkiPoTriangulacji.clear();
     wierzcholkiTriangles.clear();
