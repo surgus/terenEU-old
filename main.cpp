@@ -1750,7 +1750,7 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
         std::cin.get();
     }
 // Orczytuje przerobione innym programem wierzcholki na trianglesy
-#ifdef _DEBUG
+    #ifdef _DEBUG
     std::ofstream plik2;
     plik2.setf( std::ios::fixed, std:: ios::floatfield );
     plik2.open("debug.ele");
@@ -1762,7 +1762,7 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
         plik2 << "x = " << refWierzcholkiTriangles[i].x << "     y = " << refWierzcholkiTriangles[i].y << "     z = " << refWierzcholkiTriangles[i].z << "\n";
     }
     plik2 << "\n\n";
-#endif // _DEBUG
+    #endif // _DEBUG
     while(!plik1.eof()) {
         std::getline(plik1, linia);
         std::istringstream ln(linia);
@@ -1794,16 +1794,11 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
                             if ((AB < ograniczenieTrojkata) && (BC < ograniczenieTrojkata) && (CA < ograniczenieTrojkata)) {
                                 bool doOdrzutu1 = false, doOdrzutu2 = false, doOdrzutu3 = false;
                                 for (unsigned i = 0; i < refWierzcholkiTriangles.size(); ++i) {
-                                    if (((refWierzcholki[temp2].x - refWierzcholkiTriangles[i].x > -0.01) && (refWierzcholki[temp2].x - refWierzcholkiTriangles[i].x < 0.01)) || ((refWierzcholki[temp2].y - refWierzcholkiTriangles[i].y > -0.01) && (refWierzcholki[temp2].y - refWierzcholkiTriangles[i].y < 0.01))) doOdrzutu1 = true;
-                                    if (((refWierzcholki[temp3].x - refWierzcholkiTriangles[i].x > -0.01) && (refWierzcholki[temp3].x - refWierzcholkiTriangles[i].x < 0.01)) || ((refWierzcholki[temp3].y - refWierzcholkiTriangles[i].y > -0.01) && (refWierzcholki[temp3].y - refWierzcholkiTriangles[i].y < 0.01))) doOdrzutu2 = true;
-                                    if (((refWierzcholki[temp4].x - refWierzcholkiTriangles[i].x > -0.01) && (refWierzcholki[temp4].x - refWierzcholkiTriangles[i].x < 0.01)) || ((refWierzcholki[temp4].y - refWierzcholkiTriangles[i].y > -0.01) && (refWierzcholki[temp4].y - refWierzcholkiTriangles[i].y < 0.01))) doOdrzutu3 = true;
+                                    if (((refWierzcholki[temp2].x - refWierzcholkiTriangles[i].x > -0.01) && (refWierzcholki[temp2].x - refWierzcholkiTriangles[i].x < 0.01)) && ((refWierzcholki[temp2].y - refWierzcholkiTriangles[i].y > -0.01) && (refWierzcholki[temp2].y - refWierzcholkiTriangles[i].y < 0.01))) doOdrzutu1 = true;
+                                    if (((refWierzcholki[temp3].x - refWierzcholkiTriangles[i].x > -0.01) && (refWierzcholki[temp3].x - refWierzcholkiTriangles[i].x < 0.01)) && ((refWierzcholki[temp3].y - refWierzcholkiTriangles[i].y > -0.01) && (refWierzcholki[temp3].y - refWierzcholkiTriangles[i].y < 0.01))) doOdrzutu2 = true;
+                                    if (((refWierzcholki[temp4].x - refWierzcholkiTriangles[i].x > -0.01) && (refWierzcholki[temp4].x - refWierzcholkiTriangles[i].x < 0.01)) && ((refWierzcholki[temp4].y - refWierzcholkiTriangles[i].y > -0.01) && (refWierzcholki[temp4].y - refWierzcholkiTriangles[i].y < 0.01))) doOdrzutu3 = true;
                                 }
                                 if ((!doOdrzutu1) || (!doOdrzutu2) || (!doOdrzutu3)) {
-                                    #ifdef _DEBUG
-                                    plik2 << "x = " << refWierzcholki[temp2].x << "     y = " << refWierzcholki[temp2].y << "\n";
-                                    plik2 << "x = " << refWierzcholki[temp3].x << "     y = " << refWierzcholki[temp3].y << "\n";
-                                    plik2 << "x = " << refWierzcholki[temp4].x << "     y = " << refWierzcholki[temp4].y << "\n";
-                                    #endif // _DEBUG
                                     refTriangles.push_back(triangle());
                                     refTriangles[refLicznikTrojkatow].x1 = refWierzcholki[temp2].x;
                                     refTriangles[refLicznikTrojkatow].y1 = refWierzcholki[temp2].y;
@@ -1815,7 +1810,19 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
                                     refTriangles[refLicznikTrojkatow].y3 = refWierzcholki[temp4].y;
                                     refTriangles[refLicznikTrojkatow].z3 = refWierzcholki[temp4].z;
                                     ++refLicznikTrojkatow;
+                                } else {
+                                    #ifdef _DEBUG
+                                    plik2 << "PROFIL xa = " << refWierzcholki[temp2].x << "     ya = " << refWierzcholki[temp2].y << "\n";
+                                    plik2 << "PROFIL xb = " << refWierzcholki[temp3].x << "     yb = " << refWierzcholki[temp3].y << "\n";
+                                    plik2 << "PROFIL xc = " << refWierzcholki[temp4].x << "     yc = " << refWierzcholki[temp4].y << "\n";
+                                    #endif
                                 }
+                            } else {
+                                #ifdef _DEBUG
+                                plik2 << "ZA DLUGI x = " << refWierzcholki[temp2].x << "     y = " << refWierzcholki[temp2].y << "     AB= " << AB << "\n";
+                                plik2 << "ZA DLUGI x = " << refWierzcholki[temp3].x << "     y = " << refWierzcholki[temp3].y << "     BC= " << BC << "\n";
+                                plik2 << "ZA DLUGI x = " << refWierzcholki[temp4].x << "     y = " << refWierzcholki[temp4].y << "     CA= " << CA << "\n";
+                                #endif
                             }
                             znalazlem = true;
 //                        plik2 << "nrLinii=" << nrLinii << " refWierzcholki[" << temp22 << "].x=" << refWierzcholki[temp22].x << " refWierzcholki[" << temp22 << "].y=" << refWierzcholki[temp22].y << " refWierzcholki[" << temp22 << "].z=" << refWierzcholki[temp22].z << " refWierzcholki[" << temp33 << "].x=" << refWierzcholki[temp33].x << " refWierzcholki[" << temp33 << "].y=" << refWierzcholki[temp33].y << " refWierzcholki[" << temp33 << "].z=" << refWierzcholki[temp33].z << " refWierzcholki[" << temp44 << "].x=" << refWierzcholki[temp44].x << " refWierzcholki[" << temp44 << "].y=" << refWierzcholki[temp44].y << " refWierzcholki[" << temp44 << "].z=" << refWierzcholki[temp44].z << "\n";
@@ -2111,7 +2118,7 @@ void obrobkaDanychNodeDoZageszczeniaPoTriangulacjiZUwzglednieniemProfilu(std::st
     std::vector<wierzcholek> wierzcholkiPoTriangulacji;
     std::vector<triangle> triangles;
     unsigned int licznikWierzcholkow = 0, licznikTrojkatow = 0;
-    double oganiczenieDlugosciRamionTrojkata = 250.0;
+    const double oganiczenieDlugosciRamionTrojkata = 300.0;
     odlegloscNMT.clear();
     wierzcholkiPoTriangulacji.clear();
     wierzcholkiTriangles.clear();
@@ -2324,7 +2331,7 @@ void obrobkaDanychNodePoTriangulacji(double &refWspolrzednaX, double &refWspolrz
     double exportX = refWspolrzednaX * 1000.0;
     double exportY = refWspolrzednaY * 1000.0;
 // Odrzucamy wszystkie trojkaty, ktore maja jakiekolwiek ramie dluzsze o podanej wartosci
-    const double oganiczenieDlugosciRamionTrojkata = 350.0;
+    const double oganiczenieDlugosciRamionTrojkata = 300.0;
     odlegloscNMT.clear();
     wierzcholki.clear();
     triangles.clear();
