@@ -1,5 +1,5 @@
 # TerenEU07
-Program tworzy, z danych SRTM, lub NMT100, oraz scenerii z edytora Rainsted,
+Program tworzy, z danych SRTM lub NMT100, oraz scenerii z edytora Rainsted,
 teren dla realistycznych scenerii symulatora MaSzyna EU07,
 o ile sceneria z edytora Rainsted posiada profil pionowy pod torami.
 
@@ -40,7 +40,8 @@ który można już użyć w symulatorze jako teren.
 
 Kilka uwag:
 1. Edytor Rainsted, pomimo moich sugestii, tworzy plik tekstowy
-EXPORT.SCN z końcami linii w formacie Microsoft, a więc należy
+EXPORT.SCN z końcami linii w formacie Microsoft, a więc jeśli
+ktoś zamierza kompilować i używac go pod systeme unixowym należy
 go przekonwertować na format unixowy. Np. w programie vi
 komendą ":set ff=unix".
 2. W edytorze Rainsted na obecną chwilę nie da się w prosty sposób
@@ -48,7 +49,7 @@ wykonać rowow profilu pod torami przy użyciu danych modelu NMT100,
 dlatego też generowanie całego terenu z danych NMT100 mija się z celem.
 3. Problemem może być odpowiednie zszycie terenu między profilami
 biegnacymi obok siebie. Ze względu na problemy z triangulacją
-w tych miejscach, trzeba to solidnie wykonać w programi Rainsted.
+w tych miejscach, trzeba to solidnie wykonać w programie Rainsted.
 4. W aktualnej wersji zauważalne są braki pojedyńczych trójkątów
 terenu.
 
