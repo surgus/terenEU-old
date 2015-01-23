@@ -1858,28 +1858,24 @@ void utworzDodatkowePunktySiatki(std::vector<triangle> &refTriangles, std::vecto
 }
 
 void utworzDodatkowePunktySiatkiZUwzglednieniemProfilu(std::vector<triangle> &refTriangles, std::vector<wierzcholek> &refRefWierzcholki, std::vector<wierzcholek> &refRefWierzcholkiProfilu, unsigned int &refRefNrId, std::vector<std::vector<unsigned int> > &refRefTablica2, unsigned int szerokosc2, unsigned int refRefKorektaX2, unsigned int refRefKorektaY2, unsigned int refRefWierszeTablicy2, unsigned int refRefKolumnyTablicy2) {
-    unsigned int liczbaTrojkatow = refTriangles.size();
+    const unsigned int liczbaTrojkatow = refTriangles.size();
     unsigned int dotychczasowaLiczbaWierzcholkow = refRefNrId;
-    unsigned int liczbaWierzcholkowProfilu = refRefWierzcholkiProfilu.size();
+    const unsigned int liczbaWierzcholkowProfilu = refRefWierzcholkiProfilu.size();
     std::cout << "Teraz czas utowrzyc dodatkowe punkty zageszczajace siatke:\n";
-//    double roznicaMiedzyPunktamiZageszczonymiIProfilu = 0;
     for (unsigned int z = 0; z < liczbaTrojkatow; ++z, ++refRefNrId) {
 //        double roznicaMiedzyPunktamiZageszczonymiIProfilu1 = 91.0;
         bool zaBlisko = false, nieSprawdzaj = false;
         double nowyX = (refTriangles[z].x1 + refTriangles[z].x2 + refTriangles[z].x3) / 3.0;
         double nowyY = (refTriangles[z].y1 + refTriangles[z].y2 + refTriangles[z].y3) / 3.0;
-//        for (unsigned int zz = 0; zz < liczbaWierzcholkowProfilu; ++zz) {
-//            roznicaMiedzyPunktamiZageszczonymiIProfilu = hypot(refRefWierzcholkiProfilu[zz].x - nowyX, refRefWierzcholkiProfilu[zz].y - nowyY);
-//            if (roznicaMiedzyPunktamiZageszczonymiIProfilu1 > roznicaMiedzyPunktamiZageszczonymiIProfilu) {
-//                roznicaMiedzyPunktamiZageszczonymiIProfilu1 = roznicaMiedzyPunktamiZageszczonymiIProfilu;
-//                zaBlisko = true;
-//                break;
-//            }
-//        }
         if (((nowyX - refRefKorektaX2) / szerokosc2 < 1) || ((nowyX - refRefKorektaX2) / szerokosc2 > refRefWierszeTablicy2)) nieSprawdzaj = true;
         if (((nowyY - refRefKorektaY2) / szerokosc2 < 1) || ((nowyY - refRefKorektaY2) / szerokosc2 > refRefKolumnyTablicy2)) nieSprawdzaj = true;
         if (!nieSprawdzaj) {
-        if (refRefTablica2[(nowyX - refRefKorektaX2) / szerokosc2][(nowyY - refRefKorektaY2) / szerokosc2] == 1) zaBlisko = true;
+            // Aby nie tworzylo nowych wierzcholkow za blisko profilu z Rainsteda
+            if (refRefTablica2[(nowyX - refRefKorektaX2) / szerokosc2][(nowyY - refRefKorektaY2) / szerokosc2] == 1) zaBlisko = true;
+            // Bo tworzyly sie sporadycznie wierzcholki nad wierzcholkami
+            for (unsigned int j = 0; j < dotychczasowaLiczbaWierzcholkow; ++j) {
+                if (((refRefWierzcholki[j].x - nowyX > -0.01) && (refRefWierzcholki[j].x - nowyX < 0.01)) && ((refRefWierzcholki[j].y - nowyY > -0.01) && (refRefWierzcholki[j].y - nowyY < 0.01))) zaBlisko = true;
+            }
             if (!zaBlisko) {
                 refRefWierzcholki.push_back(wierzcholek{nowyX, nowyY, (refTriangles[z].z1 + refTriangles[z].z2 + refTriangles[z].z3) / 3.0, refRefNrId});
 //            refRefWierzcholki.push_back(wierzcholek());
