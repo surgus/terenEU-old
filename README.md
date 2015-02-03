@@ -2,7 +2,10 @@
 Program tworzy, z danych SRTM lub NMT100, oraz scenerii z edytora Rainsted,
 teren dla realistycznych scenerii symulatora MaSzyna EU07,
 o ile sceneria z edytora Rainsted posiada profil pionowy pod torami.
-
+Ponadto teren zostanie zalesiony przypadkowo dobranym drzewem na jeden
+trójkąt terenu, o ile wcześniej skopiowano katalog l61_plants (można go
+znaleźć w katalogu textures należącym do paczki symulatora) wraz ze
+wszystkimi lub wybranymi teksturami drzew, do katalogu z programem terenEU07.
 Dodana została także opcja generowania terenu niedopasowanego do torów.
 
 Krótka instrukcja obsługi programu:
