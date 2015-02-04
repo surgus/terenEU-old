@@ -2084,19 +2084,26 @@ void sadzenieDrzew(std::vector<triangle> &refTriangles, double ExportX, double E
             if (z == 0) {
                 wylosowaneDrzewo = tabelaDrzew[rand() % liczbaDrzew];
 //              wylosowaneDrzewo = tabelaDrzew[d(g)];
-                z = 10000;
+                z = 5000;
                 unsigned znaleziono1 = (wylosowaneDrzewo.find("drzewo"));
                 unsigned znaleziono2 = (wylosowaneDrzewo.find("sosna"));
+// Zeby drzewa nie byly zbyt male
                 if ((znaleziono1 != -1) || (znaleziono2 != -1)) {
                     minWysokoscDrzewa = 4;
                     maxWysokoscDrzewa = 31;
                     minPromienKorona = 4;
                     maxPromienKorona = 13;
+// Zeby krzaki nie były tak wysokie jak drzewa
                 } else {
                     minWysokoscDrzewa = 1;
                     maxWysokoscDrzewa = 4;
                     minPromienKorona = 1;
                     maxPromienKorona = 4;
+                }
+// Zeby nie robic lasow martwych drzew
+                unsigned znaleziono3 = (wylosowaneDrzewo.find("dead"));
+                if (znaleziono3 != -1) {
+                    z = 2;
                 }
             }
             --z;
