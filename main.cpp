@@ -1465,6 +1465,81 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
 	const double XwsgPoczatek = atof(nrx.c_str());
 	const double YwsgPoczatek = atof(nry.c_str());
     const unsigned int SRTM_SIZE = 900;
+    // Otwarcie pliku DT2
+    // unsigned char moze przechowywac 1 Byte (8bits) danych (0-255)
+    typedef unsigned char BYTE;
+    std::cout << "Otwieram plik " << nazwaPliku << " " << NrPliku + 1 << " z " << LiczbaPlikow <<" \n";
+    BYTE *fileBuf;			// Pointer to our buffered data
+	FILE *file1 = NULL;		// File pointer
+	if ((file1 = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
+		std::cout << "Nie można otworzyć pliku" << nazwaPliku << "\n";
+		std::cin.get();
+	}
+    // Jaka jest wielkosc pliku?
+	unsigned long fileSize1 = getFileSize(file1);
+	// Allokowanie miejsca na caly plik
+	fileBuf = new BYTE[fileSize1];
+	// Odczyt pliku do bufora
+	size_t sizeRead1 = fread(fileBuf, fileSize1, 1, file1);
+	if (sizeRead1 != 1) {
+		std::cout << "\nsizeRead ERROR!\n";
+		std::cin.get();
+	}
+	std::vector<std::vector<unsigned int> > tablicaDEM;
+	tablicaDEM.resize(901);
+    for (unsigned int i = 0; i < 901; ++i) {
+        tablicaDEM[i].resize(901);
+    }
+    for (unsigned int i = 3436, wiersze = 0, kolumny = 0, k = 0; i < fileSize1; ++i) {
+        if (k == 1) {
+            tablicaDEM[wiersze][kolumny] = (fileBuf[i] | (fileBuf[i - 1] << 8));
+            ++kolumny;
+            if (kolumny > SRTM_SIZE) {
+                kolumny = 0;
+                ++wiersze;
+                i = i + 12;
+            }
+        }
+        ++k;
+        if (k == 2) k = 0;
+	}
+	// Przykladowy plik HEM - E0141500N521500_SRTM_1_HEM.dt2
+	nazwaPliku.replace(dlugoscNazwyPliku-34,3,"HEM");
+	nazwaPliku.replace(dlugoscNazwyPliku-7,3,"HEM");
+	std::cout << "Otwieram plik z korekta wysokosci" << nazwaPliku << "\n";
+	FILE *file2 = NULL;		// File pointer
+	if ((file2 = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
+		std::cout << "Nie można otworzyć pliku" << nazwaPliku << "\n";
+		std::cin.get();
+	}
+    // Jaka jest wielkosc pliku?
+	unsigned long fileSize2 = getFileSize(file2);
+	// Allokowanie miejsca na caly plik
+	fileBuf = new BYTE[fileSize2];
+	// Odczyt pliku do bufora
+	size_t sizeRead2 = fread(fileBuf, fileSize2, 1, file2);
+	if (sizeRead2 != 1) {
+		std::cout << "\nsizeRead ERROR!\n";
+		std::cin.get();
+	}
+	std::vector<std::vector<unsigned int> > tablicaHEM;
+	tablicaHEM.resize(901);
+    for (unsigned int i = 0; i < 901; ++i) {
+        tablicaHEM[i].resize(901);
+    }
+    for (unsigned int i = 3436, wiersze = 0, kolumny = 0, k = 0; i < fileSize2; ++i) {
+        if (k == 1) {
+            tablicaHEM[wiersze][kolumny] = (fileBuf[i] | (fileBuf[i - 1] << 8));
+            ++kolumny;
+            if (kolumny > SRTM_SIZE) {
+                kolumny = 0;
+                ++wiersze;
+                i = i + 12;
+            }
+        }
+        ++k;
+        if (k == 2) k = 0;
+	}
 // Kod przekształcenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
 /*
 Autor: Zbigniew Szymanski
@@ -1509,40 +1584,6 @@ Literatura:
     const double m0 = 0.9993;
     const double x0 = -5300000.0;
     const double y0 = 500000.0;
-// Otwarcie pliku DT2
-    // unsigned char moze przechowywac 1 Byte (8bits) danych (0-255)
-    typedef unsigned char BYTE;
-    std::cout << "Otwieram plik " << nazwaPliku << " " << NrPliku + 1 << " z " << LiczbaPlikow <<" \n";
-    BYTE *fileBuf;			// Pointer to our buffered data
-	FILE *file = NULL;		// File pointer
-	if ((file = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
-		std::cout << "Nie można otworzyć pliku" << nazwaPliku << "\n";
-		std::cin.get();
-	}
-    // Jaka jest wielkosc pliku?
-	unsigned long fileSize = getFileSize(file);
-	// Allokowanie miejsca na caly plik
-	fileBuf = new BYTE[fileSize];
-	// Odczyt pliku do bufora
-	fread(fileBuf, fileSize, 1, file);
-	std::vector<std::vector<unsigned int> > tablicaLokalnaPomocnicza;
-	tablicaLokalnaPomocnicza.resize(901);
-    for (unsigned int i = 0; i < 901; ++i) {
-        tablicaLokalnaPomocnicza[i].resize(901);
-    }
-    for (unsigned int i = 3436, wiersze = 0, kolumny = 0, k = 0; i < fileSize; ++i) {
-        if (k == 1) {
-            tablicaLokalnaPomocnicza[wiersze][kolumny] = (fileBuf[i] | (fileBuf[i - 1] << 8));
-            ++kolumny;
-            if (kolumny > SRTM_SIZE) {
-                kolumny = 0;
-                ++wiersze;
-                i = i + 12;
-            }
-        }
-        ++k;
-        if (k == 2) k = 0;
-	}
     unsigned int nrPunktu = 0;
     for (int i = SRTM_SIZE; i >= 0; --i) {
         double Xwsg = XwsgPoczatek + minutaX + (i * sekunda);
@@ -1556,7 +1597,9 @@ Literatura:
         double cosfi = cos(fi);
         for (unsigned int j = 0; j <= SRTM_SIZE; ++j) {
             double Ywsg = YwsgPoczatek + minutaY + (j * sekunda);
-            double z = tablicaLokalnaPomocnicza[j][i];
+            double z1 = tablicaDEM[j][i];
+            double z2 = tablicaHEM[j][i];
+            double z = tablicaDEM[j][i] - tablicaHEM[j][i];
             if ((z > 5) && ( z < 3000)) {
                 double dL_stopnie = Ywsg - L0_stopnie;
                 double d_lambda = dL_stopnie * M_PI / 180.0;
@@ -1953,7 +1996,7 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
     std::string linia ("");
     std::string ln ("");
     unsigned int nrLinii = 0;
-// Orczytuje przerobione innym programem wierzcholki na trianglesy
+// Odczytuje striangulowane programem Triangle wierzcholki
     std::ifstream plik1;
     std::string nazwaPliku = "wierzcholki.1.ele";
     nazwaPliku.insert(11,zarostek);
@@ -1963,7 +2006,6 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
         std::cout << "Brak pliku " << nazwaPliku << "\n";
         std::cin.get();
     }
-// Orczytuje wierzcholki przerobione programem Triangle na trojkaty
     while(!plik1.eof()) {
         std::getline(plik1, linia);
         std::istringstream ln(linia);
@@ -2756,12 +2798,12 @@ void obrobkaDanychHGTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::s
     odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
     tablicaWierzcholkowTriangles(tablica2, exportX, exportY, szerokosc2, toryZGwiazdka, korektaX2, korektaY2, wierszeTablicy2, kolumnyTablicy2);
     // Odczyt danych HGT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
-    for (unsigned int i = 0; i < liczbaPlikowDT2; ++i) {
-        odczytPunktowDT2zUwzglednieniemProfilu(wierzcholki, wierzcholkiProfilu, tablica1, tablica2, refTabelaNazwPlikowDT2[i], odlegloscHGT1, nrId, i, liczbaPlikowDT2, atoi(szerokoscTablicy.c_str()), szerokosc2, toryZGwiazdka, korektaX1, korektaY1, korektaX2, korektaY2, wierszeTablicy1, kolumnyTablicy1, wierszeTablicy2, kolumnyTablicy2);
-    }
-//    for (unsigned int i = 0; i < liczbaPlikowHGT; ++i) {
-//        odczytPunktowHGTzUwzglednieniemProfilu(wierzcholki, wierzcholkiProfilu, tablica1, tablica2, refTabelaNazwPlikowHGT[i], odlegloscHGT1, nrId, i, liczbaPlikowHGT, atoi(szerokoscTablicy.c_str()), szerokosc2, toryZGwiazdka, korektaX1, korektaY1, korektaX2, korektaY2, wierszeTablicy1, kolumnyTablicy1, wierszeTablicy2, kolumnyTablicy2);
+//    for (unsigned int i = 0; i < liczbaPlikowDT2; ++i) {
+//        odczytPunktowDT2zUwzglednieniemProfilu(wierzcholki, wierzcholkiProfilu, tablica1, tablica2, refTabelaNazwPlikowDT2[i], odlegloscHGT1, nrId, i, liczbaPlikowDT2, atoi(szerokoscTablicy.c_str()), szerokosc2, toryZGwiazdka, korektaX1, korektaY1, korektaX2, korektaY2, wierszeTablicy1, kolumnyTablicy1, wierszeTablicy2, kolumnyTablicy2);
 //    }
+    for (unsigned int i = 0; i < liczbaPlikowHGT; ++i) {
+        odczytPunktowHGTzUwzglednieniemProfilu(wierzcholki, wierzcholkiProfilu, tablica1, tablica2, refTabelaNazwPlikowHGT[i], odlegloscHGT1, nrId, i, liczbaPlikowHGT, atoi(szerokoscTablicy.c_str()), szerokosc2, toryZGwiazdka, korektaX1, korektaY1, korektaX2, korektaY2, wierszeTablicy1, kolumnyTablicy1, wierszeTablicy2, kolumnyTablicy2);
+    }
     obrobkaDanychNodeDoZageszczeniaPoTriangulacjiZUwzglednieniemProfilu("150", wierzcholki, wierzcholkiProfilu, nrId, tablica2, szerokosc2, korektaX2, korektaY2, wierszeTablicy2, kolumnyTablicy2, exportX, exportY);
     sort(wierzcholki.begin(), wierzcholki.end(), by_yx());
 //    zrobOtoczke(wierzcholki, otoczka, bezOtoczki);
@@ -2822,9 +2864,9 @@ void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string 
     std::string pathToNMT100 ("." "\x5C" "NMT100");
     std::string pathToNMT100closed ("." "\x5C" "NMT100" "\x5C");
     std::string errorNMT100String ("failed to open directory ." "\x5C" "NMT100");
-    std::string pathToDTED ("." "\x5C" "DTED");
-    std::string pathToDTEDclosed ("." "\x5C" "DTED" "\x5C");
-    std::string errorDTEDString ("failed to open directory ." "\x5C" "DTED");
+    std::string pathToDTED ("." "\x5C" "DTED" "\x5C" "DEM");
+    std::string pathToDTEDclosed ("." "\x5C" "DTED" "\x5C" "DEM" "\x5C");
+    std::string errorDTEDString ("failed to open directory ." "\x5C" "DTED" "\x5C" "DEM");
     #endif // _WIN32
     #ifdef __unix__
     std::string pathToSRTM ("./SRTM");
@@ -2833,9 +2875,9 @@ void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string 
     std::string pathToNMT100 ("./NMT100");
     std::string pathToNMT100closed ("./NMT100/");
     std::string errorNMT100String ("failed to open directory ./NMT100");
-    std::string pathToDTED ("./DTED");
-    std::string pathToDTEDclosed ("./DTED/");
-    std::string errorDTEDString ("failed to open directory ./DTED");
+    std::string pathToDTED ("./DTED/DEM");
+    std::string pathToDTEDclosed ("./DTED/DEM/");
+    std::string errorDTEDString ("failed to open directory ./DTED/DEM");
     #endif // __unix__
 // Znalezny kod do listowania plikow z aktualnego katalogu
     DIR*     dir;
