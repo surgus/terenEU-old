@@ -2,11 +2,21 @@
 Program tworzy, z danych SRTM lub NMT100, oraz scenerii z edytora Rainsted,
 teren dla realistycznych scenerii symulatora MaSzyna EU07,
 o ile sceneria z edytora Rainsted posiada profil pionowy pod torami.
-Ponadto teren zostanie zalesiony przypadkowo dobranym drzewem na jeden
+Ponadto teren może zostać zalesiony przypadkowo wylosowanym drzewem na jeden
 trójkąt terenu, o ile wcześniej skopiowano katalog l61_plants (można go
 znaleźć w katalogu textures należącym do paczki symulatora) wraz ze
 wszystkimi lub wybranymi teksturami drzew, do katalogu z programem terenEU07.
 Dodana została także opcja generowania terenu niedopasowanego do torów.
+
+Aby wybrać rodzaj wykorzystywanych plikow SRTM oraz/lub włączyc/wyłączyć
+automatyczne zalesianie, należy zakomentować/odkomentować wybraną linię
+define w początkowej części pliku main.cpp.
+
+Niektóre rozwiązania problemów wykorzystane w tym programie podpowiedział
+kolega "Ra".
+
+Znane problemy: Normalne wierzchołków trójkątów terenu są źle policzone.
+
 
 Krótka instrukcja obsługi programu:
 
@@ -15,14 +25,21 @@ W katalogu z programem powinny być:
 1. Plik ze scenerią (aktualnie na stałe zaszyta nazwa "EXPORT.SCN",
 bo taki plik domyślnie tworzy edytor Rainsted).
 
-2. Katalog o nazwie SRTM, a w nim pliki .hgt, lub katalog
+2. Do wyboru w zależności jaką wersję SRTM stosujemy:
+
+2a. Katalog o nazwie SRTM, a w nim pliki .hgt, lub katalog
 o nazwie NMT100, a w nim pliki .txt z obszarem pokrywającym teren scenerii.
+
+2b. Katalog o nazwie DTED a w nim katalog DEM oraz HEM. W katalogu DEM
+pliki z danymi wysokościowymi .dt2. W katalogu HEM pliki .dt2 z mapą błędów.
 
 3. W tym samym (najlepiej) lub innym katalogu możliwość skompilowania
 i uruchomienia darmowego programu "Triangle", który z podanych punktów tworzy trójkąty.
 
+
 Kompilacja programu TerenEU07:
 g++ -std=c++11 -O3 -o terenEU07 main.cpp
+
 
 Aby uzyskać teren w formacie symulatora MaSzyna EU07 należy
 uruchomić program TerenEU07 i wybrać opcję nr 1.
@@ -57,9 +74,21 @@ w tych miejscach, trzeba to solidnie wykonać w programie Rainsted.
 terenu.
 
 Symulator MaSzyna EU07 można pobrać ze strony: http://eu07.pl/.
-Edytor Rainsted znajduje się w paczce z symulatorem. Strona projektu http://rainsted.com/pl/.
-Program Triangle dostepny pod adresem: http://www.cs.cmu.edu/~quake/triangle.html.
-Dane SRTM można pobrać pod adresem: http://dds.cr.usgs.gov/srtm/version2_1/SRTM3/Eurasia/
-(nowsza wersja), lub: http://netgis.geo.uw.edu.pl/srtm/Poland/ (starsza wersja, i serwer
+
+Edytor Rainsted znajduje się w paczce z symulatorem. Strona projektu 
+to http://rainsted.com/pl/.
+
+Program Triangle dostepny pod adresem:
+http://www.cs.cmu.edu/~quake/triangle.html.
+
+Dane SRTM 3 arc sec w formacie HGT można pobrać pod adresem:
+http://dds.cr.usgs.gov/srtm/version2_1/SRTM3/Eurasia/ (nowsza wersja),
+lub: http://netgis.geo.uw.edu.pl/srtm/Poland/ (starsza wersja, i serwer
 ostatnio nie działa).
-Dane NMT100 można pobrać z tego adresu: http://www.codgik.gov.pl/index.php/darmowe-dane/nmt-100.html
+
+Dane SRTM 1 arc sec można znaleźć pod adresem:
+https://centaurus.caf.dlr.de:8443/eoweb-ng/template/default/welcome/entryPage.vm
+(należy się zarejestrować i kliknąć w przycisk "SRTM Data Download").
+
+Dane NMT100 można pobrać z tego adresu:
+http://www.codgik.gov.pl/index.php/darmowe-dane/nmt-100.html
