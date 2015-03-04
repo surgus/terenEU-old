@@ -25,13 +25,16 @@ W katalogu z programem powinny być:
 1. Plik ze scenerią (aktualnie na stałe zaszyta nazwa "EXPORT.SCN",
 bo taki plik domyślnie tworzy edytor Rainsted).
 
-2. Do wyboru w zależności jaką wersję SRTM stosujemy:
+2. Do wyboru w zależności jaki rodzaj danych wysokościowych stosujemy:
 
-2a. Katalog o nazwie SRTM, a w nim pliki .hgt, lub katalog
-o nazwie NMT100, a w nim pliki .txt z obszarem pokrywającym teren scenerii.
+a) Katalog o nazwie SRTM, a w nim pliki .hgt z obszarem pokrywającym teren
+scenerii.
 
-2b. Katalog o nazwie DTED a w nim katalog DEM oraz HEM. W katalogu DEM
+b) Katalog o nazwie DTED a w nim katalog DEM oraz HEM. W katalogu DEM
 pliki z danymi wysokościowymi .dt2. W katalogu HEM pliki .dt2 z mapą błędów.
+Pliki oczywiście powinny pokrywać teren scenerii.
+
+b) Katalog NMT100, a w nim pliki .txt z obszarem pokrywającym teren scenerii.
 
 3. W tym samym (najlepiej) lub innym katalogu możliwość skompilowania
 i uruchomienia darmowego programu "Triangle", który z podanych punktów tworzy trójkąty.
