@@ -34,7 +34,7 @@ b) Katalog o nazwie DTED a w nim katalog DEM oraz HEM. W katalogu DEM
 pliki z danymi wysokościowymi .dt2. W katalogu HEM pliki .dt2 z mapą błędów.
 Pliki oczywiście powinny pokrywać teren scenerii.
 
-b) Katalog NMT100, a w nim pliki .txt z obszarem pokrywającym teren scenerii.
+c) Katalog NMT100, a w nim pliki .txt z obszarem pokrywającym teren scenerii.
 
 3. W tym samym (najlepiej) lub innym katalogu możliwość skompilowania
 i uruchomienia darmowego programu "Triangle", który z podanych punktów tworzy trójkąty.
