@@ -54,14 +54,10 @@ Or on IRCnet, nick surgeon
 #ifndef DT2
 //#define DT2
 #endif // DT2
+
 #ifndef HGT
 #define HGT
 #endif // HGT
-//Automatyczne zalesianie wl/wyl (tworzy dlugo i duzy plik z drzewami
-//bardzo dlugo sie wczytuje i zmniejsza fps symulatora)
-#ifndef zalesianie
-//#define zalesianie
-#endif // zalesianie
 
 template < class T >
 std::string to_string( T t )
@@ -1039,7 +1035,7 @@ void odczytPunktowHGT(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
 	const double XwsgPoczatek = atof(nrx.c_str());
 	const double YwsgPoczatek = atof(nry.c_str());
     const unsigned int SRTM_SIZE = 1201;
-// Kod przekszta≈Çcenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
+// Kod przekszta≥cenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
 /*
 Autor: Zbigniew Szymanski
 E-mail: z.szymanski@szymanski-net.eu
@@ -1062,7 +1058,7 @@ Uwagi: Oprogramowanie darmowe. Dozwolone jest wykorzystanie i modyfikacja
        doi:10.1117/12.2001354
 
 Literatura:
-       Uriasz, J., ‚ÄúWybrane odwzorowania kartograficzne‚Äù, Akademia Morska w Szczecinie,
+       Uriasz, J., ìWybrane odwzorowania kartograficzneî, Akademia Morska w Szczecinie,
        http://uriasz.am.szczecin.pl/naw_bezp/odwzorowania.html
 */
 // Parametry elipsoidy GRS-80
@@ -1246,7 +1242,7 @@ void odczytPunktowHGTzUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
 	const double XwsgPoczatek = atof(nrx.c_str());
 	const double YwsgPoczatek = atof(nry.c_str());
     const unsigned int SRTM_SIZE = 1201;
-// Kod przekszta≈Çcenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
+// Kod przekszta≥cenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
 /*
 Autor: Zbigniew Szymanski
 E-mail: z.szymanski@szymanski-net.eu
@@ -1269,7 +1265,7 @@ Uwagi: Oprogramowanie darmowe. Dozwolone jest wykorzystanie i modyfikacja
        doi:10.1117/12.2001354
 
 Literatura:
-       Uriasz, J., ‚ÄúWybrane odwzorowania kartograficzne‚Äù, Akademia Morska w Szczecinie,
+       Uriasz, J., ìWybrane odwzorowania kartograficzneî, Akademia Morska w Szczecinie,
        http://uriasz.am.szczecin.pl/naw_bezp/odwzorowania.html
 */
 // Parametry elipsoidididy GRS-80
@@ -1473,14 +1469,14 @@ void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
 	const double XwsgPoczatek = atof(nrx.c_str());
 	const double YwsgPoczatek = atof(nry.c_str());
     const unsigned int SRTM_SIZE = 900;
-// Odczyt pliku DEM
+    // Odczyt pliku DEM
     // unsigned char moze przechowywac 1 Byte (8bits) danych (0-255)
     typedef unsigned char BYTE;
     std::cout << "Otwieram plik " << nazwaPliku << " " << refNrPliku + 1 << " z " << refLiczbaPlikow <<" \n";
     BYTE *fileBuf;			// Pointer do danych
 	FILE *file = NULL;		// File pointer
 	if ((file = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
-		std::cout << "Nie mo≈ºna otworzyƒá pliku" << nazwaPliku << "\n";
+		std::cout << "Nie moøna otworzyÊ pliku" << nazwaPliku << "\n";
 		std::cin.get();
 	}
     // Jaka jest wielkosc pliku?
@@ -1511,13 +1507,13 @@ void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
         ++k;
         if (k == 2) k = 0;
 	}
-	double geoidUndulation = 10*(fileBuf[491] - '0') + fileBuf[492] - '0';
-//Odczyt pliku HEM
+    double geoidUndulation = 10*(fileBuf[491] - '0') + fileBuf[492] - '0';
+    //Odczyt pliku HEM
 	nazwaPliku.replace(dlugoscNazwyPliku-34,3,"HEM");
-	nazwaPliku.replace(dlugoscNazwyPliku-7,3,"HEM");
-	std::cout << "Otwieram plik z korekta wysokosci" << nazwaPliku << "\n";
+    nazwaPliku.replace(dlugoscNazwyPliku-7,3,"HEM");
+    std::cout << "Otwieram plik z korekta wysokosci" << nazwaPliku << "\n";
 	if ((file = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
-		std::cout << "Nie mo≈ºna otworzyƒá pliku" << nazwaPliku << "\n";
+		std::cout << "Nie moøna otworzyÊ pliku" << nazwaPliku << "\n";
 		std::cin.get();
 	}
 	fileSize = getFileSize(file);
@@ -1527,7 +1523,7 @@ void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
 		std::cout << "\nsizeRead ERROR!\n";
 		std::cin.get();
 	}
-	std::vector<std::vector<unsigned int> > tablicaHEM;
+    std::vector<std::vector<unsigned int> > tablicaHEM;
 	tablicaHEM.resize(901);
     for (unsigned int i = 0; i < 901; ++i) {
         tablicaHEM[i].resize(901);
@@ -1545,7 +1541,7 @@ void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
         ++k;
         if (k == 2) k = 0;
 	}
-// Kod przekszta≈Çcenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
+// Kod przekszta≥cenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
 /*
 Autor: Zbigniew Szymanski
 E-mail: z.szymanski@szymanski-net.eu
@@ -1568,7 +1564,7 @@ Uwagi: Oprogramowanie darmowe. Dozwolone jest wykorzystanie i modyfikacja
        doi:10.1117/12.2001354
 
 Literatura:
-       Uriasz, J., ‚ÄúWybrane odwzorowania kartograficzne‚Äù, Akademia Morska w Szczecinie,
+       Uriasz, J., ìWybrane odwzorowania kartograficzneî, Akademia Morska w Szczecinie,
        http://uriasz.am.szczecin.pl/naw_bezp/odwzorowania.html
 */
 // Parametry elipsoidy GRS-80
@@ -1755,7 +1751,7 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
     BYTE *fileBuf;			// Pointer do danych
 	FILE *file = NULL;		// File pointer
 	if ((file = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
-		std::cout << "Nie mo≈ºna otworzyƒá pliku" << nazwaPliku << "\n";
+		std::cout << "Nie moøna otworzyÊ pliku" << nazwaPliku << "\n";
 		std::cin.get();
 	}
     // Jaka jest wielkosc pliku?
@@ -1768,7 +1764,7 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
 		std::cout << "\nsizeRead ERROR!\n";
 		std::cin.get();
 	}
-	std::vector<std::vector<unsigned int> > tablicaDEM;
+    std::vector<std::vector<unsigned int> > tablicaDEM;
 	tablicaDEM.resize(901);
     for (unsigned int i = 0; i < 901; ++i) {
         tablicaDEM[i].resize(901);
@@ -1786,12 +1782,12 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
         ++k;
         if (k == 2) k = 0;
 	}
-	double geoidUndulation = 10*(fileBuf[491] - '0') + fileBuf[492] - '0';
-	nazwaPliku.replace(dlugoscNazwyPliku-34,3,"HEM");
-	nazwaPliku.replace(dlugoscNazwyPliku-7,3,"HEM");
-	std::cout << "Otwieram plik z korekta wysokosci" << nazwaPliku << "\n";
-	if ((file = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
-		std::cout << "Nie mo≈ºna otworzyƒá pliku" << nazwaPliku << "\n";
+    double geoidUndulation = 10*(fileBuf[491] - '0') + fileBuf[492] - '0';
+    nazwaPliku.replace(dlugoscNazwyPliku-34,3,"HEM");
+    nazwaPliku.replace(dlugoscNazwyPliku-7,3,"HEM");
+    std::cout << "Otwieram plik z korekta wysokosci" << nazwaPliku << "\n";
+    if ((file = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
+		std::cout << "Nie moøna otworzyÊ pliku" << nazwaPliku << "\n";
 		std::cin.get();
 	}
     // Jaka jest wielkosc pliku?
@@ -1804,7 +1800,7 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
 		std::cout << "\nsizeRead ERROR!\n";
 		std::cin.get();
 	}
-	std::vector<std::vector<unsigned int> > tablicaHEM;
+    std::vector<std::vector<unsigned int> > tablicaHEM;
 	tablicaHEM.resize(901);
     for (unsigned int i = 0; i < 901; ++i) {
         tablicaHEM[i].resize(901);
@@ -1822,7 +1818,7 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
         ++k;
         if (k == 2) k = 0;
 	}
-// Kod przekszta≈Çcenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
+// Kod przekszta≥cenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
 /*
 Autor: Zbigniew Szymanski
 E-mail: z.szymanski@szymanski-net.eu
@@ -1845,7 +1841,7 @@ Uwagi: Oprogramowanie darmowe. Dozwolone jest wykorzystanie i modyfikacja
        doi:10.1117/12.2001354
 
 Literatura:
-       Uriasz, J., ‚ÄúWybrane odwzorowania kartograficzne‚Äù, Akademia Morska w Szczecinie,
+       Uriasz, J., ìWybrane odwzorowania kartograficzneî, Akademia Morska w Szczecinie,
        http://uriasz.am.szczecin.pl/naw_bezp/odwzorowania.html
 */
 // Parametry elipsoidididy GRS-80
@@ -2385,7 +2381,7 @@ void utworzDodatkowePunktySiatkiZUwzglednieniemProfilu(std::vector<triangle> &re
     const unsigned int liczbaTrojkatow = refTriangles.size();
     unsigned int dotychczasowaLiczbaWierzcholkow = refRefNrId;
     const unsigned int liczbaWierzcholkowProfilu = refRefWierzcholkiProfilu.size();
-    //W przypadku plikow SRTM 1 arc sec zagƒôszczanie wierzcholkow nie daje zadnych korzysci
+    //W przypadku plikow SRTM 1 arc sec zagÍszczanie wierzcholkow nie daje zadnych korzysci
     #ifdef HGT
     std::cout << "Teraz czas utowrzyc dodatkowe punkty zageszczajace siatke:\n";
     for (unsigned int z = 0; z < liczbaTrojkatow; ++z, ++refRefNrId) {
@@ -2518,7 +2514,7 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
             for (int przesuniecieY = -1; przesuniecieY < 2; ++przesuniecieY) {
                 int test = szachownica[((refTriangles[i].x1 - testXmin) / szerokosc) + przesuniecieX][((refTriangles[i].y1 - testYmin) / szerokosc) + przesuniecieY];
                 while (test != -1) {
-                    if ((refTriangles[i].x1 == refTriangles[test].x1) && (refTriangles[i].y1 == refTriangles[test].y1)) {
+                    if ((refTriangles[i].x1 > refTriangles[test].x1 - 0.1) && (refTriangles[i].x1 < refTriangles[test].x1 + 0.1) && (refTriangles[i].y1 > refTriangles[test].y1 - 0.1) && (refTriangles[i].y1 < refTriangles[test].y1 + 0.1)) {
                         AnormalX = AnormalX + refTriangles[test].normalX;
                         ++AsumaNormalX;
                         AnormalY = AnormalY + refTriangles[test].normalY;
@@ -2526,7 +2522,23 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
                         AnormalZ = AnormalZ + refTriangles[test].normalZ;
                         ++AsumaNormalZ;
                     }
-                    if ((refTriangles[i].x2 == refTriangles[test].x2) && (refTriangles[i].y2 == refTriangles[test].y2)) {
+                    if ((refTriangles[i].x1 > refTriangles[test].x2 - 0.1) && (refTriangles[i].x1 < refTriangles[test].x2 + 0.1) && (refTriangles[i].y1 > refTriangles[test].y2 - 0.1) && (refTriangles[i].y1 < refTriangles[test].y2 + 0.1)) {
+                        AnormalX = AnormalX + refTriangles[test].normalX;
+                        ++AsumaNormalX;
+                        AnormalY = AnormalY + refTriangles[test].normalY;
+                        ++AsumaNormalY;
+                        AnormalZ = AnormalZ + refTriangles[test].normalZ;
+                        ++AsumaNormalZ;
+                    }
+                    if ((refTriangles[i].x1 > refTriangles[test].x3 - 0.1) && (refTriangles[i].x1 < refTriangles[test].x3 + 0.1) && (refTriangles[i].y1 > refTriangles[test].y3 - 0.1) && (refTriangles[i].y1 < refTriangles[test].y3 + 0.1)) {
+                        AnormalX = AnormalX + refTriangles[test].normalX;
+                        ++AsumaNormalX;
+                        AnormalY = AnormalY + refTriangles[test].normalY;
+                        ++AsumaNormalY;
+                        AnormalZ = AnormalZ + refTriangles[test].normalZ;
+                        ++AsumaNormalZ;
+                    }
+                    if ((refTriangles[i].x2 > refTriangles[test].x1 - 0.1) && (refTriangles[i].x2 < refTriangles[test].x1 + 0.1) && (refTriangles[i].y2 > refTriangles[test].y1 - 0.1) && (refTriangles[i].y2 < refTriangles[test].y1 + 0.1)) {
                         BnormalX = BnormalX + refTriangles[test].normalX;
                         ++BsumaNormalX;
                         BnormalY = BnormalY + refTriangles[test].normalY;
@@ -2534,7 +2546,39 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
                         BnormalZ = BnormalZ + refTriangles[test].normalZ;
                         ++BsumaNormalZ;
                     }
-                    if ((refTriangles[i].x3 == refTriangles[test].x3) && (refTriangles[i].y3 == refTriangles[test].y3)) {
+                    if ((refTriangles[i].x2 > refTriangles[test].x2 - 0.1) && (refTriangles[i].x2 < refTriangles[test].x2 + 0.1) && (refTriangles[i].y2 > refTriangles[test].y2 - 0.1) && (refTriangles[i].y2 < refTriangles[test].y2 + 0.1)) {
+                        BnormalX = BnormalX + refTriangles[test].normalX;
+                        ++BsumaNormalX;
+                        BnormalY = BnormalY + refTriangles[test].normalY;
+                        ++BsumaNormalY;
+                        BnormalZ = BnormalZ + refTriangles[test].normalZ;
+                        ++BsumaNormalZ;
+                    }
+                    if ((refTriangles[i].x2 > refTriangles[test].x3 - 0.1) && (refTriangles[i].x2 < refTriangles[test].x3 + 0.1) && (refTriangles[i].y2 > refTriangles[test].y3 - 0.1) && (refTriangles[i].y2 < refTriangles[test].y3 + 0.1)) {
+                        BnormalX = BnormalX + refTriangles[test].normalX;
+                        ++BsumaNormalX;
+                        BnormalY = BnormalY + refTriangles[test].normalY;
+                        ++BsumaNormalY;
+                        BnormalZ = BnormalZ + refTriangles[test].normalZ;
+                        ++BsumaNormalZ;
+                    }
+                    if ((refTriangles[i].x3 > refTriangles[test].x1 - 0.1) && (refTriangles[i].x3 < refTriangles[test].x1 + 0.1) && (refTriangles[i].y3 > refTriangles[test].y1 - 0.1) && (refTriangles[i].y3 < refTriangles[test].y1 + 0.1)) {
+                        CnormalX = CnormalX + refTriangles[test].normalX;
+                        ++CsumaNormalX;
+                        CnormalY = CnormalY + refTriangles[test].normalY;
+                        ++CsumaNormalY;
+                        CnormalZ = CnormalZ + refTriangles[test].normalZ;
+                        ++CsumaNormalZ;
+                    }
+                    if ((refTriangles[i].x3 > refTriangles[test].x2 - 0.1) && (refTriangles[i].x3 < refTriangles[test].x2 + 0.1) && (refTriangles[i].y3 > refTriangles[test].y2 - 0.1) && (refTriangles[i].y3 < refTriangles[test].y2 + 0.1)) {
+                        CnormalX = CnormalX + refTriangles[test].normalX;
+                        ++CsumaNormalX;
+                        CnormalY = CnormalY + refTriangles[test].normalY;
+                        ++CsumaNormalY;
+                        CnormalZ = CnormalZ + refTriangles[test].normalZ;
+                        ++CsumaNormalZ;
+                    }
+                    if ((refTriangles[i].x3 > refTriangles[test].x3 - 0.1) && (refTriangles[i].x3 < refTriangles[test].x3 + 0.1) && (refTriangles[i].y3 > refTriangles[test].y3 - 0.1) && (refTriangles[i].y3 < refTriangles[test].y3 + 0.1)) {
                         CnormalX = CnormalX + refTriangles[test].normalX;
                         ++CsumaNormalX;
                         CnormalY = CnormalY + refTriangles[test].normalY;
@@ -2701,7 +2745,7 @@ void sadzenieDrzew(std::vector<triangle> &refTriangles, double ExportX, double E
                     maxWysokoscDrzewa = 31;
                     minPromienKorona = 4;
                     maxPromienKorona = 13;
-// Zeby krzaki nie by≈Çy tak wysokie jak drzewa
+// Zeby krzaki nie by≥y tak wysokie jak drzewa
                 } else {
                     minWysokoscDrzewa = 1;
                     maxWysokoscDrzewa = 4;
@@ -3154,9 +3198,7 @@ void obrobkaDanychNodePoTriangulacji(double &refWspolrzednaX, double &refWspolrz
     odczytPunktowNode(wierzcholki, odlegloscNMT, szerokosc, licznikWierzcholkow);
     odczytPlikuPoTriangulacji(triangles, wierzcholki, szerokosc, oganiczenieDlugosciRamionTrojkata, licznikTrojkatow, wierzcholkiTriangles, exportX, exportY);
     zapisSymkowychTrojkatow(triangles, exportX, exportY);
-	#ifdef zalesianie
-    sadzenieDrzew(triangles, exportX, exportY);
-	#endif // zalesianie
+//    sadzenieDrzew(triangles, exportX, exportY);
     std::cout << "Program zakonczyl dzialanie. Nacisnij jakis klawisz.                         \n" << "\n";
 }
 
