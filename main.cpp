@@ -59,6 +59,12 @@ Or on IRCnet, nick surgeon
 #define HGT
 #endif // HGT
 
+//Automatyczne zalesianie wl/wyl (tworzy dlugo i duzy plik z drzewami
+//bardzo dlugo sie wczytuje i zmniejsza fps symulatora)
+#ifndef zalesianie
+//#define zalesianie
+#endif // zalesianie
+
 template < class T >
 std::string to_string( T t )
 {
@@ -1035,7 +1041,7 @@ void odczytPunktowHGT(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
 	const double XwsgPoczatek = atof(nrx.c_str());
 	const double YwsgPoczatek = atof(nry.c_str());
     const unsigned int SRTM_SIZE = 1201;
-// Kod przekszta³cenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
+// Kod przeksztalcenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
 /*
 Autor: Zbigniew Szymanski
 E-mail: z.szymanski@szymanski-net.eu
@@ -1058,7 +1064,7 @@ Uwagi: Oprogramowanie darmowe. Dozwolone jest wykorzystanie i modyfikacja
        doi:10.1117/12.2001354
 
 Literatura:
-       Uriasz, J., “Wybrane odwzorowania kartograficzne”, Akademia Morska w Szczecinie,
+       Uriasz, J., "Wybrane odwzorowania kartograficzne", Akademia Morska w Szczecinie,
        http://uriasz.am.szczecin.pl/naw_bezp/odwzorowania.html
 */
 // Parametry elipsoidy GRS-80
@@ -1242,7 +1248,7 @@ void odczytPunktowHGTzUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
 	const double XwsgPoczatek = atof(nrx.c_str());
 	const double YwsgPoczatek = atof(nry.c_str());
     const unsigned int SRTM_SIZE = 1201;
-// Kod przekszta³cenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
+// Kod przeksztalcenia formatu WGS84 do PUWG 1992 zostal zapozyczony i zoptymalizowany. Naglowek autora ponizej
 /*
 Autor: Zbigniew Szymanski
 E-mail: z.szymanski@szymanski-net.eu
@@ -1265,7 +1271,7 @@ Uwagi: Oprogramowanie darmowe. Dozwolone jest wykorzystanie i modyfikacja
        doi:10.1117/12.2001354
 
 Literatura:
-       Uriasz, J., “Wybrane odwzorowania kartograficzne”, Akademia Morska w Szczecinie,
+       Uriasz, J., "Wybrane odwzorowania kartograficzne", Akademia Morska w Szczecinie,
        http://uriasz.am.szczecin.pl/naw_bezp/odwzorowania.html
 */
 // Parametry elipsoidididy GRS-80
@@ -1476,7 +1482,7 @@ void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
     BYTE *fileBuf;			// Pointer do danych
 	FILE *file = NULL;		// File pointer
 	if ((file = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
-		std::cout << "Nie mo¿na otworzyæ pliku" << nazwaPliku << "\n";
+		std::cout << "Nie mozna otworzyc pliku" << nazwaPliku << "\n";
 		std::cin.get();
 	}
     // Jaka jest wielkosc pliku?
@@ -1513,7 +1519,7 @@ void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
     nazwaPliku.replace(dlugoscNazwyPliku-7,3,"HEM");
     std::cout << "Otwieram plik z korekta wysokosci" << nazwaPliku << "\n";
 	if ((file = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
-		std::cout << "Nie mo¿na otworzyæ pliku" << nazwaPliku << "\n";
+		std::cout << "Nie mozna otworzyc pliku" << nazwaPliku << "\n";
 		std::cin.get();
 	}
 	fileSize = getFileSize(file);
@@ -1564,7 +1570,7 @@ Uwagi: Oprogramowanie darmowe. Dozwolone jest wykorzystanie i modyfikacja
        doi:10.1117/12.2001354
 
 Literatura:
-       Uriasz, J., “Wybrane odwzorowania kartograficzne”, Akademia Morska w Szczecinie,
+       Uriasz, J., "Wybrane odwzorowania kartograficzne", Akademia Morska w Szczecinie,
        http://uriasz.am.szczecin.pl/naw_bezp/odwzorowania.html
 */
 // Parametry elipsoidy GRS-80
@@ -1751,7 +1757,7 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
     BYTE *fileBuf;			// Pointer do danych
 	FILE *file = NULL;		// File pointer
 	if ((file = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
-		std::cout << "Nie mo¿na otworzyæ pliku" << nazwaPliku << "\n";
+		std::cout << "Nie mozna otworzyc pliku" << nazwaPliku << "\n";
 		std::cin.get();
 	}
     // Jaka jest wielkosc pliku?
@@ -1787,7 +1793,7 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
     nazwaPliku.replace(dlugoscNazwyPliku-7,3,"HEM");
     std::cout << "Otwieram plik z korekta wysokosci" << nazwaPliku << "\n";
     if ((file = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
-		std::cout << "Nie mo¿na otworzyæ pliku" << nazwaPliku << "\n";
+		std::cout << "Nie mozna otworzyc pliku" << nazwaPliku << "\n";
 		std::cin.get();
 	}
     // Jaka jest wielkosc pliku?
@@ -1841,7 +1847,7 @@ Uwagi: Oprogramowanie darmowe. Dozwolone jest wykorzystanie i modyfikacja
        doi:10.1117/12.2001354
 
 Literatura:
-       Uriasz, J., “Wybrane odwzorowania kartograficzne”, Akademia Morska w Szczecinie,
+       Uriasz, J., "Wybrane odwzorowania kartograficzne", Akademia Morska w Szczecinie,
        http://uriasz.am.szczecin.pl/naw_bezp/odwzorowania.html
 */
 // Parametry elipsoidididy GRS-80
@@ -2745,7 +2751,7 @@ void sadzenieDrzew(std::vector<triangle> &refTriangles, double ExportX, double E
                     maxWysokoscDrzewa = 31;
                     minPromienKorona = 4;
                     maxPromienKorona = 13;
-// Zeby krzaki nie by³y tak wysokie jak drzewa
+// Zeby krzaki nie byly tak wysokie jak drzewa
                 } else {
                     minWysokoscDrzewa = 1;
                     maxWysokoscDrzewa = 4;
@@ -3198,7 +3204,9 @@ void obrobkaDanychNodePoTriangulacji(double &refWspolrzednaX, double &refWspolrz
     odczytPunktowNode(wierzcholki, odlegloscNMT, szerokosc, licznikWierzcholkow);
     odczytPlikuPoTriangulacji(triangles, wierzcholki, szerokosc, oganiczenieDlugosciRamionTrojkata, licznikTrojkatow, wierzcholkiTriangles, exportX, exportY);
     zapisSymkowychTrojkatow(triangles, exportX, exportY);
-//    sadzenieDrzew(triangles, exportX, exportY);
+	#ifdef zalesianie
+    sadzenieDrzew(triangles, exportX, exportY);
+	#endif // zalesianie
     std::cout << "Program zakonczyl dzialanie. Nacisnij jakis klawisz.                         \n" << "\n";
 }
 
