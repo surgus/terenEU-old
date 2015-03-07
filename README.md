@@ -8,14 +8,21 @@ znaleźć w katalogu textures należącym do paczki symulatora) wraz ze
 wszystkimi lub wybranymi teksturami drzew, do katalogu z programem terenEU07.
 Dodana została także opcja generowania terenu niedopasowanego do torów.
 
+/*
 Aby wybrać rodzaj wykorzystywanych plikow SRTM oraz/lub włączyc/wyłączyć
 automatyczne zalesianie, należy zakomentować/odkomentować wybraną linię
 define w początkowej części pliku main.cpp.
+*/
+Powyższy wpis jest już nieaktualny, ponieważ W tej chwili program już
+automatycznie korzysta z danych SRTM 3 arc sec jeśli w danym miejscu
+w modelu SRTM 1 arc sec brakuje danych. Wadą tej metody jest to,
+że program musi odczytać oba rodzaje plików, co trwa nieco dłużej.
 
-Niektóre rozwiązania problemów wykorzystane w tym programie podpowiedział
-kolega "Ra".
+Niektóre sposoby na rozwiązania problemów wykorzystane w tym programie
+podpowiedział kolega "Ra", za co dziękuję.
 
-Znane problemy: Normalne wierzchołków trójkątów terenu są źle policzone.
+Znane problemy: Normalne wierzchołków trójkątów na łączeniu terenu z profilem
+są źle policzone.
 
 
 Krótka instrukcja obsługi programu:
@@ -25,7 +32,7 @@ W katalogu z programem powinny być:
 1. Plik ze scenerią (aktualnie na stałe zaszyta nazwa "EXPORT.SCN",
 bo taki plik domyślnie tworzy edytor Rainsted).
 
-2. Do wyboru w zależności jaki rodzaj danych wysokościowych stosujemy:
+2. Przynajmniej a), a najlepiej a) oraz b), lub c):
 
 a) Katalog o nazwie SRTM, a w nim pliki .hgt z obszarem pokrywającym teren
 scenerii.
@@ -62,19 +69,23 @@ W ten sposób otrzymamy plik(i) terenX.scm (gdzie X to nr od 1),
 który można już użyć w symulatorze jako teren.
 
 Kilka uwag:
+
 1. Edytor Rainsted, pomimo moich sugestii, tworzy plik tekstowy
 EXPORT.SCN z końcami linii w formacie Microsoft, a więc jeśli
-ktoś zamierza kompilować i używac go pod systeme unixowym należy
-go przekonwertować na format unixowy. Np. w programie vi
+ktoś zamierza kompilować i używac go pod systemem unixowym należy
+ten plik przekonwertować na format unixowy. Np. w programie vi
 komendą ":set ff=unix".
+
 2. W edytorze Rainsted na obecną chwilę nie da się w prosty sposób
 wykonać rowow profilu pod torami przy użyciu danych modelu NMT100,
 dlatego też generowanie całego terenu z danych NMT100 mija się z celem.
+
 3. Problemem może być odpowiednie zszycie terenu między profilami
 biegnacymi obok siebie. Ze względu na problemy z triangulacją
 w tych miejscach, trzeba to solidnie wykonać w programie Rainsted.
-4. W aktualnej wersji zauważalne są braki pojedyńczych trójkątów
-terenu.
+
+4. Program działa nieco szybciej w systemie linux niż w MS Windows.
+
 
 Symulator MaSzyna EU07 można pobrać ze strony: http://eu07.pl/.
 
