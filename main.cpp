@@ -1497,8 +1497,8 @@ void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
 	}
     double geoidUndulation = 10*(fileBuf[491] - '0') + fileBuf[492] - '0';
     fclose(file);
-    //Odczyt pliku HEM
-	nazwaPliku.replace(dlugoscNazwyPliku-34,3,"HEM");
+//Odczyt pliku HEM
+    nazwaPliku.replace(dlugoscNazwyPliku-34,3,"HEM");
     nazwaPliku.replace(dlugoscNazwyPliku-7,3,"HEM");
     std::cout << "Otwieram plik z korekta wysokosci" << nazwaPliku << "\n";
 	if ((file = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
@@ -1614,7 +1614,7 @@ Literatura:
                 if (((Xpuwg - refKorektaY) / szerokosc < 1) || ((Xpuwg - refKorektaY) / szerokosc > refKolumnyTablicy)) nieSprawdzaj = true;
                 if (!nieSprawdzaj) {
                     if (refTablica[(Ypuwg - refKorektaX) / szerokosc][(Xpuwg - refKorektaY) / szerokosc] == 1) {
-                        if ((z > 5.0) && (z < 3000.0)) {
+                        if ((z > 5.0) && (z < 3000.0) && (tablicaHEM[j][i] < 13.0)) {
                         for (unsigned int jj = 0; jj < liczbaTorowZGwiazdka; ++jj) {
                             bool waznyX = false, waznyY = false, rosnieY = false, malejeY = false, rosnieX = false, malejeX = false;
                             double wektorP2P1x = refToryZGwiazdka[jj].xp1 - refToryZGwiazdka[jj].xp2;
@@ -1865,8 +1865,6 @@ Literatura:
         double cosfi = cos(fi);
         for (unsigned int j = 0; j <= SRTM_SIZE; ++j) {
             double Ywsg = YwsgPoczatek + minutaY + (j * sekunda);
-//            double z1 = tablicaDEM[j][i];
-//            double z2 = tablicaHEM[j][i];
             double z = tablicaDEM[j][i] - tablicaHEM[j][i] - geoidUndulation;
 //            if ((z > 5.0) && ( z < 3000.0)) {
                 double dL_stopnie = Ywsg - L0_stopnie;
@@ -1893,7 +1891,7 @@ Literatura:
                 if (((Xpuwg - refKorektaY1) / szerokosc1 < 1) || ((Xpuwg - refKorektaY1) / szerokosc1 > refKolumnyTablicy1)) nieSprawdzaj = true;
                 if (!nieSprawdzaj) {
                     if (refTablica1[(Ypuwg - refKorektaX1) / szerokosc1][(Xpuwg - refKorektaY1) / szerokosc1] == 1) {
-                        if ((z > 5.0) && ( z < 3000.0)) {
+                        if ((z > 5.0) && (z < 3000.0) && (tablicaHEM[j][i] < 13.0)) {
                         bool doOdrzutu = false;
                         if (((Ypuwg - refKorektaX2) / szerokosc2 < 1) || ((Ypuwg - refKorektaX2) / szerokosc2 > refWierszeTablicy2)) nieSprawdzaj = true;
                         if (((Xpuwg - refKorektaY2) / szerokosc2 < 1) || ((Xpuwg - refKorektaY2) / szerokosc2 > refKolumnyTablicy2)) nieSprawdzaj = true;
@@ -1992,13 +1990,7 @@ Literatura:
                                 ++licznik;
                             }
                         }
-                    } else {
-                        int test1 = Ypuwg - refKorektaXbraki;
-                        int test11 = (Ypuwg - refKorektaXbraki) / 50;
-                        int test2 = Xpuwg - refKorektaYbraki;
-                        int test22 = (Xpuwg - refKorektaYbraki) / 50;
-                        refTablicaBrakow[(Ypuwg - refKorektaXbraki) / 50][(Xpuwg - refKorektaYbraki) / 50] = 1;
-                        }
+                    } else refTablicaBrakow[(Ypuwg - refKorektaXbraki) / 50][(Xpuwg - refKorektaYbraki) / 50] = 1;
                     }
                 }
 //            }
@@ -2375,9 +2367,9 @@ void utworzDodatkowePunktySiatki(std::vector<triangle> &refTriangles, std::vecto
 
 void utworzDodatkowePunktySiatkiZUwzglednieniemProfilu(std::vector<triangle> &refTriangles, std::vector<wierzcholek> &refRefWierzcholki, std::vector<wierzcholek> &refRefWierzcholkiProfilu, unsigned int &refRefNrId, std::vector<std::vector<unsigned int> > &refRefTablica2, unsigned int szerokosc2, unsigned int refRefKorektaX2, unsigned int refRefKorektaY2, unsigned int refRefWierszeTablicy2, unsigned int refRefKolumnyTablicy2, std::vector<std::vector<unsigned int> > &refRefTablicaBrakow, unsigned int refRefKorektaXbraki, unsigned int refRefKorektaYbraki) {
     const unsigned int liczbaTrojkatow = refTriangles.size();
-    unsigned int dotychczasowaLiczbaWierzcholkow = refRefNrId;
+    unsigned int dotychczasowaLiczbaWierzcholkow = refRefNrId, noweWierzcholki = 0;
     const unsigned int liczbaWierzcholkowProfilu = refRefWierzcholkiProfilu.size();
-    //W przypadku plikow SRTM 1 arc sec zagêszczanie wierzcholkow nie daje zadnych korzysci
+    //W przypadku plikow SRTM 1 arc sec zageszczanie wierzcholkow nie daje zadnych korzysci
     #ifdef HGT
     std::cout << "Teraz czas utowrzyc dodatkowe punkty zageszczajace siatke:\n";
     for (unsigned int z = 0; z < liczbaTrojkatow; ++z, ++refRefNrId) {
@@ -2401,7 +2393,8 @@ void utworzDodatkowePunktySiatkiZUwzglednieniemProfilu(std::vector<triangle> &re
 //            refRefWierzcholki[refRefNrId].y = nowyY;
 //            refRefWierzcholki[refRefNrId].z = (refTriangles[z].z1 + refTriangles[z].z2 + refTriangles[z].z3) / 3;
 //            refRefWierzcholki[refRefNrId].odlegloscNMT = refRefNrId;
-                std::cout << "Pierwotna liczba wierz.: " << dotychczasowaLiczbaWierzcholkow << ". Liczba dodatkowych wierz.: " << z << "          \r";
+                ++noweWierzcholki;
+                std::cout << "Pierwotna liczba wierz.: " << dotychczasowaLiczbaWierzcholkow << ". Liczba dodatkowych wierz.: " << noweWierzcholki << "          \r";
             }
         }
     }
@@ -2425,31 +2418,8 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
     std::string numerPliku = to_string(nrPliku);
     std::string nowaNazwaPliku = nazwaPliku;
     nowaNazwaPliku.insert(5,numerPliku);
-// Czas zapisac w nowym pliku przetworzone dane.
-    std::cout << "Otwieram plik " << nowaNazwaPliku << ", aby zapisac teren w formacie symulatora MaSzyna.\n";
-    std::ofstream plik1;
-// Otwiera plik
-    plik1.open(nowaNazwaPliku.c_str());
-    if (!plik1) {
-        std::cout << "Brak pliku " << nowaNazwaPliku << "\n";
-        std::cin.get();
-    }
-    plik1.setf( std::ios::fixed, std:: ios::floatfield );
-//    plik1.precision(32);
-// Zegarek
-    time_t rawtime;
-    struct tm * timeinfo;
-    char buffer[80];
-    time (&rawtime);
-    timeinfo = localtime(&rawtime);
-    strftime(buffer,80,"%d-%m-%Y %I:%M:%S",timeinfo);
-    std::string str(buffer);
     unsigned int liczbaTrojkatow = refTriangles.size();
 
-    if (liczbaTrojkatow > 0) {
-        plik1 << "// generated by TerenEU07.exe " << AutoVersion::FULLVERSION_STRING << AutoVersion::STATUS_SHORT << " on " << str << "\n";
-        plik1 << "// Przesuniecie scenerii x = " << ExportX << ", y = " << ExportY << "\n\n";
-    }
     std::cout << "Sprawdzenie jak duza ma byc tablica na trojkaty... ";
     for (unsigned int i = 0; i < liczbaTrojkatow; ++i) {
         if (testXmax < refTriangles[i].x1) testXmax = refTriangles[i].x1;
@@ -2500,8 +2470,30 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
         }
         std::cout << "Petla " << i << " z: " << liczbaTrojkatow << "                                   \r";
     }
-    std::cout << "\nGotowe.\nZapis trojkatow...\n";
+    std::cout << "\nGotowe.\n\n";
 
+// Czas zapisac w nowym pliku przetworzone dane.
+    std::cout << "Otwieram plik " << nowaNazwaPliku << ", aby zapisac teren w formacie symulatora MaSzyna.\n";
+    std::ofstream plik1;
+// Otwiera plik
+    plik1.open(nowaNazwaPliku.c_str());
+    if (!plik1) {
+        std::cout << "Brak pliku " << nowaNazwaPliku << "\n";
+        std::cin.get();
+    }
+    plik1.setf( std::ios::fixed, std:: ios::floatfield );
+// Zegarek
+    time_t rawtime;
+    struct tm * timeinfo;
+    char buffer[80];
+    time (&rawtime);
+    timeinfo = localtime(&rawtime);
+    strftime(buffer,80,"%d-%m-%Y %I:%M:%S",timeinfo);
+    std::string str(buffer);
+    if (liczbaTrojkatow > 0) {
+        plik1 << "// generated by TerenEU07.exe " << AutoVersion::FULLVERSION_STRING << AutoVersion::STATUS_SHORT << " on " << str << "\n";
+        plik1 << "// Przesuniecie scenerii x = " << ExportX << ", y = " << ExportY << "\n\n";
+    }
 // W petli leci po wszystkich trojkatach
     for (unsigned int i = 0; i < liczbaTrojkatow; ++i) {
         double AnormalX = 0, AnormalY = 0, AnormalZ = 0, BnormalX = 0, BnormalY = 0, BnormalZ = 0, CnormalX = 0, CnormalY = 0, CnormalZ = 0;
@@ -3098,7 +3090,7 @@ void obrobkaDanychTXTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::s
 }
 
 void obrobkaDanychHGTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::string> &refTabelaNazwPlikowHGT, std::vector<std::string> &refTabelaNazwPlikowDT2, double &refWspolrzednaX, double &refWspolrzednaY, std::string szerokoscTablicy) {
-// Niezbedne (a moze i zbedne, ale tak wyszlo) zmienne
+// Niezbedne zmienne
     unsigned int nrId = 0, wierszeTablicy1 = 0, kolumnyTablicy1 = 0, wierszeTablicy2 = 0, kolumnyTablicy2 = 0, wierszeTablicyBrakow = 0, kolumnyTablicyBrakow = 0, licznikWierzcholkow = 0, szerokosc2 = 36, korektaX1 = 0, korektaY1 = 0, korektaX2 = 0, korektaY2 = 0, korektaXbraki = 0, korektaYbraki = 0;
     std::vector<double> odlegloscHGT1;
     std::vector<double> odlegloscHGT2;
@@ -3188,7 +3180,7 @@ void obrobkaDanychNodePoTriangulacji(double &refWspolrzednaX, double &refWspolrz
     zapisSymkowychTrojkatow(triangles, exportX, exportY);
     #ifdef zalesianie
     sadzenieDrzew(triangles, exportX, exportY);
-	#endif // zalesianie
+    #endif // zalesianie
     std::cout << "Program zakonczyl dzialanie. Nacisnij jakis klawisz.                         \n" << "\n";
 }
 

@@ -86,6 +86,8 @@ w tych miejscach, trzeba to solidnie wykonać w programie Rainsted.
 
 4. Program działa nieco szybciej w systemie linux niż w MS Windows.
 
+5. Teren na łączeniu SRTM 1 arc sec z SRTM 3 arc sec na razie
+jeszcze nie wygląda najlepiej.
 
 Symulator MaSzyna EU07 można pobrać ze strony: http://eu07.pl/.
 
