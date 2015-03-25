@@ -2414,7 +2414,7 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
     unsigned int licznik = 0, zmianaPliku1 = 2400000, zmianaPliku2 = 4800000, zmianaPliku3 = 7200000, zmianaPliku4 = 9600000, zmianaPliku5 = 12000000, zmianaPliku6 = 14400000, zmianaPliku7 = 16800000, zmianaPliku8 = 19200000;
     std::string nazwaPliku = "teren.scm";
     unsigned int nrPliku = 1;
-    unsigned int szerokosc = 200, testXmax = 0, testYmax = 0, testXmin = 900000, testYmin = 900000, wierszeTablicy = 0, kolumnyTablicy = 0;
+    unsigned int szerokosc = 300, testXmax = 0, testYmax = 0, testXmin = 900000, testYmin = 900000, wierszeTablicy = 0, kolumnyTablicy = 0;
     std::string numerPliku = to_string(nrPliku);
     std::string nowaNazwaPliku = nazwaPliku;
     nowaNazwaPliku.insert(5,numerPliku);
@@ -2458,14 +2458,14 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
     std::cout << "Oznaczanie trojkatow w poszczegolnych polach tablicy...\n";
     for (unsigned int i = 0; i < liczbaTrojkatow; ++i) {
         if (szachownica[(refTriangles[i].x1 - testXmin) / szerokosc][(refTriangles[i].y1 - testYmin) / szerokosc] == -1) {
-                szachownica[(refTriangles[i].x1 - testXmin) / szerokosc][(refTriangles[i].y1 - testYmin) / szerokosc] = i;
+            szachownica[(refTriangles[i].x1 - testXmin) / szerokosc][(refTriangles[i].y1 - testYmin) / szerokosc] = i;
         } else {
-		int test = szachownica[(refTriangles[i].x1 - testXmin) / szerokosc][(refTriangles[i].y1 - testYmin) / szerokosc];
-		int poprzedni = test;
-		while (test != -1) {
-			test = refTriangles[test].nastepnyTrojkat;
-			if (test != -1) poprzedni = test;
-		}
+            int test = szachownica[(refTriangles[i].x1 - testXmin) / szerokosc][(refTriangles[i].y1 - testYmin) / szerokosc];
+            int poprzedni = test;
+            while (test != -1) {
+                test = refTriangles[test].nastepnyTrojkat;
+                if (test != -1) poprzedni = test;
+            }
             refTriangles[poprzedni].nastepnyTrojkat = i;
         }
         std::cout << "Petla " << i << " z: " << liczbaTrojkatow << "                                   \r";
@@ -2606,9 +2606,9 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
                 plik1 << "node -1 0 none triangles material ambient: 104 104 104 diffuse: 208 208 208 specular: 146 146 146 endmaterial grass\n";
             }
 //          plik1 << "// Trojkat 1 - Iloczyn wektora AB i CB =[" << XiloczynABiCB << ", " << YiloczynABiCB << ", " << ZiloczynABiCB << "] xyz. I dlugosc = " << dlugoscIloczynABiCB << "\n";
-            plik1 << (refTriangles[i].x2 - ExportX) * -1.0 << " " << refTriangles[i].z2 << " " << refTriangles[i].y2 - ExportY << " " << AnormalX / AsumaNormalX << " " << AnormalZ / AsumaNormalZ << " " << AnormalY / AsumaNormalY << " " << ((refTriangles[i].x2 - ExportX) * -1.0) / 30.0 << " " << (refTriangles[i].y2 - ExportY) / 30.0 << " end\n";
-            plik1 << (refTriangles[i].x1 - ExportX) * -1.0 << " " << refTriangles[i].z1 << " " << refTriangles[i].y1 - ExportY << " " << BnormalX / BsumaNormalX << " " << BnormalZ / BsumaNormalZ << " " << BnormalY / BsumaNormalY << " " << ((refTriangles[i].x1 - ExportX) * -1.0) / 30.0 << " " << (refTriangles[i].y1 - ExportY) / 30.0 << " end\n";
-            plik1 << (refTriangles[i].x3 - ExportX) * -1.0 << " " << refTriangles[i].z3 << " " << refTriangles[i].y3 - ExportY << " " << CnormalX / CsumaNormalX << " " << CnormalZ / CsumaNormalZ << " " << CnormalY / CsumaNormalY << " " << ((refTriangles[i].x3 - ExportX) * -1.0) / 30.0 << " " << (refTriangles[i].y3 - ExportY) / 30.0 << "\n";
+            plik1 << (refTriangles[i].x2 - ExportX) * -1.0 << " " << refTriangles[i].z2 << " " << refTriangles[i].y2 - ExportY << " " << AnormalX / AsumaNormalX << " " << AnormalZ / AsumaNormalZ << " " << AnormalY / AsumaNormalY << " " << ((refTriangles[i].x2 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y2 - ExportY) / 25.0 << " end\n";
+            plik1 << (refTriangles[i].x1 - ExportX) * -1.0 << " " << refTriangles[i].z1 << " " << refTriangles[i].y1 - ExportY << " " << BnormalX / BsumaNormalX << " " << BnormalZ / BsumaNormalZ << " " << BnormalY / BsumaNormalY << " " << ((refTriangles[i].x1 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y1 - ExportY) / 25.0 << " end\n";
+            plik1 << (refTriangles[i].x3 - ExportX) * -1.0 << " " << refTriangles[i].z3 << " " << refTriangles[i].y3 - ExportY << " " << CnormalX / CsumaNormalX << " " << CnormalZ / CsumaNormalZ << " " << CnormalY / CsumaNormalY << " " << ((refTriangles[i].x3 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y3 - ExportY) / 25.0 << "\n";
             plik1 << "endtri\n";
 
         } else {
@@ -2618,9 +2618,9 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
                 plik1 << "node -1 0 none triangles material ambient: 104 104 104 diffuse: 208 208 208 specular: 146 146 146 endmaterial grass\n";
             }
 //          plik1 << "// Trojkat 2 - Iloczyn wektora AB i CB =[" << XiloczynABiCB << ", " << YiloczynABiCB << ", " << ZiloczynABiCB << "] xyz. I dlugosc = " << dlugoscIloczynABiCB << "\n";
-            plik1 << (refTriangles[i].x1 - ExportX) * -1.0 << " " << refTriangles[i].z1 << " " << refTriangles[i].y1 - ExportY << " " << (AnormalX * -1.0) / AsumaNormalX << " " << (AnormalZ * -1.0) / AsumaNormalZ << " " << (AnormalY * -1.0) / AsumaNormalY << " " << ((refTriangles[i].x1 - ExportX) * -1.0) / 30.0 << " " << (refTriangles[i].y1 - ExportY) / 30.0 << " end\n";
-            plik1 << (refTriangles[i].x2 - ExportX) * -1.0 << " " << refTriangles[i].z2 << " " << refTriangles[i].y2 - ExportY << " " << (BnormalX * -1.0) / BsumaNormalX << " " << (BnormalZ * -1.0) / BsumaNormalZ << " " << (BnormalY * -1.0) / BsumaNormalY << " " << ((refTriangles[i].x2 - ExportX) * -1.0) / 30.0 << " " << (refTriangles[i].y2 - ExportY) / 30.0 << " end\n";
-            plik1 << (refTriangles[i].x3 - ExportX) * -1.0 << " " << refTriangles[i].z3 << " " << refTriangles[i].y3 - ExportY << " " << (CnormalX * -1.0) / CsumaNormalX << " " << (CnormalZ * -1.0) / CsumaNormalZ << " " << (CnormalY * -1.0) / CsumaNormalY << " " << ((refTriangles[i].x3 - ExportX) * -1.0) / 30.0 << " " << (refTriangles[i].y3 - ExportY) / 30.0 << "\n";
+            plik1 << (refTriangles[i].x1 - ExportX) * -1.0 << " " << refTriangles[i].z1 << " " << refTriangles[i].y1 - ExportY << " " << (AnormalX * -1.0) / AsumaNormalX << " " << (AnormalZ * -1.0) / AsumaNormalZ << " " << (AnormalY * -1.0) / AsumaNormalY << " " << ((refTriangles[i].x1 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y1 - ExportY) / 25.0 << " end\n";
+            plik1 << (refTriangles[i].x2 - ExportX) * -1.0 << " " << refTriangles[i].z2 << " " << refTriangles[i].y2 - ExportY << " " << (BnormalX * -1.0) / BsumaNormalX << " " << (BnormalZ * -1.0) / BsumaNormalZ << " " << (BnormalY * -1.0) / BsumaNormalY << " " << ((refTriangles[i].x2 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y2 - ExportY) / 25.0 << " end\n";
+            plik1 << (refTriangles[i].x3 - ExportX) * -1.0 << " " << refTriangles[i].z3 << " " << refTriangles[i].y3 - ExportY << " " << (CnormalX * -1.0) / CsumaNormalX << " " << (CnormalZ * -1.0) / CsumaNormalZ << " " << (CnormalY * -1.0) / CsumaNormalY << " " << ((refTriangles[i].x3 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y3 - ExportY) / 25.0 << "\n";
             plik1 << "endtri\n";
         }
         std::cout << "Petla " << i << " z: " << liczbaTrojkatow << "                                   \r";
