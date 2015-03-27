@@ -1437,7 +1437,6 @@ Literatura:
 }
 
 void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std::vector<unsigned int> > &refTablica, std::vector<std::vector<unsigned int> > &refTablicaBrakow, std::string nazwaPliku, std::vector<double> &refOdlegloscHGT, unsigned int &id, unsigned int &refNrPliku, unsigned int &refLiczbaPlikow, unsigned int szerokosc, std::vector<punktyTorow> &refToryZGwiazdka, unsigned int refKorektaX, unsigned int refKorektaY, unsigned int refKorektaXbraki, unsigned int refKorektaYbraki, unsigned int refWierszeTablicy, unsigned int refKolumnyTablicy) {
-	unsigned char buffer[2];
 	unsigned int licznik = 0, dlugoscNazwyPliku = 0, liczbaTorowZGwiazdka = refToryZGwiazdka.size();
 	const int a = 0;
 	double minutaX = 0, minutaY = 0;
@@ -1497,6 +1496,7 @@ void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
 	}
     double geoidUndulation = 10*(fileBuf[491] - '0') + fileBuf[492] - '0';
     fclose(file);
+    delete[]fileBuf;
 //Odczyt pliku HEM
     nazwaPliku.replace(dlugoscNazwyPliku-34,3,"HEM");
     nazwaPliku.replace(dlugoscNazwyPliku-7,3,"HEM");
@@ -1772,6 +1772,7 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
 	}
     double geoidUndulation = 10*(fileBuf[491] - '0') + fileBuf[492] - '0';
     fclose(file);
+    delete[]fileBuf;
     nazwaPliku.replace(dlugoscNazwyPliku-34,3,"HEM");
     nazwaPliku.replace(dlugoscNazwyPliku-7,3,"HEM");
     std::cout << "Otwieram plik z korekta wysokosci" << nazwaPliku << "\n";
@@ -2497,107 +2498,83 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
 // W petli leci po wszystkich trojkatach
     for (unsigned int i = 0; i < liczbaTrojkatow; ++i) {
         double AnormalX = 0, AnormalY = 0, AnormalZ = 0, BnormalX = 0, BnormalY = 0, BnormalZ = 0, CnormalX = 0, CnormalY = 0, CnormalZ = 0;
-        double AsumaNormalX = 0, AsumaNormalY = 0, AsumaNormalZ = 0, BsumaNormalX = 0, BsumaNormalY = 0, BsumaNormalZ = 0, CsumaNormalX = 0, CsumaNormalY = 0, CsumaNormalZ = 0;
+        double AsumaNormal = 0, BsumaNormal = 0, CsumaNormal = 0;
         for (int przesuniecieX = -1; przesuniecieX < 2; ++przesuniecieX) {
             for (int przesuniecieY = -1; przesuniecieY < 2; ++przesuniecieY) {
                 int test = szachownica[((refTriangles[i].x1 - testXmin) / szerokosc) + przesuniecieX][((refTriangles[i].y1 - testYmin) / szerokosc) + przesuniecieY];
                 while (test != -1) {
-                    if ((refTriangles[i].x1 > refTriangles[test].x1 - 0.1) && (refTriangles[i].x1 < refTriangles[test].x1 + 0.1) && (refTriangles[i].y1 > refTriangles[test].y1 - 0.1) && (refTriangles[i].y1 < refTriangles[test].y1 + 0.1)) {
+                    if ((refTriangles[i].x1 > refTriangles[test].x1 - 0.01) && (refTriangles[i].x1 < refTriangles[test].x1 + 0.01) && (refTriangles[i].y1 > refTriangles[test].y1 - 0.01) && (refTriangles[i].y1 < refTriangles[test].y1 + 0.01)) {
                         AnormalX = AnormalX + refTriangles[test].normalX;
-                        ++AsumaNormalX;
                         AnormalY = AnormalY + refTriangles[test].normalY;
-                        ++AsumaNormalY;
                         AnormalZ = AnormalZ + refTriangles[test].normalZ;
-                        ++AsumaNormalZ;
+                        ++AsumaNormal;
                     }
-                    if ((refTriangles[i].x1 > refTriangles[test].x2 - 0.1) && (refTriangles[i].x1 < refTriangles[test].x2 + 0.1) && (refTriangles[i].y1 > refTriangles[test].y2 - 0.1) && (refTriangles[i].y1 < refTriangles[test].y2 + 0.1)) {
+                    if ((refTriangles[i].x1 > refTriangles[test].x2 - 0.01) && (refTriangles[i].x1 < refTriangles[test].x2 + 0.01) && (refTriangles[i].y1 > refTriangles[test].y2 - 0.01) && (refTriangles[i].y1 < refTriangles[test].y2 + 0.01)) {
                         AnormalX = AnormalX + refTriangles[test].normalX;
-                        ++AsumaNormalX;
                         AnormalY = AnormalY + refTriangles[test].normalY;
-                        ++AsumaNormalY;
                         AnormalZ = AnormalZ + refTriangles[test].normalZ;
-                        ++AsumaNormalZ;
+                        ++AsumaNormal;
                     }
-                    if ((refTriangles[i].x1 > refTriangles[test].x3 - 0.1) && (refTriangles[i].x1 < refTriangles[test].x3 + 0.1) && (refTriangles[i].y1 > refTriangles[test].y3 - 0.1) && (refTriangles[i].y1 < refTriangles[test].y3 + 0.1)) {
+                    if ((refTriangles[i].x1 > refTriangles[test].x3 - 0.01) && (refTriangles[i].x1 < refTriangles[test].x3 + 0.01) && (refTriangles[i].y1 > refTriangles[test].y3 - 0.01) && (refTriangles[i].y1 < refTriangles[test].y3 + 0.01)) {
                         AnormalX = AnormalX + refTriangles[test].normalX;
-                        ++AsumaNormalX;
                         AnormalY = AnormalY + refTriangles[test].normalY;
-                        ++AsumaNormalY;
                         AnormalZ = AnormalZ + refTriangles[test].normalZ;
-                        ++AsumaNormalZ;
+                        ++AsumaNormal;
                     }
-                    if ((refTriangles[i].x2 > refTriangles[test].x1 - 0.1) && (refTriangles[i].x2 < refTriangles[test].x1 + 0.1) && (refTriangles[i].y2 > refTriangles[test].y1 - 0.1) && (refTriangles[i].y2 < refTriangles[test].y1 + 0.1)) {
+                    if ((refTriangles[i].x2 > refTriangles[test].x1 - 0.01) && (refTriangles[i].x2 < refTriangles[test].x1 + 0.01) && (refTriangles[i].y2 > refTriangles[test].y1 - 0.01) && (refTriangles[i].y2 < refTriangles[test].y1 + 0.01)) {
                         BnormalX = BnormalX + refTriangles[test].normalX;
-                        ++BsumaNormalX;
                         BnormalY = BnormalY + refTriangles[test].normalY;
-                        ++BsumaNormalY;
                         BnormalZ = BnormalZ + refTriangles[test].normalZ;
-                        ++BsumaNormalZ;
+                        ++BsumaNormal;
                     }
-                    if ((refTriangles[i].x2 > refTriangles[test].x2 - 0.1) && (refTriangles[i].x2 < refTriangles[test].x2 + 0.1) && (refTriangles[i].y2 > refTriangles[test].y2 - 0.1) && (refTriangles[i].y2 < refTriangles[test].y2 + 0.1)) {
+                    if ((refTriangles[i].x2 > refTriangles[test].x2 - 0.01) && (refTriangles[i].x2 < refTriangles[test].x2 + 0.01) && (refTriangles[i].y2 > refTriangles[test].y2 - 0.01) && (refTriangles[i].y2 < refTriangles[test].y2 + 0.01)) {
                         BnormalX = BnormalX + refTriangles[test].normalX;
-                        ++BsumaNormalX;
                         BnormalY = BnormalY + refTriangles[test].normalY;
-                        ++BsumaNormalY;
                         BnormalZ = BnormalZ + refTriangles[test].normalZ;
-                        ++BsumaNormalZ;
+                        ++BsumaNormal;
                     }
-                    if ((refTriangles[i].x2 > refTriangles[test].x3 - 0.1) && (refTriangles[i].x2 < refTriangles[test].x3 + 0.1) && (refTriangles[i].y2 > refTriangles[test].y3 - 0.1) && (refTriangles[i].y2 < refTriangles[test].y3 + 0.1)) {
+                    if ((refTriangles[i].x2 > refTriangles[test].x3 - 0.01) && (refTriangles[i].x2 < refTriangles[test].x3 + 0.01) && (refTriangles[i].y2 > refTriangles[test].y3 - 0.01) && (refTriangles[i].y2 < refTriangles[test].y3 + 0.01)) {
                         BnormalX = BnormalX + refTriangles[test].normalX;
-                        ++BsumaNormalX;
                         BnormalY = BnormalY + refTriangles[test].normalY;
-                        ++BsumaNormalY;
                         BnormalZ = BnormalZ + refTriangles[test].normalZ;
-                        ++BsumaNormalZ;
+                        ++BsumaNormal;
                     }
-                    if ((refTriangles[i].x3 > refTriangles[test].x1 - 0.1) && (refTriangles[i].x3 < refTriangles[test].x1 + 0.1) && (refTriangles[i].y3 > refTriangles[test].y1 - 0.1) && (refTriangles[i].y3 < refTriangles[test].y1 + 0.1)) {
+                    if ((refTriangles[i].x3 > refTriangles[test].x1 - 0.01) && (refTriangles[i].x3 < refTriangles[test].x1 + 0.01) && (refTriangles[i].y3 > refTriangles[test].y1 - 0.01) && (refTriangles[i].y3 < refTriangles[test].y1 + 0.01)) {
                         CnormalX = CnormalX + refTriangles[test].normalX;
-                        ++CsumaNormalX;
                         CnormalY = CnormalY + refTriangles[test].normalY;
-                        ++CsumaNormalY;
                         CnormalZ = CnormalZ + refTriangles[test].normalZ;
-                        ++CsumaNormalZ;
+                        ++CsumaNormal;
                     }
-                    if ((refTriangles[i].x3 > refTriangles[test].x2 - 0.1) && (refTriangles[i].x3 < refTriangles[test].x2 + 0.1) && (refTriangles[i].y3 > refTriangles[test].y2 - 0.1) && (refTriangles[i].y3 < refTriangles[test].y2 + 0.1)) {
+                    if ((refTriangles[i].x3 > refTriangles[test].x2 - 0.01) && (refTriangles[i].x3 < refTriangles[test].x2 + 0.01) && (refTriangles[i].y3 > refTriangles[test].y2 - 0.01) && (refTriangles[i].y3 < refTriangles[test].y2 + 0.01)) {
                         CnormalX = CnormalX + refTriangles[test].normalX;
-                        ++CsumaNormalX;
                         CnormalY = CnormalY + refTriangles[test].normalY;
-                        ++CsumaNormalY;
                         CnormalZ = CnormalZ + refTriangles[test].normalZ;
-                        ++CsumaNormalZ;
+                        ++CsumaNormal;
                     }
-                    if ((refTriangles[i].x3 > refTriangles[test].x3 - 0.1) && (refTriangles[i].x3 < refTriangles[test].x3 + 0.1) && (refTriangles[i].y3 > refTriangles[test].y3 - 0.1) && (refTriangles[i].y3 < refTriangles[test].y3 + 0.1)) {
+                    if ((refTriangles[i].x3 > refTriangles[test].x3 - 0.01) && (refTriangles[i].x3 < refTriangles[test].x3 + 0.01) && (refTriangles[i].y3 > refTriangles[test].y3 - 0.01) && (refTriangles[i].y3 < refTriangles[test].y3 + 0.01)) {
                         CnormalX = CnormalX + refTriangles[test].normalX;
-                        ++CsumaNormalX;
                         CnormalY = CnormalY + refTriangles[test].normalY;
-                        ++CsumaNormalY;
                         CnormalZ = CnormalZ + refTriangles[test].normalZ;
-                        ++CsumaNormalZ;
+                        ++CsumaNormal;
                     }
                     test = refTriangles[test].nastepnyTrojkat;
                 }
             }
         }
         AnormalX = AnormalX + refTriangles[i].normalX;
-        ++AsumaNormalX;
         AnormalY = AnormalY + refTriangles[i].normalY;
-        ++AsumaNormalY;
         AnormalZ = AnormalZ + refTriangles[i].normalZ;
-        ++AsumaNormalZ;
+        ++AsumaNormal;
 
         BnormalX = BnormalX + refTriangles[i].normalX;
-        ++BsumaNormalX;
         BnormalY = BnormalY + refTriangles[i].normalY;
-        ++BsumaNormalY;
         BnormalZ = BnormalZ + refTriangles[i].normalZ;
-        ++BsumaNormalZ;
+        ++BsumaNormal;
 
         CnormalX = CnormalX + refTriangles[i].normalX;
-        ++CsumaNormalX;
         CnormalY = CnormalY + refTriangles[i].normalY;
-        ++CsumaNormalY;
         CnormalZ = CnormalZ + refTriangles[i].normalZ;
-        ++CsumaNormalZ;
+        ++CsumaNormal;
 
         if (refTriangles[i].Ziloczyn > 0) {
             if ((refTriangles[i].z2 > 800.0) || (refTriangles[i].z1 > 800.0) || (refTriangles[i].z3 > 800.0)) {
@@ -2606,9 +2583,9 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
                 plik1 << "node -1 0 none triangles material ambient: 104 104 104 diffuse: 208 208 208 specular: 146 146 146 endmaterial grass\n";
             }
 //          plik1 << "// Trojkat 1 - Iloczyn wektora AB i CB =[" << XiloczynABiCB << ", " << YiloczynABiCB << ", " << ZiloczynABiCB << "] xyz. I dlugosc = " << dlugoscIloczynABiCB << "\n";
-            plik1 << (refTriangles[i].x2 - ExportX) * -1.0 << " " << refTriangles[i].z2 << " " << refTriangles[i].y2 - ExportY << " " << AnormalX / AsumaNormalX << " " << AnormalZ / AsumaNormalZ << " " << AnormalY / AsumaNormalY << " " << ((refTriangles[i].x2 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y2 - ExportY) / 25.0 << " end\n";
-            plik1 << (refTriangles[i].x1 - ExportX) * -1.0 << " " << refTriangles[i].z1 << " " << refTriangles[i].y1 - ExportY << " " << BnormalX / BsumaNormalX << " " << BnormalZ / BsumaNormalZ << " " << BnormalY / BsumaNormalY << " " << ((refTriangles[i].x1 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y1 - ExportY) / 25.0 << " end\n";
-            plik1 << (refTriangles[i].x3 - ExportX) * -1.0 << " " << refTriangles[i].z3 << " " << refTriangles[i].y3 - ExportY << " " << CnormalX / CsumaNormalX << " " << CnormalZ / CsumaNormalZ << " " << CnormalY / CsumaNormalY << " " << ((refTriangles[i].x3 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y3 - ExportY) / 25.0 << "\n";
+            plik1 << (refTriangles[i].x2 - ExportX) * -1.0 << " " << refTriangles[i].z2 << " " << refTriangles[i].y2 - ExportY << " " << AnormalX / AsumaNormal << " " << AnormalZ / AsumaNormal << " " << AnormalY / AsumaNormal << " " << ((refTriangles[i].x2 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y2 - ExportY) / 25.0 << " end\n";
+            plik1 << (refTriangles[i].x1 - ExportX) * -1.0 << " " << refTriangles[i].z1 << " " << refTriangles[i].y1 - ExportY << " " << BnormalX / BsumaNormal << " " << BnormalZ / BsumaNormal << " " << BnormalY / BsumaNormal << " " << ((refTriangles[i].x1 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y1 - ExportY) / 25.0 << " end\n";
+            plik1 << (refTriangles[i].x3 - ExportX) * -1.0 << " " << refTriangles[i].z3 << " " << refTriangles[i].y3 - ExportY << " " << CnormalX / CsumaNormal << " " << CnormalZ / CsumaNormal << " " << CnormalY / CsumaNormal << " " << ((refTriangles[i].x3 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y3 - ExportY) / 25.0 << "\n";
             plik1 << "endtri\n";
 
         } else {
@@ -2618,9 +2595,9 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
                 plik1 << "node -1 0 none triangles material ambient: 104 104 104 diffuse: 208 208 208 specular: 146 146 146 endmaterial grass\n";
             }
 //          plik1 << "// Trojkat 2 - Iloczyn wektora AB i CB =[" << XiloczynABiCB << ", " << YiloczynABiCB << ", " << ZiloczynABiCB << "] xyz. I dlugosc = " << dlugoscIloczynABiCB << "\n";
-            plik1 << (refTriangles[i].x1 - ExportX) * -1.0 << " " << refTriangles[i].z1 << " " << refTriangles[i].y1 - ExportY << " " << (AnormalX * -1.0) / AsumaNormalX << " " << (AnormalZ * -1.0) / AsumaNormalZ << " " << (AnormalY * -1.0) / AsumaNormalY << " " << ((refTriangles[i].x1 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y1 - ExportY) / 25.0 << " end\n";
-            plik1 << (refTriangles[i].x2 - ExportX) * -1.0 << " " << refTriangles[i].z2 << " " << refTriangles[i].y2 - ExportY << " " << (BnormalX * -1.0) / BsumaNormalX << " " << (BnormalZ * -1.0) / BsumaNormalZ << " " << (BnormalY * -1.0) / BsumaNormalY << " " << ((refTriangles[i].x2 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y2 - ExportY) / 25.0 << " end\n";
-            plik1 << (refTriangles[i].x3 - ExportX) * -1.0 << " " << refTriangles[i].z3 << " " << refTriangles[i].y3 - ExportY << " " << (CnormalX * -1.0) / CsumaNormalX << " " << (CnormalZ * -1.0) / CsumaNormalZ << " " << (CnormalY * -1.0) / CsumaNormalY << " " << ((refTriangles[i].x3 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y3 - ExportY) / 25.0 << "\n";
+            plik1 << (refTriangles[i].x1 - ExportX) * -1.0 << " " << refTriangles[i].z1 << " " << refTriangles[i].y1 - ExportY << " " << (AnormalX * -1.0) / AsumaNormal << " " << (AnormalZ * -1.0) / AsumaNormal << " " << (AnormalY * -1.0) / AsumaNormal << " " << ((refTriangles[i].x1 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y1 - ExportY) / 25.0 << " end\n";
+            plik1 << (refTriangles[i].x2 - ExportX) * -1.0 << " " << refTriangles[i].z2 << " " << refTriangles[i].y2 - ExportY << " " << (BnormalX * -1.0) / BsumaNormal << " " << (BnormalZ * -1.0) / BsumaNormal << " " << (BnormalY * -1.0) / BsumaNormal << " " << ((refTriangles[i].x2 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y2 - ExportY) / 25.0 << " end\n";
+            plik1 << (refTriangles[i].x3 - ExportX) * -1.0 << " " << refTriangles[i].z3 << " " << refTriangles[i].y3 - ExportY << " " << (CnormalX * -1.0) / CsumaNormal << " " << (CnormalZ * -1.0) / CsumaNormal << " " << (CnormalY * -1.0) / CsumaNormal << " " << ((refTriangles[i].x3 - ExportX) * -1.0) / 25.0 << " " << (refTriangles[i].y3 - ExportY) / 25.0 << "\n";
             plik1 << "endtri\n";
         }
         std::cout << "Petla " << i << " z: " << liczbaTrojkatow << "                                   \r";
