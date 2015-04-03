@@ -79,12 +79,6 @@ struct wierzcholek {
     double z;
 };
 
-struct punkty {
-    double x;
-    double y;
-    double z;
-};
-
 struct triangle {
     double x1;
     double y1;
@@ -204,7 +198,7 @@ void odczytPunktowTorow(std::vector<std::vector<unsigned int> > &refTablica, std
         std::string rodzajNode ("");
         std::getline(plik1, linia);
 // ...patrzymy czy zawiera
-        unsigned znaleziono = (linia.find(szukanyString));
+        int znaleziono = (linia.find(szukanyString));
 // Jesli zawiera, to rozbijamy linie na elementy
 //npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
@@ -316,7 +310,7 @@ void odczytPunktowTorow(std::vector<std::vector<unsigned int> > &refTablica, std
         std::string rodzajNode ("");
         std::getline(plik1, linia);
 // ...patrzymy czy zawiera
-        unsigned znaleziono = (linia.find(szukanyString));
+        int znaleziono = (linia.find(szukanyString));
 // Jesli zawiera, to rozbijamy linie na elementy
 //npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
@@ -399,7 +393,7 @@ void odczytPunktowTorowZGwiazdka(std::vector<punktyTorow> &refToryZGwiazdka, dou
         bool mamyGo = false;
         std::getline(plik1, linia);
 // ...patrzymy czy zawiera
-        unsigned znaleziono = (linia.find(szukanyString));
+        int znaleziono = (linia.find(szukanyString));
 // Jesli zawiera, to rozbijamy linie na elementy
 //npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
@@ -491,7 +485,7 @@ void odczytWierzcholkowTriangles(std::vector<wierzcholek> &refWierzcholki, doubl
         std::getline(plik1, linia);
         ++nrLinii;
 // ...patrzymy czy zawiera
-        unsigned znaleziono = (linia.find(szukanyString));
+        int znaleziono = (linia.find(szukanyString));
 // Jesli zawiera, to rozbijamy linie na elementy
 //npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
@@ -600,7 +594,7 @@ void odczytWierzcholkowTriangles(std::vector<wierzcholek> &refWierzcholki, doubl
                     }
                     ++wyraz1;
                 }
-                if (wyraz > llw) llw = wyraz + 1;
+                if (wyraz >= llw) ++llw;
             }
         }
     }
@@ -631,7 +625,7 @@ void tablicaWierzcholkowTriangles(std::vector<std::vector<unsigned int> > &refTa
         std::getline(plik1, linia);
         ++nrLinii;
 // ...patrzymy czy zawiera
-        unsigned znaleziono = (linia.find(szukanyString));
+        int znaleziono = (linia.find(szukanyString));
 // Jesli zawiera, to rozbijamy linie na elementy
 //npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
@@ -687,7 +681,7 @@ void tablicaWierzcholkowTriangles(std::vector<std::vector<unsigned int> > &refTa
         std::getline(plik1, linia);
         ++nrLinii;
 // ...patrzymy czy zawiera
-        unsigned znaleziono = (linia.find(szukanyString));
+        int znaleziono = (linia.find(szukanyString));
 // Jesli zawiera, to rozbijamy linie na elementy
 //npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
@@ -839,18 +833,13 @@ void odczytPunktowNode(std::vector<wierzcholek> &refWierzcholki, std::string zar
             }
             if (temp == "#") break;
             if (!flagPunkty) {
-// Y
-                if (wyraz == 1) temp1 = temp; // y.push_back(atof(temp.c_str()));
-// -X
-                if (wyraz == 2) temp2 = temp; // x.push_back(atof(temp.c_str()));
-// Z
+                if (wyraz == 1) temp1 = temp; // Y
+                if (wyraz == 2) temp2 = temp; // -X
                 if (wyraz == 3) {
-                    temp3 = temp.erase (0,1);
+                    temp3 = temp.erase (0,1); //Z
                     if (!znalazlem) {
+                        refWierzcholki.push_back(wierzcholek{atof (temp1.c_str()), atof (temp2.c_str()), atof (temp3.c_str())});
                         refWierzcholki.push_back(wierzcholek());
-                        refWierzcholki[refLicznikWierzcholkow].x = atof (temp1.c_str());
-                        refWierzcholki[refLicznikWierzcholkow].y = atof (temp2.c_str());
-                        refWierzcholki[refLicznikWierzcholkow].z = atof (temp3.c_str());
                         znalazlem = true;
                         ++refLicznikWierzcholkow;
                     }
@@ -875,7 +864,6 @@ void odczytPunktowHGT(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
                       unsigned int refKolumnyTablicy) {
     unsigned char buffer[2];
     unsigned int licznik = 0;
-    const int a = 0;
     unsigned int dlugoscNazwyPliku = 0, liczbaTorowZGwiazdka = refToryZGwiazdka.size();
     const double sekunda = 3.0/3600.0;
     dlugoscNazwyPliku = nazwaPliku.length();
@@ -1051,12 +1039,7 @@ void odczytPunktowHGT(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
                                 }
                             }
                             if (!doOdrzutu) {
-//                      refWierzcholki.push_back(wierzcholek());
-//                      refWierzcholki.resize(id + 1);
                                 refWierzcholki.push_back(wierzcholek{Ypuwg, Xpuwg, z});
-//                      refWierzcholki[id].x = Ypuwg;
-//                      refWierzcholki[id].y = Xpuwg;
-//                      refWierzcholki[id].z = z;
                                 ++id;
                                 ++licznik;
                             }
@@ -1082,7 +1065,6 @@ void odczytPunktowHGTzUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
         unsigned int refKolumnyTablicy2) {
     unsigned char buffer[2];
     unsigned int licznik = 0, dlugoscNazwyPliku = 0, liczbaTorowZGwiazdka = refToryZGwiazdka.size();
-    const int a = 0;
     const double sekunda = 3.0/3600.0;
     dlugoscNazwyPliku = nazwaPliku.length();
     std::string nrx = nazwaPliku.substr(dlugoscNazwyPliku-10,2);
@@ -1271,12 +1253,7 @@ void odczytPunktowHGTzUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
                                     }
                                 }
                                 if (!doOdrzutu) {
-//                    refWierzcholki.push_back(wierzcholek());
-//                    refWierzcholki.resize(id + 1);
                                     refWierzcholki.push_back(wierzcholek{Ypuwg, Xpuwg, z});
-//                    refWierzcholki[id].x = Ypuwg;
-//                    refWierzcholki[id].y = Xpuwg;
-//                    refWierzcholki[id].z = z;
                                     ++refNrId;
                                     ++licznik;
                                 }
@@ -1543,12 +1520,7 @@ void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
                             }
                         }
                         if (!doOdrzutu) {
-//                      refWierzcholki.push_back(wierzcholek());
-//                      refWierzcholki.resize(id + 1);
                             refWierzcholki.push_back(wierzcholek{Ypuwg, Xpuwg, z});
-//                      refWierzcholki[id].x = Ypuwg;
-//                      refWierzcholki[id].y = Xpuwg;
-//                      refWierzcholki[id].z = z;
                             ++id;
                             ++licznik;
                         }
@@ -1834,12 +1806,7 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
                                 }
                             }
                             if (!doOdrzutu) {
-//                    refWierzcholki.push_back(wierzcholek());
-//                    refWierzcholki.resize(id + 1);
                                 refWierzcholki.push_back(wierzcholek{Ypuwg, Xpuwg, z});
-//                    refWierzcholki[id].x = Ypuwg;
-//                    refWierzcholki[id].y = Xpuwg;
-//                    refWierzcholki[id].z = z;
                                 ++refNrId;
                                 ++licznik;
                             }
@@ -1879,13 +1846,10 @@ void odczytPunktowTXT(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
             std::string temp ("");
             std::getline(ln, temp, ' ');
 // Jesli ostatnia linijka jest pusta, przerywamy wszystkie petle oprocz pierwszej for
-// Y
-            if (wyraz == 0) x = atof (temp.c_str()); // y.push_back(atof(temp.c_str()));
-// X
-            if (wyraz == 1) y = atof (temp.c_str()); // x.push_back(atof(temp.c_str()));
-// Z
+            if (wyraz == 0) x = atof (temp.c_str()); // X
+            if (wyraz == 1) y = atof (temp.c_str()); // Y
             if (wyraz == 2) {
-                z = atof (temp.c_str());
+                z = atof (temp.c_str()); //Z
                 bool doOdrzutu = false, nieSprawdzaj = false;
                 if (((x - refKorektaX) / szerokosc < 1) || ((x - refKorektaX) / szerokosc > refWierszeTablicy)) nieSprawdzaj = true;
                 if (((y - refKorektaY) / szerokosc < 1) || ((y - refKorektaY) / szerokosc > refKolumnyTablicy)) nieSprawdzaj = true;
@@ -2005,14 +1969,11 @@ void odczytPunktowTXTzUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
             std::string temp ("");
             std::getline(ln, temp, ' ');
 // Jesli ostatnia linijka jest pusta, przerywamy wszystkie petle oprocz pierwszej for
-// Y
-            if (wyraz == 0) x = atof (temp.c_str()); // y.push_back(atof(temp.c_str()));
-// X
-            if (wyraz == 1) y = atof (temp.c_str()); // x.push_back(atof(temp.c_str()));
-// Z
+            if (wyraz == 0) x = atof (temp.c_str()); // X
+            if (wyraz == 1) y = atof (temp.c_str()); // Y
             if (wyraz == 2) {
                 bool zaBlisko = false, nieSprawdzaj = false, doOdrzutu = false;
-                z = atof (temp.c_str()); // z.push_back(atof(temp.c_str()));
+                z = atof (temp.c_str()); // Z
                 if (((x - refKorektaX1) / szerokosc1 < 1) || ((x - refKorektaX1) / szerokosc1 > refWierszeTablicy1)) nieSprawdzaj = true;
                 if (((y - refKorektaY1) / szerokosc1 < 1) || ((y - refKorektaY1) / szerokosc1 > refKolumnyTablicy1)) nieSprawdzaj = true;
                 if (!nieSprawdzaj) {
@@ -2152,10 +2113,10 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
                 }
                 if (temp == "#") break;
                 if (!flagPunkty) {
-                    if (wyraz == 1) temp2 = atoi(temp.c_str()); // x.push_back(atof(temp.c_str()));
-                    if (wyraz == 2) temp3 = atoi(temp.c_str());
+                    if (wyraz == 1) temp2 = atoi(temp.c_str()); // X
+                    if (wyraz == 2) temp3 = atoi(temp.c_str()); // Y
                     if (wyraz == 3) {
-                        temp4 = atoi(temp.c_str()); // z.push_back(atof(temp.c_str()));
+                        temp4 = atoi(temp.c_str()); // Z
                         if (!znalazlem) {
                             AB = hypot(refWierzcholki[temp3].x - refWierzcholki[temp2].x, refWierzcholki[temp3].y - refWierzcholki[temp2].y);
                             BC = hypot(refWierzcholki[temp4].x - refWierzcholki[temp3].x, refWierzcholki[temp4].y - refWierzcholki[temp3].y);
@@ -2184,21 +2145,22 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
                                     double YiloczynABiCB = (ZwektorAB * XwektorCB) - (XwektorAB * ZwektorCB);
                                     double ZiloczynABiCB = (XwektorAB * YwektorCB) - (YwektorAB * XwektorCB);
                                     double dlugoscIloczynABiCB = hypot(XiloczynABiCB, hypot(YiloczynABiCB, ZiloczynABiCB));
-                                    refTriangles.push_back(triangle());
-                                    refTriangles[refLicznikTrojkatow].x1 = refWierzcholki[temp2].x;
-                                    refTriangles[refLicznikTrojkatow].y1 = refWierzcholki[temp2].y;
-                                    refTriangles[refLicznikTrojkatow].z1 = refWierzcholki[temp2].z;
-                                    refTriangles[refLicznikTrojkatow].x2 = refWierzcholki[temp3].x;
-                                    refTriangles[refLicznikTrojkatow].y2 = refWierzcholki[temp3].y;
-                                    refTriangles[refLicznikTrojkatow].z2 = refWierzcholki[temp3].z;
-                                    refTriangles[refLicznikTrojkatow].x3 = refWierzcholki[temp4].x;
-                                    refTriangles[refLicznikTrojkatow].y3 = refWierzcholki[temp4].y;
-                                    refTriangles[refLicznikTrojkatow].z3 = refWierzcholki[temp4].z;
-                                    refTriangles[refLicznikTrojkatow].normalX = XiloczynABiCB / dlugoscIloczynABiCB;
-                                    refTriangles[refLicznikTrojkatow].normalY = YiloczynABiCB / dlugoscIloczynABiCB;
-                                    refTriangles[refLicznikTrojkatow].normalZ = ZiloczynABiCB / dlugoscIloczynABiCB;
-                                    refTriangles[refLicznikTrojkatow].Ziloczyn = ZiloczynABiCB;
-                                    refTriangles[refLicznikTrojkatow].nastepnyTrojkat = -1;
+                                    refTriangles.push_back(triangle{refWierzcholki[temp2].x, refWierzcholki[temp2].y, refWierzcholki[temp2].z, refWierzcholki[temp3].x, refWierzcholki[temp3].y, refWierzcholki[temp3].z, refWierzcholki[temp4].x, refWierzcholki[temp4].y, refWierzcholki[temp4].z, XiloczynABiCB / dlugoscIloczynABiCB, YiloczynABiCB / dlugoscIloczynABiCB, ZiloczynABiCB / dlugoscIloczynABiCB, ZiloczynABiCB, -1});
+//                                    refTriangles.push_back(triangle());
+//                                    refTriangles[refLicznikTrojkatow].x1 = refWierzcholki[temp2].x;
+//                                    refTriangles[refLicznikTrojkatow].y1 = refWierzcholki[temp2].y;
+//                                    refTriangles[refLicznikTrojkatow].z1 = refWierzcholki[temp2].z;
+//                                    refTriangles[refLicznikTrojkatow].x2 = refWierzcholki[temp3].x;
+//                                    refTriangles[refLicznikTrojkatow].y2 = refWierzcholki[temp3].y;
+//                                    refTriangles[refLicznikTrojkatow].z2 = refWierzcholki[temp3].z;
+//                                    refTriangles[refLicznikTrojkatow].x3 = refWierzcholki[temp4].x;
+//                                    refTriangles[refLicznikTrojkatow].y3 = refWierzcholki[temp4].y;
+//                                    refTriangles[refLicznikTrojkatow].z3 = refWierzcholki[temp4].z;
+//                                    refTriangles[refLicznikTrojkatow].normalX = XiloczynABiCB / dlugoscIloczynABiCB;
+//                                    refTriangles[refLicznikTrojkatow].normalY = YiloczynABiCB / dlugoscIloczynABiCB;
+//                                    refTriangles[refLicznikTrojkatow].normalZ = ZiloczynABiCB / dlugoscIloczynABiCB;
+//                                    refTriangles[refLicznikTrojkatow].Ziloczyn = ZiloczynABiCB;
+//                                    refTriangles[refLicznikTrojkatow].nastepnyTrojkat = -1;
                                     ++refLicznikTrojkatow;
                                 }
                             }
@@ -2222,10 +2184,11 @@ void utworzDodatkowePunktySiatki(std::vector<triangle> &refTriangles, std::vecto
     unsigned int dotychczasowaLiczbaWierzcholkow = refRefWierzcholki.size();
     std::cout << "Teraz czas utworzyc dodatkowe punkty zageszczajace siatke:\n";
     for (unsigned int i = 0, ii = dotychczasowaLiczbaWierzcholkow; i < liczbaTrojkatow; ++i, ++ii) {
-        refRefWierzcholki.push_back(wierzcholek());
-        refRefWierzcholki[ii].x = (refTriangles[i].x1 + refTriangles[i].x2 + refTriangles[i].x3) / 3;
-        refRefWierzcholki[ii].y = (refTriangles[i].y1 + refTriangles[i].y2 + refTriangles[i].y3) / 3;
-        refRefWierzcholki[ii].z = (refTriangles[i].z1 + refTriangles[i].z2 + refTriangles[i].z3) / 3;
+        refRefWierzcholki.push_back(wierzcholek{(refTriangles[i].x1 + refTriangles[i].x2 + refTriangles[i].x3) / 3, (refTriangles[i].y1 + refTriangles[i].y2 + refTriangles[i].y3) / 3, (refTriangles[i].z1 + refTriangles[i].z2 + refTriangles[i].z3) / 3});
+//        refRefWierzcholki.push_back(wierzcholek());
+//        refRefWierzcholki[ii].x = (refTriangles[i].x1 + refTriangles[i].x2 + refTriangles[i].x3) / 3;
+//        refRefWierzcholki[ii].y = (refTriangles[i].y1 + refTriangles[i].y2 + refTriangles[i].y3) / 3;
+//        refRefWierzcholki[ii].z = (refTriangles[i].z1 + refTriangles[i].z2 + refTriangles[i].z3) / 3;
         std::cout << "Pierwotna liczba wierzcholkow: " << dotychczasowaLiczbaWierzcholkow << ". Nr dodatkowego wierzcholka" << i << "          \r";
     }
     std::cout << "\nKoniec tworzenia dodatkowych wierzcholkow\n";
@@ -2259,10 +2222,6 @@ void utworzDodatkowePunktySiatkiZUwzglednieniemProfilu(std::vector<triangle> &re
             }
             if (!zaBlisko) {
                 refRefWierzcholki.push_back(wierzcholek{nowyX, nowyY, (refTriangles[z].z1 + refTriangles[z].z2 + refTriangles[z].z3) / 3.0});
-//            refRefWierzcholki.push_back(wierzcholek());
-//            refRefWierzcholki[refRefNrId].x = nowyX;
-//            refRefWierzcholki[refRefNrId].y = nowyY;
-//            refRefWierzcholki[refRefNrId].z = (refTriangles[z].z1 + refTriangles[z].z2 + refTriangles[z].z3) / 3;
                 ++noweWierzcholki;
                 std::cout << "Pierwotna liczba wierz.: " << dotychczasowaLiczbaWierzcholkow << ". Liczba dodatkowych wierz.: " << noweWierzcholki << "          \r";
             }
@@ -2272,10 +2231,11 @@ void utworzDodatkowePunktySiatkiZUwzglednieniemProfilu(std::vector<triangle> &re
     // A na koniec dodajemy wierzcholki profilu
     dotychczasowaLiczbaWierzcholkow = refRefWierzcholki.size();
     for (unsigned int i = 0, ii = dotychczasowaLiczbaWierzcholkow; i < liczbaWierzcholkowProfilu; ++i, ++ii) {
-        refRefWierzcholki.push_back(wierzcholek());
-        refRefWierzcholki[ii].x = refRefWierzcholkiProfilu[i].x;
-        refRefWierzcholki[ii].y = refRefWierzcholkiProfilu[i].y;
-        refRefWierzcholki[ii].z = refRefWierzcholkiProfilu[i].z;
+        refRefWierzcholki.push_back(wierzcholek{refRefWierzcholkiProfilu[i].x, refRefWierzcholkiProfilu[i].y, refRefWierzcholkiProfilu[i].z});
+//        refRefWierzcholki.push_back(wierzcholek());
+//        refRefWierzcholki[ii].x = refRefWierzcholkiProfilu[i].x;
+//        refRefWierzcholki[ii].y = refRefWierzcholkiProfilu[i].y;
+//        refRefWierzcholki[ii].z = refRefWierzcholkiProfilu[i].z;
     }
     std::cout << "\nKoniec tworzenia dodatkowych wierzcholkow\n";
 }
@@ -2544,7 +2504,7 @@ void sadzenieDrzew(std::vector<triangle> &refTriangles, double ExportX, double E
 // Drobne poprawki i znajduje tylko z takim rozszerzeniem, z jakim chcialem
         std::string nazwaDrzewa ("");
         nazwaDrzewa = pdir->d_name;
-        unsigned znaleziono = nazwaDrzewa.find("dds");
+        int znaleziono = nazwaDrzewa.find("dds");
 //npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
             nazwaDrzewa = nazwaDrzewa.insert(0, pathToTreeClosed);
@@ -2586,8 +2546,8 @@ void sadzenieDrzew(std::vector<triangle> &refTriangles, double ExportX, double E
             if (z == 0) {
                 wylosowaneDrzewo = tabelaDrzew[rand() % liczbaDrzew];
                 z = 5000;
-                unsigned znaleziono1 = (wylosowaneDrzewo.find("drzewo"));
-                unsigned znaleziono2 = (wylosowaneDrzewo.find("sosna"));
+                int znaleziono1 = (wylosowaneDrzewo.find("drzewo"));
+                int znaleziono2 = (wylosowaneDrzewo.find("sosna"));
 // Zeby drzewa nie byly zbyt male
                 if ((znaleziono1 != -1) || (znaleziono2 != -1)) {
                     minWysokoscDrzewa = 4;
@@ -2602,7 +2562,7 @@ void sadzenieDrzew(std::vector<triangle> &refTriangles, double ExportX, double E
                     maxPromienKorona = 4;
                 }
 // Zeby nie robic lasow martwych drzew
-                unsigned znaleziono3 = (wylosowaneDrzewo.find("dead"));
+                int znaleziono3 = (wylosowaneDrzewo.find("dead"));
                 if (znaleziono3 != -1) {
                     z = 2;
                 }
@@ -2672,7 +2632,7 @@ void sadzenieDrzew(std::vector<triangle> &refTriangles, double ExportX, double E
     }
 }
 
-void zrobOtoczke(std::vector<wierzcholek> &refWierzcholki, std::vector<wypukla> &refOtoczka, std::vector<punkty> &refBezOtoczki) {
+void zrobOtoczke(std::vector<wierzcholek> &refWierzcholki, std::vector<wypukla> &refOtoczka, std::vector<wierzcholek> &refBezOtoczki) {
     unsigned int i = 2, j = 1, l = 0, k = 0, ileWierzcholkow = refWierzcholki.size();
 //    double lowestX = refWierzcholki[0].x, lowestY = refWierzcholki[0].y;
 // W petli leci po wszystkich punktach NMT
@@ -2688,40 +2648,45 @@ void zrobOtoczke(std::vector<wierzcholek> &refWierzcholki, std::vector<wypukla> 
     for (; i < ileWierzcholkow; ++i) {
         if (sprawdzKatPolarny(refWierzcholki[k].x, refWierzcholki[k].y, refWierzcholki[j].x, refWierzcholki[j].y, refWierzcholki[i].x,
                               refWierzcholki[i].y) > 0) {
-            refBezOtoczki.push_back(punkty());
-            refBezOtoczki[l].x = refWierzcholki[j].x;
-            refBezOtoczki[l].y = refWierzcholki[j].y;
-            refBezOtoczki[l].z = refWierzcholki[j].z;
+            refBezOtoczki.push_back(wierzcholek{refWierzcholki[j].x, refWierzcholki[j].y, refWierzcholki[j].z});
+//            refBezOtoczki.push_back(wierzcholek());
+//            refBezOtoczki[l].x = refWierzcholki[j].x;
+//            refBezOtoczki[l].y = refWierzcholki[j].y;
+//            refBezOtoczki[l].z = refWierzcholki[j].z;
             ++l;
             ++j;
 //            plik2 << "Bez otoczki - punkt x=" << refWierzcholki[j].x << " y=" << refWierzcholki[j].y << " z=" << refWierzcholki[j].z << "\n";
         }
         else if (i < ileWierzcholkow-1) {
-            refOtoczka.push_back(wypukla());
-            refOtoczka[k].x = refWierzcholki[k].x;
-            refOtoczka[k].y = refWierzcholki[k].y;
-            refOtoczka[k].z = refWierzcholki[k].z;
-            refOtoczka[k].id = i;
+            refOtoczka.push_back(wypukla{refWierzcholki[k].x, refWierzcholki[k].y, refWierzcholki[k].z, i});
+//            refOtoczka.push_back(wypukla());
+//            refOtoczka[k].x = refWierzcholki[k].x;
+//            refOtoczka[k].y = refWierzcholki[k].y;
+//            refOtoczka[k].z = refWierzcholki[k].z;
+//            refOtoczka[k].id = i;
             ++j;
             ++k;
 //           plik2 << "Jest otoczka - id =" << i << " punkt x=" << refWierzcholki[k].x << " y=" << refWierzcholki[k].y << " z=" << refWierzcholki[k].z << "\n";
         }
         else if (i == ileWierzcholkow) {
-            refOtoczka.push_back(wypukla());
-            refOtoczka[k].x = refWierzcholki[k].x;
-            refOtoczka[k].y = refWierzcholki[k].y;
-            refOtoczka[k].z = refWierzcholki[k].z;
-            refOtoczka[k].id = i - 2.0;
-            refOtoczka.push_back(wypukla());
-            refOtoczka[j].x = refWierzcholki[j].x;
-            refOtoczka[j].y = refWierzcholki[j].y;
-            refOtoczka[j].z = refWierzcholki[j].z;
-            refOtoczka[j].id = i - 1.0;
-            refOtoczka.push_back(wypukla());
-            refOtoczka[i].x = refWierzcholki[i].x;
-            refOtoczka[i].y = refWierzcholki[i].y;
-            refOtoczka[i].z = refWierzcholki[i].z;
-            refOtoczka[i].id = i;
+            refOtoczka.push_back(wypukla{refWierzcholki[k].x, refWierzcholki[k].y, refWierzcholki[k].z, i - 2});
+//            refOtoczka.push_back(wypukla());
+//            refOtoczka[k].x = refWierzcholki[k].x;
+//            refOtoczka[k].y = refWierzcholki[k].y;
+//            refOtoczka[k].z = refWierzcholki[k].z;
+//            refOtoczka[k].id = i - 2;
+            refOtoczka.push_back(wypukla{refWierzcholki[j].x, refWierzcholki[j].y, refWierzcholki[j].z, i - 1});
+//            refOtoczka.push_back(wypukla());
+//            refOtoczka[j].x = refWierzcholki[j].x;
+//            refOtoczka[j].y = refWierzcholki[j].y;
+//            refOtoczka[j].z = refWierzcholki[j].z;
+//            refOtoczka[j].id = i - 1;
+            refOtoczka.push_back(wypukla{refWierzcholki[i].x, refWierzcholki[i].y, refWierzcholki[i].z, i});
+//            refOtoczka.push_back(wypukla());
+//            refOtoczka[i].x = refWierzcholki[i].x;
+//            refOtoczka[i].y = refWierzcholki[i].y;
+//            refOtoczka[i].z = refWierzcholki[i].z;
+//            refOtoczka[i].id = i;
 //            plik2 << "Jest otoczka - id =" << i << " punkt x=" << refWierzcholki[k].x << " y=" << refWierzcholki[k].y << " z=" << refWierzcholki[k].z << "\n";
 //            plik2 << "Jest otoczka - id =" << i << " punkt x=" << refWierzcholki[j].x << " y=" << refWierzcholki[j].y << " z=" << refWierzcholki[j].z << "\n";
 //            plik2 << "Jest otoczka - id =" << i << " punkt x=" << refWierzcholki[i].x << " y=" << refWierzcholki[i].y << " z=" << refWierzcholki[i].z << "\n";
@@ -2807,7 +2772,7 @@ void obrobkaDanychHGTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPl
     std::vector<wierzcholek> wierzcholki;
     std::vector<punktyTorow> toryZGwiazdka;
     std::vector<wypukla> otoczka;
-//    std::vector<punkty> bezOtoczki;
+//    std::vector<wierzcholek> bezOtoczki;
     std::vector<std::vector<unsigned int> > tablica;
     std::vector<std::vector<unsigned int> > tablicaBrakow;
     double exportX = refWspolrzednaX * 1000.0;
@@ -2869,7 +2834,7 @@ void obrobkaDanychTXTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPl
     std::vector<wierzcholek> wierzcholki;
     std::vector<punktyTorow> toryZGwiazdka;
     std::vector<wypukla> otoczka;
-//    std::vector<punkty> bezOtoczki;
+//    std::vector<wierzcholek> bezOtoczki;
     std::vector<std::vector<unsigned int> > tablica;
     std::vector<std::vector<unsigned int> > tablicaBrakow;
     double exportX = refWspolrzednaX * 1000.0;
@@ -2904,7 +2869,7 @@ void obrobkaDanychTXT(std::vector<std::string> &refTabelaNazwPlikowTXT, double &
     std::vector<wierzcholek> wierzcholki;
     std::vector<punktyTorow> toryZGwiazdka;
     std::vector<wypukla> otoczka;
-//    std::vector<punkty> bezOtoczki;
+//    std::vector<wierzcholek> bezOtoczki;
     std::vector<std::vector<unsigned int> > tablica;
     std::vector<std::vector<unsigned int> > tablicaBrakow;
     double exportX = refWspolrzednaX * 1000.0;
@@ -2940,7 +2905,7 @@ void obrobkaDanychTXTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::s
     std::vector<wierzcholek> wierzcholki;
     std::vector<wierzcholek> wierzcholkiProfilu;
     std::vector<wypukla> otoczka;
-//    std::vector<punkty> bezOtoczki;
+//    std::vector<wierzcholek> bezOtoczki;
     std::vector<punktyTorow> toryZGwiazdka;
     std::vector<std::vector<unsigned int> > tablica1;
     std::vector<std::vector<unsigned int> > tablica2;
@@ -2987,7 +2952,7 @@ void obrobkaDanychHGTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::s
     std::vector<wierzcholek> wierzcholki;
     std::vector<wierzcholek> wierzcholkiProfilu;
     std::vector<wypukla> otoczka;
-//    std::vector<punkty> bezOtoczki;
+//    std::vector<wierzcholek> bezOtoczki;
     std::vector<punktyTorow> toryZGwiazdka;
     std::vector<std::vector<unsigned int> > tablica1;
     std::vector<std::vector<unsigned int> > tablica2;
@@ -3133,7 +3098,7 @@ void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string 
 // Drobne poprawki i znajduje tylko z takim rozszerzeniem, z jakim chcialem
         std::string nazwaPliku ("");
         nazwaPliku = pdir->d_name;
-        unsigned znaleziono = nazwaPliku.find(rozsz);
+        int znaleziono = nazwaPliku.find(rozsz);
 //npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
             if (rozsz == "hgt") {
