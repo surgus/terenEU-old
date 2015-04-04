@@ -8,18 +8,16 @@ znaleźć w katalogu textures należącym do paczki symulatora) wraz ze
 wszystkimi lub wybranymi teksturami drzew, do katalogu z programem terenEU07.
 Dodana została także opcja generowania terenu niedopasowanego do torów.
 
-/*
-Aby wybrać rodzaj wykorzystywanych plikow SRTM oraz/lub włączyc/wyłączyć
-automatyczne zalesianie, należy zakomentować/odkomentować wybraną linię
-define w początkowej części pliku main.cpp.
-*/
-Powyższy wpis jest już nieaktualny, ponieważ W tej chwili program już
-automatycznie korzysta z danych SRTM 3 arc sec jeśli w danym miejscu
-w modelu SRTM 1 arc sec brakuje danych. Wadą tej metody jest to,
-że program musi odczytać oba rodzaje plików, co trwa nieco dłużej.
+Aktualnie program automatycznie korzysta z danych SRTM 3 arc sec jeśli
+w danym miejscu w modelu SRTM 1 arc sec brakuje danych. Wadą tej metody
+jest to, że program musi odczytać oba rodzaje plików, co trwa nieco
+dłużej, oraz zauważalne gołym okiem przejście w miejcu gdzie łączy się
+teren wygenerowany z SRTM 1 arc sec z SERM 3 arc sec.
+
 
 Niektóre sposoby na rozwiązania problemów wykorzystane w tym programie
 podpowiedział kolega "Ra", za co dziękuję.
+
 
 Znane problemy: Normalne wierzchołków trójkątów na łączeniu terenu z profilem
 są źle policzone.
