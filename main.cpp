@@ -172,7 +172,33 @@ long getFileSize(FILE *file) {
 }
 
 void puwg1992towgs84(double Xpuwg, double Ypuwg, double &refB_stopnie, double &refL_stopnie) {
-    double L0_stopnie = 19.0; 		//Poczatek układu wsp. PUWG92 (długosc)
+// Kod przeksztalcenia formatu WGS84 do PUWG 1992 zostal zapozyczony. Naglowek autora ponizej
+    /*
+    Autor: Zbigniew Szymanski
+    E-mail: z.szymanski@szymanski-net.eu
+    Wersja: 1.1
+    Historia zmian:
+                1.1 dodano przeksztalcenie odwrotne PUWG 1992 ->WGS84
+                1.0 przeksztalcenie WGS84 -> PUWG 1992
+    Data modyfikacji: 2012-11-27
+    Uwagi: Oprogramowanie darmowe. Dozwolone jest wykorzystanie i modyfikacja
+           niniejszego oprogramowania do wlasnych celow pod warunkiem
+           pozostawienia wszystkich informacji z naglowka. W przypadku
+           wykorzystania niniejszego oprogramowania we wszelkich projektach
+           naukowo-badawczych, rozwojowych, wdrozeniowych i dydaktycznych prosze
+           o zacytowanie nastepujacego artykulu:
+
+           Zbigniew Szymanski, Stanislaw Jankowski, Jan Szczyrek,
+           "Reconstruction of environment model by using radar vector field histograms.",
+           Photonics Applications in Astronomy, Communications, Industry, and
+           High-Energy Physics Experiments 2012, Proc. of SPIE Vol. 8454, pp. 845422 - 1-8,
+           doi:10.1117/12.2001354
+
+    Literatura:
+           Uriasz, J., "Wybrane odwzorowania kartograficzne", Akademia Morska w Szczecinie,
+           http://uriasz.am.szczecin.pl/naw_bezp/odwzorowania.html
+    */
+    double L0_stopnie = 19.0; 		//Poczatek ukladu wsp. PUWG92 (dlugosc)
 	double m0 = 0.9993;
     double x0 = -5300000.0;
     double y0 = 500000.0;
@@ -180,36 +206,26 @@ void puwg1992towgs84(double Xpuwg, double Ypuwg, double &refB_stopnie, double &r
     double R0 = 6367449.14577; 	//promien sfery Lagrange.a
     double Snorm = 2.0E-6;   		//parametr normujacy
     double xo_prim = 5765181.11148097; 		//parametr centrujacy
-
     // Wspolczynniki wielomianu
     double b0 = 5760000, b1 = 500199.26224125, b2 = 63.88777449, b3 = -0.82039170, b4 = -0.13125817, b5 = 0.00101782, b6 = 0.00010778;
-
     // Wspolczynniki szeregu tryg.
     double c2 = 0.0033565514856, c4 = 0.0000065718731, c6 = 0.0000000176466, c8 = 0.0000000000540;
-
 	//Przejscie z ukladu aplikacyjnego
 	double Xgk = (Xpuwg - x0) / m0, Ygk = (Ypuwg - y0) / m0;
-
 	//etap I - (Xgk, Ygk) -> (Xmerc, Ymerc)
 	std::complex<double> Z((Xgk - xo_prim) * Snorm,Ygk * Snorm);
 	std::complex<double> Zmerc;
-
 	Zmerc = b0 + Z * (b1 + Z * (b2 + Z * (b3 + Z * (b4 + Z * (b5 + Z * b6)))));
-
 	double Xmerc = Zmerc.real();
 	double Ymerc = Zmerc.imag();
-
 	//etap II - Xmerc,Ymerc -> fi, delta_lambda
 	double alfa = Xmerc / R0;
 	double beta = Ymerc / R0;
-
 	double w = 2.0 * atan(exp(beta)) - M_PI / 2.0;
 	double fi = asin(cos(w) * sin(alfa));
 	double dL = atan(tan(w) / cos(alfa));
-
 	//etap III
 	double B = fi + c2 * sin(2.0 * fi) + c4 * sin(4.0 * fi) + c6 * sin(6.0 * fi) + c8 * sin(8.0 * fi);
-
 	//Obliczenia koncowe
 	refB_stopnie = B / M_PI * 180.0;
 	double dL_stopnie = dL / M_PI * 180.0;
@@ -576,16 +592,12 @@ void odczytWierzcholkowTriangles(std::vector<wierzcholek> &refWierzcholki, doubl
                             if (resztax1toru == 0) waznyX = true;
                             if (resztay1toru == 0) waznyY = true;
                             if (waznyX) {
-//debug                       double nieprzesunietyxp1 = refToryZGwiazdka[j].xp1;
-//debug                       double przesunietyXp1 = refToryZGwiazdka[j].xp1 + wektorP2P1x;
                                 double testX = (refToryZGwiazdka[j].xp1 + wektorP2P1x) / refToryZGwiazdka[j].xp1;
                                 if (testX >= 1) {
                                     rosnieX = true;
                                 } else malejeX = true;
                             }
                             if (waznyY) {
-//debug                        double nieprzesunietyyp1 = refToryZGwiazdka[j].yp1;
-//debug                        double przesunietyYp1 = refToryZGwiazdka[j].yp1 + wektorP2P1y;
                                 double testY = (refToryZGwiazdka[j].yp1 + wektorP2P1y) / refToryZGwiazdka[j].yp1;
                                 if (testY >= 1) {
                                     rosnieY = true;
@@ -1749,7 +1761,6 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
         for (unsigned int j = 0; j <= SRTM_SIZE; ++j) {
             double Ywsg = YwsgPoczatek + minutaY + (j * sekunda);
             double z = tablicaDEM[j][i] - tablicaHEM[j][i] - geoidUndulation;
-//            if ((z > 5.0) && ( z < 3000.0)) {
             double dL_stopnie = Ywsg - L0_stopnie;
             double d_lambda = dL_stopnie * M_PI / 180.0;
 // Etap I - elipsoida na kule
@@ -1793,16 +1804,12 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
                                 if (resztay1toru == 0) waznyY = true;
 
                                 if (waznyX) {
-//debug                                double nieprzesunietyxp1 = refToryZGwiazdka[jj].xp1;
-//debug                                double przesunietyXp1 = refToryZGwiazdka[jj].xp1 + wektorP2P1x;
                                     double testX = (refToryZGwiazdka[jj].xp1 + wektorP2P1x) / refToryZGwiazdka[jj].xp1;
                                     if (testX >= 1) {
                                         rosnieX = true;
                                     } else malejeX = true;
                                 }
                                 if (waznyY) {
-//debug                                double nieprzesunietyyp1 = refToryZGwiazdka[jj].yp1;
-//debug                                double przesunietyYp1 = refToryZGwiazdka[jj].yp1 + wektorP2P1y;
                                     double testY = (refToryZGwiazdka[jj].yp1 + wektorP2P1y) / refToryZGwiazdka[jj].yp1;
                                     if (testY >= 1) {
                                         rosnieY = true;
@@ -1866,7 +1873,6 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
                     } else refTablicaBrakow[(Ypuwg - refKorektaXbraki) / 50][(Xpuwg - refKorektaYbraki) / 50] = 1;
                 }
             }
-//            }
         }
         ++nrPunktu;
     }
@@ -2049,16 +2055,12 @@ void odczytPunktowTXTzUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
                                 if (resztay1toru == 0) waznyY = true;
 
                                 if (waznyX) {
-//debug                                double nieprzesunietyxp1 = refToryZGwiazdka[jj].xp1;
-//debug                                double przesunietyXp1 = refToryZGwiazdka[jj].xp1 + wektorP2P1x;
                                     double testX = (refToryZGwiazdka[jj].xp1 + wektorP2P1x) / refToryZGwiazdka[jj].xp1;
                                     if (testX >= 1) {
                                         rosnieX = true;
                                     } else malejeX = true;
                                 }
                                 if (waznyY) {
-//debug                                double nieprzesunietyyp1 = refToryZGwiazdka[jj].yp1;
-//debug                                double przesunietyYp1 = refToryZGwiazdka[jj].yp1 + wektorP2P1y;
                                     double testY = (refToryZGwiazdka[jj].yp1 + wektorP2P1y) / refToryZGwiazdka[jj].yp1;
                                     if (testY >= 1) {
                                         rosnieY = true;
@@ -2222,10 +2224,6 @@ void utworzDodatkowePunktySiatki(std::vector<triangle> &refTriangles, std::vecto
     std::cout << "Teraz czas utworzyc dodatkowe punkty zageszczajace siatke:\n";
     for (unsigned int i = 0, ii = dotychczasowaLiczbaWierzcholkow; i < liczbaTrojkatow; ++i, ++ii) {
         refRefWierzcholki.push_back(wierzcholek{(refTriangles[i].x1 + refTriangles[i].x2 + refTriangles[i].x3) / 3, (refTriangles[i].y1 + refTriangles[i].y2 + refTriangles[i].y3) / 3, (refTriangles[i].z1 + refTriangles[i].z2 + refTriangles[i].z3) / 3});
-//        refRefWierzcholki.push_back(wierzcholek());
-//        refRefWierzcholki[ii].x = (refTriangles[i].x1 + refTriangles[i].x2 + refTriangles[i].x3) / 3;
-//        refRefWierzcholki[ii].y = (refTriangles[i].y1 + refTriangles[i].y2 + refTriangles[i].y3) / 3;
-//        refRefWierzcholki[ii].z = (refTriangles[i].z1 + refTriangles[i].z2 + refTriangles[i].z3) / 3;
         std::cout << "Pierwotna liczba wierzcholkow: " << dotychczasowaLiczbaWierzcholkow << ". Nr dodatkowego wierzcholka" << i << "          \r";
     }
     std::cout << "\nKoniec tworzenia dodatkowych wierzcholkow\n";
@@ -2269,10 +2267,6 @@ void utworzDodatkowePunktySiatkiZUwzglednieniemProfilu(std::vector<triangle> &re
     dotychczasowaLiczbaWierzcholkow = refRefWierzcholki.size();
     for (unsigned int i = 0, ii = dotychczasowaLiczbaWierzcholkow; i < liczbaWierzcholkowProfilu; ++i, ++ii) {
         refRefWierzcholki.push_back(wierzcholek{refRefWierzcholkiProfilu[i].x, refRefWierzcholkiProfilu[i].y, refRefWierzcholkiProfilu[i].z});
-//        refRefWierzcholki.push_back(wierzcholek());
-//        refRefWierzcholki[ii].x = refRefWierzcholkiProfilu[i].x;
-//        refRefWierzcholki[ii].y = refRefWierzcholkiProfilu[i].y;
-//        refRefWierzcholki[ii].z = refRefWierzcholkiProfilu[i].z;
     }
     std::cout << "\nKoniec tworzenia dodatkowych wierzcholkow\n";
 }
@@ -2542,7 +2536,7 @@ void sadzenieDrzew(std::vector<triangle> &refTriangles, double ExportX, double E
         std::string nazwaDrzewa ("");
         nazwaDrzewa = pdir->d_name;
         int znaleziono = nazwaDrzewa.find("dds");
-//npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
+//npos zawodzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
             nazwaDrzewa = nazwaDrzewa.insert(0, pathToTreeClosed);
             tabelaDrzew.push_back(nazwaDrzewa);
@@ -2686,44 +2680,20 @@ void zrobOtoczke(std::vector<wierzcholek> &refWierzcholki, std::vector<wypukla> 
         if (sprawdzKatPolarny(refWierzcholki[k].x, refWierzcholki[k].y, refWierzcholki[j].x, refWierzcholki[j].y, refWierzcholki[i].x,
                               refWierzcholki[i].y) > 0) {
             refBezOtoczki.push_back(wierzcholek{refWierzcholki[j].x, refWierzcholki[j].y, refWierzcholki[j].z});
-//            refBezOtoczki.push_back(wierzcholek());
-//            refBezOtoczki[l].x = refWierzcholki[j].x;
-//            refBezOtoczki[l].y = refWierzcholki[j].y;
-//            refBezOtoczki[l].z = refWierzcholki[j].z;
             ++l;
             ++j;
 //            plik2 << "Bez otoczki - punkt x=" << refWierzcholki[j].x << " y=" << refWierzcholki[j].y << " z=" << refWierzcholki[j].z << "\n";
         }
         else if (i < ileWierzcholkow-1) {
             refOtoczka.push_back(wypukla{refWierzcholki[k].x, refWierzcholki[k].y, refWierzcholki[k].z, i});
-//            refOtoczka.push_back(wypukla());
-//            refOtoczka[k].x = refWierzcholki[k].x;
-//            refOtoczka[k].y = refWierzcholki[k].y;
-//            refOtoczka[k].z = refWierzcholki[k].z;
-//            refOtoczka[k].id = i;
             ++j;
             ++k;
 //           plik2 << "Jest otoczka - id =" << i << " punkt x=" << refWierzcholki[k].x << " y=" << refWierzcholki[k].y << " z=" << refWierzcholki[k].z << "\n";
         }
         else if (i == ileWierzcholkow) {
             refOtoczka.push_back(wypukla{refWierzcholki[k].x, refWierzcholki[k].y, refWierzcholki[k].z, i - 2});
-//            refOtoczka.push_back(wypukla());
-//            refOtoczka[k].x = refWierzcholki[k].x;
-//            refOtoczka[k].y = refWierzcholki[k].y;
-//            refOtoczka[k].z = refWierzcholki[k].z;
-//            refOtoczka[k].id = i - 2;
             refOtoczka.push_back(wypukla{refWierzcholki[j].x, refWierzcholki[j].y, refWierzcholki[j].z, i - 1});
-//            refOtoczka.push_back(wypukla());
-//            refOtoczka[j].x = refWierzcholki[j].x;
-//            refOtoczka[j].y = refWierzcholki[j].y;
-//            refOtoczka[j].z = refWierzcholki[j].z;
-//            refOtoczka[j].id = i - 1;
             refOtoczka.push_back(wypukla{refWierzcholki[i].x, refWierzcholki[i].y, refWierzcholki[i].z, i});
-//            refOtoczka.push_back(wypukla());
-//            refOtoczka[i].x = refWierzcholki[i].x;
-//            refOtoczka[i].y = refWierzcholki[i].y;
-//            refOtoczka[i].z = refWierzcholki[i].z;
-//            refOtoczka[i].id = i;
 //            plik2 << "Jest otoczka - id =" << i << " punkt x=" << refWierzcholki[k].x << " y=" << refWierzcholki[k].y << " z=" << refWierzcholki[k].z << "\n";
 //            plik2 << "Jest otoczka - id =" << i << " punkt x=" << refWierzcholki[j].x << " y=" << refWierzcholki[j].y << " z=" << refWierzcholki[j].z << "\n";
 //            plik2 << "Jest otoczka - id =" << i << " punkt x=" << refWierzcholki[i].x << " y=" << refWierzcholki[i].y << " z=" << refWierzcholki[i].z << "\n";
@@ -2823,11 +2793,11 @@ void obrobkaDanychHGTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPl
     toryZGwiazdka.clear();
     otoczka.clear();
 //    bezOtoczki.clear();
-    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow (
+    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow
     odczytPunktowTorow(tablica, tablicaBrakow, exportX, exportY, atoi(szerokoscTablicy.c_str()), korektaX, korektaY, korektaXbraki, korektaYbraki,
                        wierszeTablicy, kolumnyTablicy, wierszeTablicyBrakow, kolumnyTablicyBrakow, minX, minY, maxX, maxY);
     odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
-    // Odczyt danych HGT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
+    // Odczyt danych SRTM pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
 #ifdef DT2
     for (unsigned int i = 0; i < liczbaPlikowDT2; ++i) {
         std::string nazwaPliku = refTabelaNazwPlikowDT2[i];
@@ -2932,11 +2902,11 @@ void obrobkaDanychTXT(std::vector<std::string> &refTabelaNazwPlikowTXT, double &
     toryZGwiazdka.clear();
     otoczka.clear();
 //    bezOtoczki.clear();
-// Zapis do tablicy wspolrzednych w odleglosci 5 km od torow (
+// Zapis do tablicy wspolrzednych w odleglosci 5 km od torow
     odczytPunktowTorow(tablica, tablicaBrakow, exportX, exportY, atoi(szerokoscTablicy.c_str()), korektaX, korektaY, korektaXbraki, korektaYbraki,
                        wierszeTablicy, kolumnyTablicy, wierszeTablicyBrakow, kolumnyTablicyBrakow, minX, minY, maxX, maxY);
 //    odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
-// Odczyt danych HGT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
+// Odczyt danych TXT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
     for (unsigned int i = 0; i < liczbaPlikow; ++i) {
         odczytPunktowTXT(wierzcholki, tablica, refTabelaNazwPlikowTXT[i], nrId, i, liczbaPlikow, atoi(szerokoscTablicy.c_str()), toryZGwiazdka,
                          korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
@@ -2972,13 +2942,13 @@ void obrobkaDanychTXTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::s
     otoczka.clear();
 //    bezOtoczki.clear();
     toryZGwiazdka.clear();
-    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow (
+    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow
     odczytPunktowTorow(tablica1, tablicaBrakow, exportX, exportY, atoi(szerokoscTablicy.c_str()), korektaX1, korektaY1, korektaXbraki, korektaYbraki,
                        wierszeTablicy1, kolumnyTablicy1, wierszeTablicyBrakow, kolumnyTablicyBrakow, minX, minY, maxX, maxY);
     odczytPunktowNode(wierzcholkiProfilu, "profil", licznikWierzcholkow);
     odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
     tablicaWierzcholkowTriangles(tablica2, exportX, exportY, szerokosc2, toryZGwiazdka, korektaX2, korektaY2, wierszeTablicy2, kolumnyTablicy2);
-    // Odczyt danych HGT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
+    // Odczyt danych TXT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
     for (unsigned int i = 0; i < liczbaPlikow; ++i) {
         odczytPunktowTXTzUwzglednieniemProfilu(wierzcholki, wierzcholkiProfilu, tablica1, tablica2, refTabelaNazwPlikowTXT[i], nrId, i,
                                                liczbaPlikow, atoi(szerokoscTablicy.c_str()), szerokosc2, toryZGwiazdka, korektaX1, korektaY1, korektaX2, korektaY2, wierszeTablicy1, kolumnyTablicy1,
@@ -3028,7 +2998,7 @@ void obrobkaDanychHGTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::s
     odczytPunktowNode(wierzcholkiProfilu, "profil", licznikWierzcholkow);
     odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
     tablicaWierzcholkowTriangles(tablica2, exportX, exportY, szerokosc2, toryZGwiazdka, korektaX2, korektaY2, wierszeTablicy2, kolumnyTablicy2);
-// Odczyt danych HGT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
+// Odczyt danych SRTM pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
 #ifdef DT2
     for (unsigned int i = 0; i < liczbaPlikowDT2; ++i) {
         std::string nazwaPliku = refTabelaNazwPlikowDT2[i];
@@ -3081,7 +3051,7 @@ void odczytWierzcholkowZTriangles(double &refWspolrzednaX, double &refWspolrzedn
 }
 
 void obrobkaDanychNodePoTriangulacji(double &refWspolrzednaX, double &refWspolrzednaY, std::string szerokosc) {
-// Niezbedne (a moze i zbedne, ale tak wyszlo) zmienne
+// Niezbedne zmienne
     std::vector<wierzcholek> wierzcholki;
     std::vector<triangle> triangles;
     std::vector<wierzcholek> wierzcholkiTriangles;
