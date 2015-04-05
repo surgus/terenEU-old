@@ -172,14 +172,14 @@ long getFileSize(FILE *file) {
 }
 
 void puwg1992towgs84(double Xpuwg, double Ypuwg, double &refB_stopnie, double &refL_stopnie) {
-// Kod przeksztalcenia formatu WGS84 do PUWG 1992 zostal zapozyczony. Naglowek autora ponizej
+    // Kod przeksztalcenia formatu WGS84 do PUWG 1992 zostal zapozyczony. Naglowek autora ponizej
     /*
     Autor: Zbigniew Szymanski
     E-mail: z.szymanski@szymanski-net.eu
     Wersja: 1.1
     Historia zmian:
-                1.1 dodano przeksztalcenie odwrotne PUWG 1992 ->WGS84
-                1.0 przeksztalcenie WGS84 -> PUWG 1992
+    		1.1 dodano przeksztalcenie odwrotne PUWG 1992 ->WGS84
+    		1.0 przeksztalcenie WGS84 -> PUWG 1992
     Data modyfikacji: 2012-11-27
     Uwagi: Oprogramowanie darmowe. Dozwolone jest wykorzystanie i modyfikacja
            niniejszego oprogramowania do wlasnych celow pod warunkiem
@@ -198,11 +198,8 @@ void puwg1992towgs84(double Xpuwg, double Ypuwg, double &refB_stopnie, double &r
            Uriasz, J., "Wybrane odwzorowania kartograficzne", Akademia Morska w Szczecinie,
            http://uriasz.am.szczecin.pl/naw_bezp/odwzorowania.html
     */
-    double L0_stopnie = 19.0; 		//Poczatek ukladu wsp. PUWG92 (dlugosc)
-	double m0 = 0.9993;
-    double x0 = -5300000.0;
-    double y0 = 500000.0;
-
+    //Poczatek ukladu wsp. PUWG92 (dlugosc)
+    double L0_stopnie = 19.0, m0 = 0.9993, x0 = -5300000.0, y0 = 500000.0;
     double R0 = 6367449.14577; 	//promien sfery Lagrange.a
     double Snorm = 2.0E-6;   		//parametr normujacy
     double xo_prim = 5765181.11148097; 		//parametr centrujacy
@@ -216,11 +213,9 @@ void puwg1992towgs84(double Xpuwg, double Ypuwg, double &refB_stopnie, double &r
 	std::complex<double> Z((Xgk - xo_prim) * Snorm,Ygk * Snorm);
 	std::complex<double> Zmerc;
 	Zmerc = b0 + Z * (b1 + Z * (b2 + Z * (b3 + Z * (b4 + Z * (b5 + Z * b6)))));
-	double Xmerc = Zmerc.real();
-	double Ymerc = Zmerc.imag();
+	double Xmerc = Zmerc.real(), Ymerc = Zmerc.imag();
 	//etap II - Xmerc,Ymerc -> fi, delta_lambda
-	double alfa = Xmerc / R0;
-	double beta = Ymerc / R0;
+	double alfa = Xmerc / R0, beta = Ymerc / R0;
 	double w = 2.0 * atan(exp(beta)) - M_PI / 2.0;
 	double fi = asin(cos(w) * sin(alfa));
 	double dL = atan(tan(w) / cos(alfa));
@@ -315,8 +310,8 @@ void odczytPunktowTorow(std::vector<std::vector<unsigned int> > &refTablica, std
         }
     }
 // Zakres przeszukiwania plikow dostosowany do scenerii, na potem
-    puwg1992towgs84(testXmin, testYmin, refMinY, refMinX);
-    puwg1992towgs84(testXmax, testYmax, refMaxY, refMaxX);
+    puwg1992towgs84(testYmin, testXmin, refMinY, refMinX);
+    puwg1992towgs84(testYmax, testXmax, refMaxY, refMaxX);
     --refMinX;
     --refMinY;
     ++refMaxX;
@@ -852,7 +847,7 @@ void tablicaWierzcholkowTriangles(std::vector<std::vector<unsigned int> > &refTa
                     }
                     ++wyraz1;
                 }
-                if (wyraz > llw) llw = wyraz + 1;
+                if (wyraz >= llw) ++llw;
             }
         }
     }
@@ -1664,11 +1659,11 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
         ++k;
         if (k == 2) k = 0;
     }
-    double geoidUndulation = 10*(fileBuf[491] - '0') + fileBuf[492] - '0';
+    double geoidUndulation = 10 * (fileBuf[491] - '0') + fileBuf[492] - '0';
     fclose(file);
     delete[]fileBuf;
-    nazwaPliku.replace(dlugoscNazwyPliku-34,3,"HEM");
-    nazwaPliku.replace(dlugoscNazwyPliku-7,3,"HEM");
+    nazwaPliku.replace(dlugoscNazwyPliku - 34,3,"HEM");
+    nazwaPliku.replace(dlugoscNazwyPliku - 7,3,"HEM");
     std::cout << "Otwieram plik z korekta wysokosci" << nazwaPliku << "\n";
     if ((file = fopen(nazwaPliku.c_str(), "rb")) == NULL) {
         std::cout << "Nie mozna otworzyc pliku" << nazwaPliku << "\n";
@@ -1898,7 +1893,7 @@ void odczytPunktowTXT(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
         std::getline(plik1, linia);
         std::istringstream ln(linia);
         unsigned int wyraz = 0;
-        double x = 0, y =0, z = 0;
+        double x = 0, y = 0, z = 0;
 // Petla rozbijajaca odczytana linie na pojedyncze stringi (rozdzielanie po " ")
         while (!ln.eof()) {
             std::string temp ("");
@@ -2021,7 +2016,7 @@ void odczytPunktowTXTzUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
         std::getline(plik1, linia);
         std::istringstream ln(linia);
         unsigned int wyraz = 0;
-        double x = 0, y =0, z = 0;
+        double x = 0, y = 0, z = 0;
 // Petla rozbijajaca odczytana linie na pojedyncze stringi (rozdzielanie po " ")
         while (!ln.eof()) {
             std::string temp ("");
@@ -2224,6 +2219,10 @@ void utworzDodatkowePunktySiatki(std::vector<triangle> &refTriangles, std::vecto
     std::cout << "Teraz czas utworzyc dodatkowe punkty zageszczajace siatke:\n";
     for (unsigned int i = 0, ii = dotychczasowaLiczbaWierzcholkow; i < liczbaTrojkatow; ++i, ++ii) {
         refRefWierzcholki.push_back(wierzcholek{(refTriangles[i].x1 + refTriangles[i].x2 + refTriangles[i].x3) / 3, (refTriangles[i].y1 + refTriangles[i].y2 + refTriangles[i].y3) / 3, (refTriangles[i].z1 + refTriangles[i].z2 + refTriangles[i].z3) / 3});
+//        refRefWierzcholki.push_back(wierzcholek());
+//        refRefWierzcholki[ii].x = (refTriangles[i].x1 + refTriangles[i].x2 + refTriangles[i].x3) / 3;
+//        refRefWierzcholki[ii].y = (refTriangles[i].y1 + refTriangles[i].y2 + refTriangles[i].y3) / 3;
+//        refRefWierzcholki[ii].z = (refTriangles[i].z1 + refTriangles[i].z2 + refTriangles[i].z3) / 3;
         std::cout << "Pierwotna liczba wierzcholkow: " << dotychczasowaLiczbaWierzcholkow << ". Nr dodatkowego wierzcholka" << i << "          \r";
     }
     std::cout << "\nKoniec tworzenia dodatkowych wierzcholkow\n";
@@ -2275,8 +2274,7 @@ void zapisSymkowychTrojkatow(std::vector<triangle> &refTriangles, double ExportX
     unsigned int licznik = 0, zmianaPliku1 = 2400000, zmianaPliku2 = 4800000, zmianaPliku3 = 7200000, zmianaPliku4 = 9600000, zmianaPliku5 = 12000000,
                  zmianaPliku6 = 14400000, zmianaPliku7 = 16800000, zmianaPliku8 = 19200000;
     std::string nazwaPliku = "teren.scm";
-    unsigned int nrPliku = 1;
-    unsigned int szerokosc = 300, testXmax = 0, testYmax = 0, testXmin = 900000, testYmin = 900000, wierszeTablicy = 0, kolumnyTablicy = 0;
+    unsigned int nrPliku = 1, szerokosc = 300, testXmax = 0, testYmax = 0, testXmin = 900000, testYmin = 900000, wierszeTablicy = 0, kolumnyTablicy = 0;
     std::string numerPliku = to_string(nrPliku);
     std::string nowaNazwaPliku = nazwaPliku;
     nowaNazwaPliku.insert(5,numerPliku);
@@ -2954,11 +2952,8 @@ void obrobkaDanychTXTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::s
                                                liczbaPlikow, atoi(szerokoscTablicy.c_str()), szerokosc2, toryZGwiazdka, korektaX1, korektaY1, korektaX2, korektaY2, wierszeTablicy1, kolumnyTablicy1,
                                                wierszeTablicy2, kolumnyTablicy2);
     }
-//    if (szerokoscTablicy == "1000") {
     obrobkaDanychNodeDoZageszczeniaPoTriangulacjiZUwzglednieniemProfilu("150", wierzcholki, wierzcholkiProfilu, nrId, tablica2, szerokosc2, korektaX2,
             korektaY2, wierszeTablicy2, kolumnyTablicy2, exportX, exportY, tablicaBrakow, korektaXbraki, korektaYbraki);
-//    }
-
     sort(wierzcholki.begin(), wierzcholki.end(), by_yx());
 //    zrobOtoczke(wierzcholki, otoczka, bezOtoczki);
 //    sort(wierzcholki.begin(), wierzcholki.end(), by_xy());
@@ -2992,7 +2987,7 @@ void obrobkaDanychHGTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::s
     otoczka.clear();
 //    bezOtoczki.clear();
     toryZGwiazdka.clear();
-    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow (
+    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow
     odczytPunktowTorow(tablica1, tablicaBrakow, exportX, exportY, atoi(szerokoscTablicy.c_str()), korektaX1, korektaY1, korektaXbraki, korektaYbraki,
                        wierszeTablicy1, kolumnyTablicy1, wierszeTablicyBrakow, kolumnyTablicyBrakow, minX, minY, maxX, maxY);
     odczytPunktowNode(wierzcholkiProfilu, "profil", licznikWierzcholkow);
