@@ -236,7 +236,7 @@ void odczytPunktowTorow(std::vector<std::vector<unsigned int> > &refTablica, std
     std::string szukanyString (" track ");
     std::string nazwaPlikuZTorami ("EXPORT.SCN");
     unsigned int liczbaLiniiTorow = 0, wyraz = 0, testXmax = 0, testYmax = 0, testXmin = 900000, testYmin = 900000, testXmaxBraki = 0, testYmaxBraki = 0,
-                 testXminBraki = 900000, testYminBraki = 900000;
+                 testXminBraki = 0, testYminBraki = 0;
     bool flagTory = false;
 
     // Otwarcie pliku tylko do odczytu z torami dla sprawdzenia szerokosci scenerii
@@ -310,6 +310,8 @@ void odczytPunktowTorow(std::vector<std::vector<unsigned int> > &refTablica, std
         }
     }
 // Zakres przeszukiwania plikow dostosowany do scenerii, na potem
+//    puwg1992towgs84(testYmin, testXmin, refMinY, refMinX);
+//    puwg1992towgs84(testYmax, testXmax, refMaxY, refMaxX);
     puwg1992towgs84(testYmin, testXmin, refMinY, refMinX);
     puwg1992towgs84(testYmax, testXmax, refMaxY, refMaxX);
     --refMinX;
@@ -317,12 +319,13 @@ void odczytPunktowTorow(std::vector<std::vector<unsigned int> > &refTablica, std
     ++refMaxX;
     ++refMaxY;
 
-// Zwiekszamy szerokosc, bo tablica tez jest nieco szersza (tablica o 2, a tutaj zwiekszamy o 5... rozrzutnosc?)
+// Szerokosc tablicy na braki w danych SRTM 1 arc sec. Znacznie poszerzona, bo i teren jest szerszy od rozciaglosci torow.
     testXminBraki = testXmin - (65 * 50);
     testXmaxBraki = testXmax + (65 * 50);
     testYminBraki = testYmin - (65 * 50);
     testYmaxBraki = testYmax + (65 * 50);
 
+// Zwiekszamy szerokosc, bo tablica tez jest nieco szersza (tablica o 2, a tutaj zwiekszamy o 5... rozrzutnosc?)
     testXmin -= 5 * szerokosc;
     testXmax += 5 * szerokosc;
     testYmin -= 5 * szerokosc;
@@ -1247,16 +1250,12 @@ void odczytPunktowHGTzUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
                                     if (resztay1toru == 0) waznyY = true;
 
                                     if (waznyX) {
-//debug                                double nieprzesunietyxp1 = refToryZGwiazdka[jj].xp1;
-//debug                                double przesunietyXp1 = refToryZGwiazdka[jj].xp1 + wektorP2P1x;
                                         double testX = (refToryZGwiazdka[jj].xp1 + wektorP2P1x) / refToryZGwiazdka[jj].xp1;
                                         if (testX >= 1) {
                                             rosnieX = true;
                                         } else malejeX = true;
                                     }
                                     if (waznyY) {
-//debug                                double nieprzesunietyyp1 = refToryZGwiazdka[jj].yp1;
-//debug                                double przesunietyYp1 = refToryZGwiazdka[jj].yp1 + wektorP2P1y;
                                         double testY = (refToryZGwiazdka[jj].yp1 + wektorP2P1y) / refToryZGwiazdka[jj].yp1;
                                         if (testY >= 1) {
                                             rosnieY = true;
@@ -2147,7 +2146,6 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
         std::istringstream ln(linia);
         unsigned int wyraz = 0, temp2 = 0, temp3 = 0, temp4 = 0;
         bool flagPunkty = false;
-        double AB = 0, BC = 0, CA = 0;
 // Petla rozbijajaca odczytana linie na pojedyncze stringi (rozdzielanie po " ")
         if (nrLinii > 0) {
             while (!ln.eof()) {
@@ -2167,10 +2165,10 @@ void odczytPlikuPoTriangulacji(std::vector<triangle> &refTriangles, std::vector<
                     if (wyraz == 3) {
                         temp4 = atoi(temp.c_str()); // C
                         if (!znalazlem) {
-                            AB = hypot(refWierzcholki[temp3].x - refWierzcholki[temp2].x, refWierzcholki[temp3].y - refWierzcholki[temp2].y);
-                            BC = hypot(refWierzcholki[temp4].x - refWierzcholki[temp3].x, refWierzcholki[temp4].y - refWierzcholki[temp3].y);
-                            CA = hypot(refWierzcholki[temp2].x - refWierzcholki[temp4].x, refWierzcholki[temp2].y - refWierzcholki[temp4].y);
-                            if ((AB < ograniczenieTrojkata) && (BC < ograniczenieTrojkata) && (CA < ograniczenieTrojkata)) {
+// Test dlugosci bokow trojkata. Trojkaty ze zbyt dlugimi bokami odrzucane.
+                            if (((refWierzcholki[temp3].x - refWierzcholki[temp2].x) * (refWierzcholki[temp3].x - refWierzcholki[temp2].x) + (refWierzcholki[temp3].y - refWierzcholki[temp2].y) * (refWierzcholki[temp3].y - refWierzcholki[temp2].y) < ograniczenieTrojkata * ograniczenieTrojkata) &&
+                                ((refWierzcholki[temp4].x - refWierzcholki[temp3].x) * (refWierzcholki[temp4].x - refWierzcholki[temp3].x) + (refWierzcholki[temp4].y - refWierzcholki[temp3].y) * (refWierzcholki[temp4].y - refWierzcholki[temp3].y) < ograniczenieTrojkata * ograniczenieTrojkata) &&
+                                ((refWierzcholki[temp2].x - refWierzcholki[temp4].x) * (refWierzcholki[temp2].x - refWierzcholki[temp4].x) + (refWierzcholki[temp2].y - refWierzcholki[temp4].y) * (refWierzcholki[temp2].y - refWierzcholki[temp4].y) < ograniczenieTrojkata * ograniczenieTrojkata)) {
                                 bool doOdrzutu1 = false, doOdrzutu2 = false, doOdrzutu3 = false;
                                 for (unsigned i = 0; i < refWierzcholkiTriangles.size(); ++i) {
                                     if (((refWierzcholki[temp2].x - refWierzcholkiTriangles[i].x > -0.01) && (refWierzcholki[temp2].x - refWierzcholkiTriangles[i].x < 0.01))
@@ -2219,10 +2217,6 @@ void utworzDodatkowePunktySiatki(std::vector<triangle> &refTriangles, std::vecto
     std::cout << "Teraz czas utworzyc dodatkowe punkty zageszczajace siatke:\n";
     for (unsigned int i = 0, ii = dotychczasowaLiczbaWierzcholkow; i < liczbaTrojkatow; ++i, ++ii) {
         refRefWierzcholki.push_back(wierzcholek{(refTriangles[i].x1 + refTriangles[i].x2 + refTriangles[i].x3) / 3, (refTriangles[i].y1 + refTriangles[i].y2 + refTriangles[i].y3) / 3, (refTriangles[i].z1 + refTriangles[i].z2 + refTriangles[i].z3) / 3});
-//        refRefWierzcholki.push_back(wierzcholek());
-//        refRefWierzcholki[ii].x = (refTriangles[i].x1 + refTriangles[i].x2 + refTriangles[i].x3) / 3;
-//        refRefWierzcholki[ii].y = (refTriangles[i].y1 + refTriangles[i].y2 + refTriangles[i].y3) / 3;
-//        refRefWierzcholki[ii].z = (refTriangles[i].z1 + refTriangles[i].z2 + refTriangles[i].z3) / 3;
         std::cout << "Pierwotna liczba wierzcholkow: " << dotychczasowaLiczbaWierzcholkow << ". Nr dodatkowego wierzcholka" << i << "          \r";
     }
     std::cout << "\nKoniec tworzenia dodatkowych wierzcholkow\n";
