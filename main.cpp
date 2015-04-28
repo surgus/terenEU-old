@@ -310,8 +310,6 @@ void odczytPunktowTorow(std::vector<std::vector<unsigned int> > &refTablica, std
         }
     }
 // Zakres przeszukiwania plikow dostosowany do scenerii, na potem
-//    puwg1992towgs84(testYmin, testXmin, refMinY, refMinX);
-//    puwg1992towgs84(testYmax, testXmax, refMaxY, refMaxX);
     puwg1992towgs84(testYmin, testXmin, refMinY, refMinX);
     puwg1992towgs84(testYmax, testXmax, refMaxY, refMaxX);
     --refMinX;
@@ -345,7 +343,6 @@ void odczytPunktowTorow(std::vector<std::vector<unsigned int> > &refTablica, std
 // Te zmienne w dalszym dzialaniu programu beda kluczowe do prawidlowego przeszukiwania tablicy
     refKorektaX = testXmin;
     refKorektaY = testYmin;
-
     refWierszeTablicyBrakow = (testXmaxBraki / 50) - (testXminBraki / 50);
     refKolumnyTablicyBrakow = (testYmaxBraki / 50) - (testYminBraki / 50);
     refTablicaBrakow.resize(refWierszeTablicyBrakow);
@@ -359,7 +356,6 @@ void odczytPunktowTorow(std::vector<std::vector<unsigned int> > &refTablica, std
     }
     refKorektaXbraki = testXminBraki;
     refKorektaYbraki = testYminBraki;
-
     plik1.close();
 
 // POnowne otwarcie pliku tylko do odczytu z torami w celu zapelnienia zoptymalizowanej tablicy
@@ -371,7 +367,6 @@ void odczytPunktowTorow(std::vector<std::vector<unsigned int> > &refTablica, std
         std::cin.get();
     }
 // W petli szukamy w otwartym pliku torow oraz ich punktow p1.
-
     while(!plik1.eof()) {
         std::string rodzajTrack ("");
         std::string rodzajNode ("");
@@ -547,7 +542,6 @@ void odczytWierzcholkowTriangles(std::vector<wierzcholek> &refWierzcholki, doubl
         std::cin.get();
     }
 // W petli szukamy w otwartym pliku torow oraz ich punktow p1.
-
     while(!plik1.eof()) {
         std::getline(plik1, linia);
         ++nrLinii;
@@ -690,7 +684,7 @@ void tablicaWierzcholkowTriangles(std::vector<std::vector<unsigned int> > &refTa
 // ...patrzymy czy zawiera
         int znaleziono = (linia.find(szukanyString));
 // Jesli zawiera, to rozbijamy linie na elementy
-//npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
+// npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
             std::istringstream ln(linia);
             bool flagPrzerwij = false;
@@ -746,7 +740,7 @@ void tablicaWierzcholkowTriangles(std::vector<std::vector<unsigned int> > &refTa
 // ...patrzymy czy zawiera
         int znaleziono = (linia.find(szukanyString));
 // Jesli zawiera, to rozbijamy linie na elementy
-//npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
+// npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
             std::istringstream ln(linia);
             bool flagPrzerwij = false;
@@ -966,7 +960,7 @@ void odczytPunktowHGT(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
     const double R0 = 6367449.14577; 		//promien sfery Lagrange.a
     const double Snorm = 2.0E-6;   		//parametr normujacy
     const double xo = 5760000.0; 		//parametr centrujacy
-//Wspolczynniki wielomianu
+// Wspolczynniki wielomianu
     const double a0 = 5765181.11148097;
     const double a1 = 499800.81713800;
     const double a2 = -63.81145283;
@@ -975,7 +969,7 @@ void odczytPunktowHGT(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
     const double a5 = -0.00111138;
     const double a6 = -0.00010504;
 // Parametry odwzorowania Gaussa-Kruegera dla ukladu PUWG92
-    const double L0_stopnie = 19.0; 		//Poczatek ukladu wsp. PUWG92 (dlugosc)
+    const double L0_stopnie = 19.0; 		// Poczatek ukladu wsp. PUWG92 (dlugosc)
     const double m0 = 0.9993;
     const double x0 = -5300000.0;
     const double y0 = 500000.0;
@@ -1166,7 +1160,7 @@ void odczytPunktowHGTzUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
     const double R0 = 6367449.14577; 		//promien sfery Lagrange.a
     const double Snorm = 2.0E-6;   		//parametr normujacy
     const double xo = 5760000.0; 		//parametr centrujacy
-//Wspolczynniki wielomianu
+// Wspolczynniki wielomianu
     const double a0 = 5765181.11148097;
     const double a1 = 499800.81713800;
     const double a2 = -63.81145283;
@@ -1335,7 +1329,6 @@ void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
     double minutaX = 0, minutaY = 0;
     const double sekunda = 1.0 / 3600.0;
     dlugoscNazwyPliku = nazwaPliku.length();
-    std::cout << "nazwaPliku=" << nazwaPliku << "\n";
     std::string nrx = nazwaPliku.substr(dlugoscNazwyPliku - 21,2);
     std::string nry = nazwaPliku.substr(dlugoscNazwyPliku - 28,2);
     std::string mnX = nazwaPliku.substr(dlugoscNazwyPliku - 19,2);
@@ -1482,7 +1475,6 @@ void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
         for (unsigned int j = 0; j < SRTM_SIZE; ++j) {
             double Ywsg = YwsgPoczatek + minutaY + (j * sekunda);
             double z = tablicaDEM[j][i] - tablicaHEM[j][i] - geoidUndulation;
-//            if ((z > 5.0) && (z < 3000.0)) {
             double dL_stopnie = Ywsg - L0_stopnie;
             double d_lambda = dL_stopnie * M_PI / 180.0;
 // Etap I - elipsoida na kule
@@ -1585,7 +1577,6 @@ void odczytPunktowDT2(std::vector<wierzcholek> &refWierzcholki, std::vector<std:
                     } else refTablicaBrakow[(Ypuwg - refKorektaXbraki) / 50][(Xpuwg - refKorektaYbraki) / 50] = 1;
                 }
             }
-//            }
         }
         ++nrPunktu;
     }
@@ -1606,7 +1597,6 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
     double minutaX = 0, minutaY = 0;
     const double sekunda = 1.0 / 3600.0;
     dlugoscNazwyPliku = nazwaPliku.length(); // 30 dla .dt2
-    std::cout << "nazwaPliku=" << nazwaPliku << "\n";
     std::string nrx = nazwaPliku.substr(dlugoscNazwyPliku - 21,2);
     std::string nry = nazwaPliku.substr(dlugoscNazwyPliku - 28,2);
     std::string mnX = nazwaPliku.substr(dlugoscNazwyPliku - 19,2);
@@ -1728,7 +1718,7 @@ void odczytPunktowDT2zUwzglednieniemProfilu(std::vector<wierzcholek> &refWierzch
     const double R0 = 6367449.14577; 		//promien sfery Lagrange.a
     const double Snorm = 2.0E-6;   		//parametr normujacy
     const double xo = 5760000.0; 		//parametr centrujacy
-//Wspolczynniki wielomianu
+// Wspolczynniki wielomianu
     const double a0 = 5765181.11148097;
     const double a1 = 499800.81713800;
     const double a2 = -63.81145283;
@@ -2230,7 +2220,7 @@ void utworzDodatkowePunktySiatkiZUwzglednieniemProfilu(std::vector<triangle> &re
     const unsigned int liczbaTrojkatow = refTriangles.size();
     unsigned int dotychczasowaLiczbaWierzcholkow = refRefNrId, noweWierzcholki = 0;
     const unsigned int liczbaWierzcholkowProfilu = refRefWierzcholkiProfilu.size();
-    //W przypadku plikow SRTM 1 arc sec zageszczanie wierzcholkow nie daje zadnych korzysci
+// W przypadku plikow SRTM 1 arc sec zageszczanie wierzcholkow nie daje zadnych korzysci
 #ifdef HGT
     std::cout << "Teraz czas utowrzyc dodatkowe punkty zageszczajace siatke:\n";
     for (unsigned int z = 0; z < liczbaTrojkatow; ++z, ++refRefNrId) {
@@ -2528,7 +2518,7 @@ void sadzenieDrzew(std::vector<triangle> &refTriangles, double ExportX, double E
         std::string nazwaDrzewa ("");
         nazwaDrzewa = pdir->d_name;
         int znaleziono = nazwaDrzewa.find("dds");
-//npos zawodzi pod linuksem        if (znaleziono!=std::string::npos) {
+// npos zawodzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
             nazwaDrzewa = nazwaDrzewa.insert(0, pathToTreeClosed);
             tabelaDrzew.push_back(nazwaDrzewa);
@@ -2785,11 +2775,11 @@ void obrobkaDanychHGTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPl
     toryZGwiazdka.clear();
     otoczka.clear();
 //    bezOtoczki.clear();
-    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow
+// Zapis do tablicy wspolrzednych w odleglosci 5 km od torow
     odczytPunktowTorow(tablica, tablicaBrakow, exportX, exportY, atoi(szerokoscTablicy.c_str()), korektaX, korektaY, korektaXbraki, korektaYbraki,
                        wierszeTablicy, kolumnyTablicy, wierszeTablicyBrakow, kolumnyTablicyBrakow, minX, minY, maxX, maxY);
     odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
-    // Odczyt danych SRTM pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
+// Odczyt danych SRTM pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
 #ifdef DT2
     for (unsigned int i = 0; i < liczbaPlikowDT2; ++i) {
         std::string nazwaPliku = refTabelaNazwPlikowDT2[i];
@@ -2799,6 +2789,13 @@ void obrobkaDanychHGTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPl
         if ((atoi(nrx.c_str()) >= minY) && (atoi(nrx.c_str()) <= maxY) && (atoi(nry.c_str()) >= minX) && (atoi(nry.c_str()) <= maxX)) {
             odczytPunktowDT2(wierzcholki, tablica, tablicaBrakow, refTabelaNazwPlikowDT2[i], nrId, i, liczbaPlikowDT2,
                          atoi(szerokoscTablicy.c_str()), toryZGwiazdka, korektaX, korektaY, korektaXbraki, korektaYbraki, wierszeTablicy, kolumnyTablicy);
+        }
+    }
+    if (nrId == 0) {
+        for (unsigned int i = 0; i < wierszeTablicyBrakow; ++i) {
+            for (unsigned int ii = 0; ii < kolumnyTablicyBrakow; ++ii) {
+                tablicaBrakow[i][ii] = 1;
+            }
         }
     }
 #endif //DT2
@@ -2858,11 +2855,11 @@ void obrobkaDanychTXTPrzedTriangulacja(std::vector<std::string> &refTabelaNazwPl
     toryZGwiazdka.clear();
     otoczka.clear();
 //    bezOtoczki.clear();
-    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow (
+// Zapis do tablicy wspolrzednych w odleglosci 5 km od torow (
     odczytPunktowTorow(tablica, tablicaBrakow, exportX, exportY, atoi(szerokoscTablicy.c_str()), korektaX, korektaY, korektaXbraki, korektaYbraki,
                        wierszeTablicy, kolumnyTablicy, wierszeTablicyBrakow, kolumnyTablicyBrakow, minX, minY, maxX, maxY);
     odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
-    // Odczyt danych HGT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
+// Odczyt danych HGT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
     for (unsigned int i = 0; i < liczbaPlikow; ++i) {
         odczytPunktowTXT(wierzcholki, tablica, refTabelaNazwPlikowTXT[i], nrId, i, liczbaPlikow, atoi(szerokoscTablicy.c_str()), toryZGwiazdka,
                          korektaX, korektaY, wierszeTablicy, kolumnyTablicy);
@@ -2934,13 +2931,13 @@ void obrobkaDanychTXTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::s
     otoczka.clear();
 //    bezOtoczki.clear();
     toryZGwiazdka.clear();
-    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow
+// Zapis do tablicy wspolrzednych w odleglosci 5 km od torow
     odczytPunktowTorow(tablica1, tablicaBrakow, exportX, exportY, atoi(szerokoscTablicy.c_str()), korektaX1, korektaY1, korektaXbraki, korektaYbraki,
                        wierszeTablicy1, kolumnyTablicy1, wierszeTablicyBrakow, kolumnyTablicyBrakow, minX, minY, maxX, maxY);
     odczytPunktowNode(wierzcholkiProfilu, "profil", licznikWierzcholkow);
     odczytPunktowTorowZGwiazdka(toryZGwiazdka, exportX, exportY);
     tablicaWierzcholkowTriangles(tablica2, exportX, exportY, szerokosc2, toryZGwiazdka, korektaX2, korektaY2, wierszeTablicy2, kolumnyTablicy2);
-    // Odczyt danych TXT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
+// Odczyt danych TXT pokrywajacych sie z powierzchnia tablicy ( (2000 / 2) + 2000 + 2000 = 5 km )
     for (unsigned int i = 0; i < liczbaPlikow; ++i) {
         odczytPunktowTXTzUwzglednieniemProfilu(wierzcholki, wierzcholkiProfilu, tablica1, tablica2, refTabelaNazwPlikowTXT[i], nrId, i,
                                                liczbaPlikow, atoi(szerokoscTablicy.c_str()), szerokosc2, toryZGwiazdka, korektaX1, korektaY1, korektaX2, korektaY2, wierszeTablicy1, kolumnyTablicy1,
@@ -2981,7 +2978,7 @@ void obrobkaDanychHGTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::s
     otoczka.clear();
 //    bezOtoczki.clear();
     toryZGwiazdka.clear();
-    // Zapis do tablicy wspolrzednych w odleglosci 5 km od torow
+// Zapis do tablicy wspolrzednych w odleglosci 5 km od torow
     odczytPunktowTorow(tablica1, tablicaBrakow, exportX, exportY, atoi(szerokoscTablicy.c_str()), korektaX1, korektaY1, korektaXbraki, korektaYbraki,
                        wierszeTablicy1, kolumnyTablicy1, wierszeTablicyBrakow, kolumnyTablicyBrakow, minX, minY, maxX, maxY);
     odczytPunktowNode(wierzcholkiProfilu, "profil", licznikWierzcholkow);
@@ -2998,6 +2995,13 @@ void obrobkaDanychHGTPrzedTriangulacjaZUwazglednieniemProfilu(std::vector<std::s
             odczytPunktowDT2zUwzglednieniemProfilu(wierzcholki, wierzcholkiProfilu, tablica1, tablica2, tablicaBrakow, refTabelaNazwPlikowDT2[i],
                                                nrId, i, liczbaPlikowDT2, atoi(szerokoscTablicy.c_str()), szerokosc2, toryZGwiazdka, korektaX1, korektaY1, korektaX2, korektaY2, korektaXbraki,
                                                korektaYbraki, wierszeTablicy1, kolumnyTablicy1, wierszeTablicy2, kolumnyTablicy2);
+        }
+    }
+    if (nrId == 0) {
+        for (unsigned int i = 0; i < wierszeTablicyBrakow; ++i) {
+            for (unsigned int ii = 0; ii < kolumnyTablicyBrakow; ++ii) {
+                tablicaBrakow[i][ii] = 1;
+            }
         }
     }
 #endif //DT2
@@ -3124,7 +3128,7 @@ void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string 
         std::string nazwaPliku ("");
         nazwaPliku = pdir->d_name;
         int znaleziono = nazwaPliku.find(rozsz);
-//npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
+// npos zaowdzi pod linuksem        if (znaleziono!=std::string::npos) {
         if (znaleziono != -1) {
             if (rozsz == "hgt") {
                 nazwaPliku = nazwaPliku.insert(0, pathToSRTMclosed);
@@ -3136,7 +3140,6 @@ void zrobListePlikow(std::vector<std::string> &refTabelaNazwPlikow, std::string 
                 nazwaPliku = nazwaPliku.insert(0, pathToDTEDclosed);
             }
             refTabelaNazwPlikow.push_back(nazwaPliku);
-            std::cout << nazwaPliku << "\n";
         }
     }
     closedir(dir);
